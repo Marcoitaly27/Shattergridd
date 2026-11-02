@@ -4,11 +4,19 @@ extends Node3D
 ## Replace the Visuals child with a model scene later; retain this root and its data.
 
 enum Army { ASH, SLATE }
-const AdjacentMovement = preload("res://scripts/movement/adjacent_movement.gd")
+const CharacterDefinition = preload("res://scripts/pieces/character_definition.gd")
+const DEFAULT_MOVEMENT: Resource = preload("res://resources/characters/temporary_movement.tres")
 
 @export var piece_id: StringName = &"placeholder"
-@export var display_name: String = "Stone sentinel"
-@export var movement_behavior: Resource = AdjacentMovement.new()
+@export var character_definition: CharacterDefinition:
+	set(value):
+		character_definition = value
+		if is_node_ready():
+			_apply_appearance()
+			_refresh_picking_body()
+## Optional per-instance overrides; otherwise use the archetype's shared data.
+@export var display_name: String = ""
+@export var movement_behavior: Resource
 @export var picking_height: float = 1.34
 @export var picking_radius: float = 0.28
 @export var army: Army = Army.ASH:
@@ -16,6 +24,7 @@ const AdjacentMovement = preload("res://scripts/movement/adjacent_movement.gd")
 		army = value
 		if is_node_ready():
 			_apply_appearance()
+			_refresh_picking_body()
 @export var grid_coordinate: Vector2i = Vector2i.ZERO
 
 
@@ -27,8 +36,29 @@ func _ready() -> void:
 	_add_selection_ring()
 
 
+func get_display_name() -> String:
+	if not display_name.is_empty():
+		return display_name
+	return character_definition.display_name if character_definition != null else "Stone sentinel"
+
+
+func get_movement_behavior() -> Resource:
+	if movement_behavior != null:
+		return movement_behavior
+	if character_definition != null and character_definition.movement_behavior != null:
+		return character_definition.movement_behavior
+	return DEFAULT_MOVEMENT
+
+
+func get_pick_point() -> Vector3:
+	var visuals := get_node_or_null("Visuals")
+	if visuals != null and visuals.has_method("get_pick_point"):
+		return visuals.call("get_pick_point")
+	return global_position + Vector3.UP * picking_height * 0.6
+
+
 func set_selected(selected: bool) -> void:
-	var ring := get_node_or_null("SelectionRing") as MeshInstance3D
+	var ring := get_node_or_null("SelectionRing") as Node3D
 	if ring != null:
 		ring.visible = selected
 
@@ -40,6 +70,11 @@ func animate_to(destination: Vector3, duration: float) -> Tween:
 
 
 func _add_picking_body() -> void:
+	var visuals := get_node_or_null("Visuals")
+	if visuals != null and visuals.has_method("create_picking_body"):
+		if visuals.call("create_picking_body", self):
+			return
+	# Fallback for replacement models without a compound picking implementation.
 	var body := StaticBody3D.new()
 	body.name = "PickBody"
 	body.collision_layer = 2
@@ -62,18 +97,32 @@ func _add_picking_body() -> void:
 	add_child(body)
 
 
+func _refresh_picking_body() -> void:
+	if Engine.is_editor_hint():
+		return
+	var previous := get_node_or_null("PickBody")
+	if previous != null:
+		remove_child(previous)
+		previous.queue_free()
+	_add_picking_body()
+
+
 func _add_selection_ring() -> void:
-	var ring := MeshInstance3D.new()
+	var ring := Node3D.new()
 	ring.name = "SelectionRing"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 0.46
-	torus.outer_radius = 0.51
-	torus.rings = 32
-	torus.ring_segments = 8
-	ring.mesh = torus
-	ring.material_override = preload("res://materials/move_hint.tres")
-	ring.position.y = 0.035
-	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	# Outline outside architectural bases, rather than hiding a circular ring
+	# inside the new rectangular plinths. It still stays within a single tile.
+	ring.position.y = 0.025
+	for side in range(4):
+		var edge := MeshInstance3D.new()
+		var bar := BoxMesh.new()
+		bar.size = Vector3(1.36, 0.014, 0.035)
+		edge.mesh = bar
+		edge.material_override = preload("res://materials/move_hint.tres")
+		edge.position = Vector3(0, 0, 0.68).rotated(Vector3.UP, side * PI * 0.5)
+		edge.rotation.y = side * PI * 0.5
+		edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		ring.add_child(edge)
 	ring.visible = false
 	add_child(ring)
 
@@ -81,5 +130,7 @@ func _add_selection_ring() -> void:
 func _apply_appearance() -> void:
 	# Future model scenes keep their own materials and animation hierarchy.
 	var visuals := get_node_or_null("Visuals")
+	if visuals != null and visuals.has_method("set_character"):
+		visuals.call("set_character", character_definition)
 	if visuals != null and visuals.has_method("set_army"):
 		visuals.call("set_army", army)

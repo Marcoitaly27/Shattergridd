@@ -1,67 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/pieces/piece.gd" id="1_piece"]
 [ext_resource type="Script" path="res://scripts/pieces/placeholder_visual.gd" id="2_visual"]
-
-[sub_resource type="CylinderMesh" id="Mesh_base"]
-top_radius = 0.39
-bottom_radius = 0.44
-height = 0.16
-radial_segments = 16
-
-[sub_resource type="CylinderMesh" id="Mesh_plinth"]
-top_radius = 0.28
-bottom_radius = 0.33
-height = 0.16
-radial_segments = 12
-
-[sub_resource type="CylinderMesh" id="Mesh_body"]
-top_radius = 0.19
-bottom_radius = 0.29
-height = 0.65
-radial_segments = 12
-
-[sub_resource type="SphereMesh" id="Mesh_head"]
-radius = 0.205
-height = 0.41
-radial_segments = 16
-rings = 8
-
-[sub_resource type="BoxMesh" id="Mesh_crown"]
-size = Vector3(0.38, 0.24, 0.31)
-
-[sub_resource type="CylinderMesh" id="Mesh_hood"]
-top_radius = 0.035
-bottom_radius = 0.25
-height = 0.36
-radial_segments = 12
+[ext_resource type="Resource" path="res://resources/characters/warden.tres" id="3_character"]
 
 [node name="Piece" type="Node3D"]
 script = ExtResource("1_piece")
+character_definition = ExtResource("3_character")
 
 [node name="Visuals" type="Node3D" parent="."]
 script = ExtResource("2_visual")
-
-[node name="Base" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 0.08, 0)
-mesh = SubResource("Mesh_base")
-
-[node name="Plinth" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 0.24, 0)
-mesh = SubResource("Mesh_plinth")
-
-[node name="Body" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 0.645, 0)
-mesh = SubResource("Mesh_body")
-
-[node name="Head" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 1.12, 0)
-mesh = SubResource("Mesh_head")
-
-[node name="Crown" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 1.22, 0)
-mesh = SubResource("Mesh_crown")
-
-[node name="Hood" type="MeshInstance3D" parent="Visuals"]
-position = Vector3(0, 1.32, 0)
-mesh = SubResource("Mesh_hood")

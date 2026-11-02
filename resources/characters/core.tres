@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="1_definition"]
+[ext_resource type="PackedScene" path="res://scenes/pieces/characters/core.tscn" id="2_model"]
+[ext_resource type="Resource" path="res://resources/characters/temporary_movement.tres" id="3_movement"]
+[ext_resource type="Material" path="res://materials/ash_statue.tres" id="4_ash"]
+[ext_resource type="Material" path="res://materials/slate_statue.tres" id="5_slate"]
+
+[resource]
+resource_name = "Core prototype"
+script = ExtResource("1_definition")
+archetype_id = &"core"
+display_name = "Core"
+lore_description = "A bound figure in a sealed shrine. Saint, corpse or forbidden god: the stone offers no answer."
+model_scene = ExtResource("2_model")
+movement_behavior = ExtResource("3_movement")
+team_materials = Array[Material]([ExtResource("4_ash"), ExtResource("5_slate")])

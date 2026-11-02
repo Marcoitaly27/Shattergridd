@@ -1,1 +1,1 @@
-Reserved for future native effects. No capture or destruction system in v0.1.
+Reserved for future character-specific native effects. Captures currently remove the placeholder; cinematic destruction, dust and other effects are not implemented.

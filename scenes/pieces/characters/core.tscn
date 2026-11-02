@@ -1,0 +1,86 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+
+[sub_resource type="BoxMesh" id="Mesh_0"]
+size = Vector3(1.05, 0.16, 0.94)
+
+[sub_resource type="BoxMesh" id="Mesh_1"]
+size = Vector3(0.82, 0.12, 0.74)
+
+[sub_resource type="CylinderMesh" id="Mesh_2"]
+top_radius = 0.1
+bottom_radius = 0.17
+height = 0.72
+radial_segments = 16
+
+[sub_resource type="SphereMesh" id="Mesh_3"]
+radius = 0.14
+height = 0.28
+radial_segments = 16
+rings = 8
+
+[sub_resource type="BoxMesh" id="Mesh_4"]
+size = Vector3(0.13, 1.12, 0.17)
+
+[sub_resource type="BoxMesh" id="Mesh_5"]
+size = Vector3(0.13, 1.12, 0.17)
+
+[sub_resource type="BoxMesh" id="Mesh_6"]
+size = Vector3(0.13, 0.58, 0.19)
+
+[sub_resource type="BoxMesh" id="Mesh_7"]
+size = Vector3(0.13, 0.58, 0.19)
+
+[node name="CorePrototype" type="Node3D"]
+
+[node name="Pedestal" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.08, 0)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_0")
+material_override = ExtResource("1_stone")
+
+[node name="Step" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.22, 0)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_1")
+material_override = ExtResource("1_stone")
+
+[node name="BoundFigure" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.66, 0)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_2")
+material_override = ExtResource("1_stone")
+
+[node name="Face" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.16, 0)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_3")
+material_override = ExtResource("1_stone")
+
+[node name="LeftPillar" type="MeshInstance3D" parent="."]
+position = Vector3(-0.39, 0.84, 0.04)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_4")
+material_override = ExtResource("1_stone")
+
+[node name="RightPillar" type="MeshInstance3D" parent="."]
+position = Vector3(0.39, 0.84, 0.04)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_5")
+material_override = ExtResource("1_stone")
+
+[node name="LeftArch" type="MeshInstance3D" parent="."]
+position = Vector3(-0.2, 1.54, 0.04)
+rotation_degrees = Vector3(0, 0, -43)
+mesh = SubResource("Mesh_6")
+material_override = ExtResource("1_stone")
+
+[node name="RightArch" type="MeshInstance3D" parent="."]
+position = Vector3(0.2, 1.54, 0.04)
+rotation_degrees = Vector3(0, 0, 43)
+mesh = SubResource("Mesh_7")
+material_override = ExtResource("1_stone")
+
+[node name="PickAnchor" type="Marker3D" parent="."]
+position = Vector3(0, 0.75, 0)

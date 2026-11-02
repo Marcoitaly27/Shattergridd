@@ -1,0 +1,104 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+
+[sub_resource type="BoxMesh" id="Mesh_0"]
+size = Vector3(0.88, 0.1, 1.22)
+
+[sub_resource type="BoxMesh" id="Mesh_1"]
+size = Vector3(0.35, 0.08, 0.4)
+
+[sub_resource type="CapsuleMesh" id="Mesh_2"]
+radius = 0.19
+height = 0.87
+radial_segments = 16
+rings = 8
+
+[sub_resource type="BoxMesh" id="Mesh_3"]
+size = Vector3(0.36, 0.26, 0.42)
+
+[sub_resource type="PrismMesh" id="Mesh_4"]
+size = Vector3(0.26, 0.15, 0.28)
+
+[sub_resource type="PrismMesh" id="Mesh_5"]
+size = Vector3(0.25, 0.34, 0.68)
+
+[sub_resource type="PrismMesh" id="Mesh_6"]
+size = Vector3(0.25, 0.34, 0.68)
+
+[sub_resource type="CylinderMesh" id="Mesh_7"]
+top_radius = 0.025
+bottom_radius = 0.1
+height = 0.44
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="Mesh_horn"]
+top_radius = 0.008
+bottom_radius = 0.045
+height = 0.14
+radial_segments = 12
+
+[node name="WyrmPrototype" type="Node3D"]
+
+[node name="RelicStone" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.05, 0)
+rotation_degrees = Vector3(0, -5, 0)
+mesh = SubResource("Mesh_0")
+material_override = ExtResource("1_stone")
+
+[node name="BrokenStone" type="MeshInstance3D" parent="."]
+position = Vector3(0.22, 0.13, 0.3)
+rotation_degrees = Vector3(0, 18, 0)
+mesh = SubResource("Mesh_1")
+material_override = ExtResource("1_stone")
+
+[node name="CoiledBody" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.32, 0.05)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("Mesh_2")
+material_override = ExtResource("1_stone")
+
+[node name="ReptileHead" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.54, -0.36)
+rotation_degrees = Vector3(-10, 0, 0)
+mesh = SubResource("Mesh_3")
+material_override = ExtResource("1_stone")
+
+[node name="Snout" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.50, -0.53)
+rotation_degrees = Vector3(0, 180, 0)
+mesh = SubResource("Mesh_4")
+material_override = ExtResource("1_stone")
+
+[node name="LeftFoldedWing" type="MeshInstance3D" parent="."]
+position = Vector3(-0.25, 0.44, 0.07)
+rotation_degrees = Vector3(0, 0, -20)
+mesh = SubResource("Mesh_5")
+material_override = ExtResource("1_stone")
+
+[node name="RightFoldedWing" type="MeshInstance3D" parent="."]
+position = Vector3(0.25, 0.44, 0.07)
+rotation_degrees = Vector3(0, 0, 20)
+mesh = SubResource("Mesh_6")
+material_override = ExtResource("1_stone")
+
+[node name="Tail" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.25, 0.44)
+rotation_degrees = Vector3(72, 0, 0)
+mesh = SubResource("Mesh_7")
+material_override = ExtResource("1_stone")
+
+[node name="LeftHorn" type="MeshInstance3D" parent="."]
+position = Vector3(-0.12, 0.70, -0.40)
+rotation_degrees = Vector3(-15, 0, 0)
+mesh = SubResource("Mesh_horn")
+material_override = ExtResource("1_stone")
+
+[node name="RightHorn" type="MeshInstance3D" parent="."]
+position = Vector3(0.12, 0.70, -0.40)
+rotation_degrees = Vector3(-15, 0, 0)
+mesh = SubResource("Mesh_horn")
+material_override = ExtResource("1_stone")
+
+[node name="PickAnchor" type="Marker3D" parent="."]
+position = Vector3(0, 0.4, -0.3)

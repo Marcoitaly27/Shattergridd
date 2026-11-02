@@ -1,1 +1,1 @@
-Reserved for future original statue models, animation and audio. No external assets are used in v0.1.
+Reserved for future original realistic statue models, animations, portraits and audio. The current characters are native Godot prototype silhouettes, not final art.

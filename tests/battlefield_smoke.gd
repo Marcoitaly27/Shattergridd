@@ -47,8 +47,12 @@ func _run() -> void:
 			Vector2(piece.position.x, piece.position.z)) < 0.001, "Piece centered on tile")
 		_expect(absf(piece.position.y - (tile.position.y + 0.12)) < 0.035,
 			"Piece rests on tile surface")
-		_expect(piece.get_node("Visuals/Crown").visible == (piece.army == 0), "Ash silhouette")
-		_expect(piece.get_node("Visuals/Hood").visible == (piece.army == 1), "Slate silhouette")
+		_expect(piece.character_definition != null and piece.get_node_or_null("Visuals/Model") != null,
+			"Character definition supplies a replaceable model")
+		var meshes := piece.get_node("Visuals/Model").find_children("*", "MeshInstance3D", true, false)
+		_expect(meshes.all(func(mesh: MeshInstance3D) -> bool:
+			return mesh.material_override == piece.character_definition.team_materials[piece.army]),
+			"Army stone palette applies to every prototype part")
 	_expect(armies == [8, 8], "Eight pieces per army")
 	var camera: Camera3D = scene.get_node("Camera3D")
 	_expect(camera.current and camera.projection == Camera3D.PROJECTION_PERSPECTIVE, "Active perspective camera")

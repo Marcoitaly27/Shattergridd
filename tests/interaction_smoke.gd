@@ -45,7 +45,7 @@ func _run() -> void:
 			_expect(interaction.cell_at_screen(camera.unproject_position(board.position_for_cell(cell))) == cell,
 				"Ray picks tile %s" % cell)
 	for piece in scene.get_node("Pieces").get_children():
-		var screen := camera.unproject_position(piece.global_position + Vector3(0, 1.0, 0))
+		var screen := camera.unproject_position(piece.get_pick_point())
 		_expect(interaction.cell_at_screen(screen) == piece.grid_coordinate, "Ray picks %s by its body" % piece.name)
 
 	await _click_cell(slate.grid_coordinate)
@@ -166,8 +166,9 @@ func _test_logical_rules() -> void:
 
 func _click_cell(cell: Vector2i) -> void:
 	var point: Vector3 = board.position_for_cell(cell)
-	if game.board_state.piece_at(cell) != null:
-		point.y += 1.0
+	var occupant: Node3D = game.board_state.piece_at(cell)
+	if occupant != null:
+		point = occupant.get_pick_point()
 	await _click_screen(camera.unproject_position(point))
 
 

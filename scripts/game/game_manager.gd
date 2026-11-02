@@ -33,11 +33,12 @@ func valid_destinations(piece: Node3D) -> Array[Vector2i]:
 		return []
 	if board_state.piece_at(piece.grid_coordinate) != piece:
 		return []
-	if piece.movement_behavior == null or not piece.movement_behavior.has_method("get_destinations"):
+	var behavior: Resource = piece.get_movement_behavior()
+	if behavior == null or not behavior.has_method("get_destinations"):
 		return []
 	# Filter rule results at the boundary so later behaviors cannot bypass occupancy.
 	var result: Array[Vector2i] = []
-	for cell in piece.movement_behavior.get_destinations(piece.grid_coordinate, piece.army, board_state):
+	for cell in behavior.get_destinations(piece.grid_coordinate, piece.army, board_state):
 		if not board_state.contains(cell) or cell == piece.grid_coordinate or result.has(cell):
 			continue
 		var occupant: Node3D = board_state.piece_at(cell)

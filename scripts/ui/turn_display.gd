@@ -20,4 +20,4 @@ func _show_selection(piece: Node3D) -> void:
 	if piece == null:
 		hint_label.text = "Moving…" if game.is_moving else "Select a statue"
 	else:
-		hint_label.text = "%s · choose a marked tile" % piece.display_name
+		hint_label.text = "%s · choose a marked tile" % piece.get_display_name()
