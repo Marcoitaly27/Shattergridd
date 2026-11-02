@@ -1,6 +1,6 @@
 @tool
 extends Node3D
-## Presentation only. Grid coordinates map to tile centers; there are no game rules.
+## Masonry, picking surfaces and move hints. Occupancy lives in board_state.gd.
 
 const BOARD_SIZE: int = 8
 const TILE_SPACING: float = 1.5
@@ -8,12 +8,42 @@ const TILE_HEIGHT: float = 0.24
 const PALE_STONE: Material = preload("res://materials/pale_stone.tres")
 const DARK_STONE: Material = preload("res://materials/dark_stone.tres")
 const FOUNDATION_STONE: Material = preload("res://materials/foundation_stone.tres")
+const MOVE_HINT: Material = preload("res://materials/move_hint.tres")
+const ATTACK_HINT: Material = preload("res://materials/attack_hint.tres")
+
+@export var board_dimensions: Vector2i = Vector2i(8, 8)
+var _tiles: Dictionary = {}
 
 
-static func grid_to_local(cell: Vector2i) -> Vector3:
-	var half_span := (BOARD_SIZE - 1) * TILE_SPACING * 0.5
-	return Vector3(cell.x * TILE_SPACING - half_span, TILE_HEIGHT * 0.5,
-		cell.y * TILE_SPACING - half_span)
+func grid_to_local(cell: Vector2i) -> Vector3:
+	var half_span := Vector2(board_dimensions - Vector2i.ONE) * TILE_SPACING * 0.5
+	return Vector3(cell.x * TILE_SPACING - half_span.x, TILE_HEIGHT * 0.5,
+		cell.y * TILE_SPACING - half_span.y)
+
+
+func position_for_cell(cell: Vector2i) -> Vector3:
+	var result := grid_to_local(cell)
+	var tile := _tiles.get(cell) as MeshInstance3D
+	if tile != null:
+		result.y = tile.position.y + TILE_HEIGHT * 0.5 + 0.015
+	return result
+
+
+func clear_highlights() -> void:
+	for tile in _tiles.values():
+		tile.get_node("MoveHint").hide()
+
+
+func show_destinations(cells: Array[Vector2i], state: RefCounted) -> void:
+	clear_highlights()
+	for cell in cells:
+		var tile := _tiles.get(cell) as MeshInstance3D
+		if tile == null:
+			continue
+		var hint: Node3D = tile.get_node("MoveHint")
+		for edge in hint.get_children():
+			edge.material_override = ATTACK_HINT if state.piece_at(cell) != null else MOVE_HINT
+		hint.show()
 
 
 func _ready() -> void:
@@ -25,8 +55,8 @@ func _ready() -> void:
 	add_child(tiles)
 	var random := RandomNumberGenerator.new()
 	random.seed = 71083
-	for row in range(BOARD_SIZE):
-		for column in range(BOARD_SIZE):
+	for row in range(board_dimensions.y):
+		for column in range(board_dimensions.x):
 			var tile := _box(Vector3(1.455, TILE_HEIGHT, 1.455),
 				PALE_STONE if (row + column) % 2 == 0 else DARK_STONE)
 			tile.mesh = _worn_tile_mesh(random)
@@ -41,7 +71,33 @@ func _ready() -> void:
 			tile.material_override = surface
 			tile.set_meta("grid_coordinate", Vector2i(column, row))
 			tiles.add_child(tile)
+			_tiles[Vector2i(column, row)] = tile
+			_add_tile_interaction(tile, Vector2i(column, row))
 	_build_foundation(random)
+
+
+func _add_tile_interaction(tile: MeshInstance3D, cell: Vector2i) -> void:
+	var body := StaticBody3D.new()
+	body.name = "PickSurface"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.set_meta("grid_coordinate", cell)
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(1.455, TILE_HEIGHT, 1.455)
+	collision.shape = shape
+	body.add_child(collision)
+	tile.add_child(body)
+	var hint := Node3D.new()
+	hint.name = "MoveHint"
+	hint.visible = false
+	tile.add_child(hint)
+	for side in range(4):
+		var edge := _box(Vector3(1.27, 0.014, 0.035), MOVE_HINT)
+		edge.position = Vector3(0, TILE_HEIGHT * 0.5 + 0.018, 0.635).rotated(Vector3.UP, side * PI * 0.5)
+		edge.rotation.y = side * PI * 0.5
+		edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		hint.add_child(edge)
 
 
 func _worn_tile_mesh(random: RandomNumberGenerator) -> ArrayMesh:
@@ -78,6 +134,7 @@ func _worn_tile_mesh(random: RandomNumberGenerator) -> ArrayMesh:
 func _build_foundation(random: RandomNumberGenerator) -> void:
 	var foundation := Node3D.new()
 	foundation.name = "Foundation"
+	foundation.scale = Vector3(float(board_dimensions.x) / BOARD_SIZE, 1, float(board_dimensions.y) / BOARD_SIZE)
 	add_child(foundation)
 	# Broad courses and a tapered underside expose the floating structure's depth.
 	_add_block(foundation, "UpperCourse", Vector3(13.65, 0.38, 13.65), Vector3(0, -0.32, 0))

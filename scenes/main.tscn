@@ -1,8 +1,28 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/placeholder_piece.tscn" id="2_piece"]
 [ext_resource type="Environment" path="res://environments/suspended_sanctum.tres" id="3_environment"]
+
+[ext_resource type="Script" path="res://scripts/game/game_manager.gd" id="4_game"]
+[ext_resource type="Script" path="res://scripts/interaction/board_interaction.gd" id="5_input"]
+[ext_resource type="Script" path="res://scripts/ui/turn_display.gd" id="6_ui"]
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.025, 0.032, 0.036, 0.90)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.26, 0.25, 0.20, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="LabelSettings" id="Text_turn"]
+font_size = 18
+font_color = Color(0.78, 0.73, 0.61, 1)
 
 [node name="Shattergrid" type="Node3D"]
 
@@ -13,96 +33,112 @@
 [node name="Ash_01" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-5.25, 0.14, 5.25)
 piece_id = &"ash_01"
+display_name = "Ash sentinel 01"
 army = 0
 grid_coordinate = Vector2i(0, 7)
 
 [node name="Ash_02" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-3.75, 0.14, 5.25)
 piece_id = &"ash_02"
+display_name = "Ash sentinel 02"
 army = 0
 grid_coordinate = Vector2i(1, 7)
 
 [node name="Ash_03" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-2.25, 0.14, 5.25)
 piece_id = &"ash_03"
+display_name = "Ash sentinel 03"
 army = 0
 grid_coordinate = Vector2i(2, 7)
 
 [node name="Ash_04" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-0.75, 0.14, 5.25)
 piece_id = &"ash_04"
+display_name = "Ash sentinel 04"
 army = 0
 grid_coordinate = Vector2i(3, 7)
 
 [node name="Ash_05" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(0.75, 0.14, 5.25)
 piece_id = &"ash_05"
+display_name = "Ash sentinel 05"
 army = 0
 grid_coordinate = Vector2i(4, 7)
 
 [node name="Ash_06" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(2.25, 0.14, 5.25)
 piece_id = &"ash_06"
+display_name = "Ash sentinel 06"
 army = 0
 grid_coordinate = Vector2i(5, 7)
 
 [node name="Ash_07" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(3.75, 0.14, 5.25)
 piece_id = &"ash_07"
+display_name = "Ash sentinel 07"
 army = 0
 grid_coordinate = Vector2i(6, 7)
 
 [node name="Ash_08" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(5.25, 0.14, 5.25)
 piece_id = &"ash_08"
+display_name = "Ash sentinel 08"
 army = 0
 grid_coordinate = Vector2i(7, 7)
 
 [node name="Slate_01" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-5.25, 0.14, -5.25)
 piece_id = &"slate_01"
+display_name = "Slate sentinel 01"
 army = 1
 grid_coordinate = Vector2i(0, 0)
 
 [node name="Slate_02" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-3.75, 0.14, -5.25)
 piece_id = &"slate_02"
+display_name = "Slate sentinel 02"
 army = 1
 grid_coordinate = Vector2i(1, 0)
 
 [node name="Slate_03" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-2.25, 0.14, -5.25)
 piece_id = &"slate_03"
+display_name = "Slate sentinel 03"
 army = 1
 grid_coordinate = Vector2i(2, 0)
 
 [node name="Slate_04" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(-0.75, 0.14, -5.25)
 piece_id = &"slate_04"
+display_name = "Slate sentinel 04"
 army = 1
 grid_coordinate = Vector2i(3, 0)
 
 [node name="Slate_05" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(0.75, 0.14, -5.25)
 piece_id = &"slate_05"
+display_name = "Slate sentinel 05"
 army = 1
 grid_coordinate = Vector2i(4, 0)
 
 [node name="Slate_06" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(2.25, 0.14, -5.25)
 piece_id = &"slate_06"
+display_name = "Slate sentinel 06"
 army = 1
 grid_coordinate = Vector2i(5, 0)
 
 [node name="Slate_07" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(3.75, 0.14, -5.25)
 piece_id = &"slate_07"
+display_name = "Slate sentinel 07"
 army = 1
 grid_coordinate = Vector2i(6, 0)
 
 [node name="Slate_08" parent="Pieces" instance=ExtResource("2_piece")]
 position = Vector3(5.25, 0.14, -5.25)
 piece_id = &"slate_08"
+display_name = "Slate sentinel 08"
 army = 1
 grid_coordinate = Vector2i(7, 0)
 
@@ -129,3 +165,52 @@ light_energy = 0.35
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("3_environment")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("4_game")
+
+[node name="Interaction" type="Node" parent="."]
+script = ExtResource("5_input")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+script = ExtResource("6_ui")
+
+[node name="Panel" type="PanelContainer" parent="Interface"]
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 18.0
+offset_right = 180.0
+offset_bottom = 88.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="Interface/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Interface/Panel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="Turn" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+mouse_filter = 2
+text = "PLAYER 1 TURN"
+label_settings = SubResource("Text_turn")
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.58, 0.60, 0.58, 1)
+theme_override_font_sizes/font_size = 13
+text = "Select a statue"
+horizontal_alignment = 1
