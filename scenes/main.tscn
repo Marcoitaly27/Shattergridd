@@ -1,0 +1,131 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
+[ext_resource type="PackedScene" path="res://scenes/pieces/placeholder_piece.tscn" id="2_piece"]
+[ext_resource type="Environment" path="res://environments/suspended_sanctum.tres" id="3_environment"]
+
+[node name="Shattergrid" type="Node3D"]
+
+[node name="Battlefield" parent="." instance=ExtResource("1_board")]
+
+[node name="Pieces" type="Node3D" parent="."]
+
+[node name="Ash_01" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-5.25, 0.14, 5.25)
+piece_id = &"ash_01"
+army = 0
+grid_coordinate = Vector2i(0, 7)
+
+[node name="Ash_02" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-3.75, 0.14, 5.25)
+piece_id = &"ash_02"
+army = 0
+grid_coordinate = Vector2i(1, 7)
+
+[node name="Ash_03" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-2.25, 0.14, 5.25)
+piece_id = &"ash_03"
+army = 0
+grid_coordinate = Vector2i(2, 7)
+
+[node name="Ash_04" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-0.75, 0.14, 5.25)
+piece_id = &"ash_04"
+army = 0
+grid_coordinate = Vector2i(3, 7)
+
+[node name="Ash_05" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(0.75, 0.14, 5.25)
+piece_id = &"ash_05"
+army = 0
+grid_coordinate = Vector2i(4, 7)
+
+[node name="Ash_06" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(2.25, 0.14, 5.25)
+piece_id = &"ash_06"
+army = 0
+grid_coordinate = Vector2i(5, 7)
+
+[node name="Ash_07" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(3.75, 0.14, 5.25)
+piece_id = &"ash_07"
+army = 0
+grid_coordinate = Vector2i(6, 7)
+
+[node name="Ash_08" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(5.25, 0.14, 5.25)
+piece_id = &"ash_08"
+army = 0
+grid_coordinate = Vector2i(7, 7)
+
+[node name="Slate_01" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-5.25, 0.14, -5.25)
+piece_id = &"slate_01"
+army = 1
+grid_coordinate = Vector2i(0, 0)
+
+[node name="Slate_02" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-3.75, 0.14, -5.25)
+piece_id = &"slate_02"
+army = 1
+grid_coordinate = Vector2i(1, 0)
+
+[node name="Slate_03" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-2.25, 0.14, -5.25)
+piece_id = &"slate_03"
+army = 1
+grid_coordinate = Vector2i(2, 0)
+
+[node name="Slate_04" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(-0.75, 0.14, -5.25)
+piece_id = &"slate_04"
+army = 1
+grid_coordinate = Vector2i(3, 0)
+
+[node name="Slate_05" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(0.75, 0.14, -5.25)
+piece_id = &"slate_05"
+army = 1
+grid_coordinate = Vector2i(4, 0)
+
+[node name="Slate_06" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(2.25, 0.14, -5.25)
+piece_id = &"slate_06"
+army = 1
+grid_coordinate = Vector2i(5, 0)
+
+[node name="Slate_07" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(3.75, 0.14, -5.25)
+piece_id = &"slate_07"
+army = 1
+grid_coordinate = Vector2i(6, 0)
+
+[node name="Slate_08" parent="Pieces" instance=ExtResource("2_piece")]
+position = Vector3(5.25, 0.14, -5.25)
+piece_id = &"slate_08"
+army = 1
+grid_coordinate = Vector2i(7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(14, 17, 19)
+rotation_degrees = Vector3(-36.4, 36.384, 0)
+current = true
+fov = 37.0
+near = 0.1
+far = 250.0
+
+[node name="Moonlight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -32, -12)
+light_color = Color(0.77, 0.84, 0.90, 1)
+light_energy = 1.35
+shadow_enabled = true
+directional_shadow_max_distance = 65.0
+shadow_bias = 0.035
+
+[node name="DuskFill" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-22, 142, 0)
+light_color = Color(0.66, 0.53, 0.38, 1)
+light_energy = 0.35
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("3_environment")
