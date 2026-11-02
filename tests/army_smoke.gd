@@ -38,7 +38,7 @@ func _rejected(loadouts: Array, label: String, formation: Resource = session.FOR
 
 func _test_data() -> void:
 	_expect(session.CATALOG.validation_errors().is_empty(), "All current character definitions are valid")
-	_expect(session.CATALOG.characters.size() == 6, "No speculative characters were added")
+	_expect(session.CATALOG.characters.size() == 7, "Requested seven-character roster is available")
 	for character in session.CATALOG.characters:
 		_expect(character.character_id != &"" and character.title != "" and character.gameplay_description != "",
 			"Character identity and preview are data")
@@ -63,7 +63,7 @@ func _test_data() -> void:
 				_expect(matches[0].character == matches[1].character, "Both members use the same character definition")
 				_expect(matches[0].coordinate.x + matches[1].coordinate.x == 6 and matches[0].coordinate.y == matches[1].coordinate.y,
 					"Prototype pairs occupy reflected board positions")
-	loadouts[0].set_character(&"special", &"wyrm")
+	loadouts[0].set_character(&"special", &"elf")
 	_expect(loadouts[1].character_for(&"special") == &"witch" and session.DEFAULT_LOADOUT.character_for(&"special") == &"witch",
 		"Editing one player does not mutate the other player or the default resource")
 	_expect(session.get_loadouts()[0].character_for(&"special") == &"witch", "Editing snapshots does not change the session")
@@ -148,10 +148,10 @@ func _test_data() -> void:
 	session.collection.unlocked_character_ids.clear()
 	# Invalid session updates must not partially replace the last valid snapshots.
 	loadouts = session.get_loadouts()
-	loadouts[0].set_character(&"special", &"wyrm")
+	loadouts[0].set_character(&"special", &"elf")
 	_expect(session.configure_loadouts(loadouts).is_empty(), "Two independently valid loadouts can be confirmed")
 	loadouts[0].set_character(&"guard", &"witch")
-	_expect(not session.configure_loadouts(loadouts).is_empty() and session.get_loadouts()[0].character_for(&"special") == &"wyrm"
+	_expect(not session.configure_loadouts(loadouts).is_empty() and session.get_loadouts()[0].character_for(&"special") == &"elf"
 		and session.get_loadouts()[0].character_for(&"guard") == &"warden",
 		"Invalid configuration cannot erase the previous confirmed loadouts")
 
@@ -163,14 +163,14 @@ func _test_scene_flow() -> void:
 	await _wait_scene("ArmyBuilder")
 	var builder := current_scene
 	_expect(builder.selectors.size() == 2 and builder.selectors[0].size() == 5, "Both players have category choices")
-	_expect(builder.loadouts[0].character_for(&"special") == &"wyrm" and builder.loadouts[1].character_for(&"special") == &"witch",
+	_expect(builder.loadouts[0].character_for(&"special") == &"elf" and builder.loadouts[1].character_for(&"special") == &"witch",
 		"Builder reads confirmed choices independently")
 	_expect(builder.selectors[0][&"special"].item_count == 2 and builder.selectors[0][&"guard"].item_count == 1,
 		"Available choices are filtered by deployment category")
 	# Exercise the same signal path as selecting an item with mouse/keyboard.
 	_choose(builder, 0, &"special", &"witch")
-	_choose(builder, 1, &"special", &"wyrm")
-	_expect(builder.loadouts[0].character_for(&"special") == &"witch" and builder.loadouts[1].character_for(&"special") == &"wyrm",
+	_choose(builder, 1, &"special", &"elf")
+	_expect(builder.loadouts[0].character_for(&"special") == &"witch" and builder.loadouts[1].character_for(&"special") == &"elf",
 		"UI choices update independent loadouts")
 	_start_builder(builder)
 	await _wait_scene("Shattergrid")
@@ -194,13 +194,13 @@ func _test_scene_flow() -> void:
 	current_scene.get_node("Interface/Loadout").pressed.emit()
 	await _wait_scene("ArmyBuilder")
 	builder = current_scene
-	_expect(builder.loadouts[1].character_for(&"special") == &"wyrm", "Returning to builder retains choices")
+	_expect(builder.loadouts[1].character_for(&"special") == &"elf", "Returning to builder retains choices")
 	_start_builder(builder)
 	await _wait_scene("Shattergrid")
 	_check_armies()
 	# Abort an active capture by returning to the builder; no old army survives.
 	game = _prepare_core_capture()
-	_expect(game.capture_director.active, "Capture starts with data-selected Executioner")
+	_expect(game.capture_director.active, "Capture starts with data-selected Werewolf")
 	current_scene.get_node("Interface/Loadout").pressed.emit()
 	await _wait_scene("ArmyBuilder")
 	_start_builder(current_scene)
@@ -259,16 +259,19 @@ func _check_armies() -> void:
 					"Pairs share definitions but never share per-piece status state")
 	var special_a: Node3D = scene.get_node("Pieces/Ash_08")
 	var special_b: Node3D = scene.get_node("Pieces/Slate_08")
-	_expect(special_a.character_definition.character_id == &"witch" and special_b.character_definition.character_id == &"wyrm",
+	_expect(special_a.character_definition.character_id == &"witch" and special_b.character_definition.character_id == &"elf",
 		"Players deploy their own Special choices")
-	_expect(special_b.character_definition.post_capture_effect == load("res://resources/abilities/terror.tres"), "Wyrm retains Terror")
-	_expect(scene.get_node("Pieces/Ash_03").character_definition.post_capture_effect == load("res://resources/abilities/blood_step.tres"), "Executioner retains Blood Step")
+	_expect(special_b.character_definition.active_ability == &"exchange", "Elf has Veil Exchange")
+	_expect(scene.get_node("Pieces/Ash_03").character_definition.post_capture_effect == load("res://resources/abilities/wolf_blood_step.tres"), "Werewolf has night-gated Blood Step")
 
 
 func _prepare_core_capture() -> Node:
 	var game: Node = current_scene.get_node("GameManager")
 	var attacker: Node3D = current_scene.get_node("Pieces/Ash_03")
 	var victim: Node3D = current_scene.get_node("Pieces/Slate_04")
+	attacker.set_night(true)
+	for piece in current_scene.get_node("Pieces").get_children():
+		piece.ability_spent = true # This fixture isolates Core cinematic/scene flow.
 	attacker.grid_coordinate = Vector2i(3, 3)
 	victim.grid_coordinate = Vector2i(4, 3)
 	game.board_state = BoardState.new(game.battlefield.board_dimensions)

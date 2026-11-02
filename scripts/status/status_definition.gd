@@ -7,3 +7,4 @@ extends Resource
 @export_multiline var description: String
 @export var extra_destinations: Array[Vector2i] = []
 @export var blocks_capture: bool = false
+@export var requires_clear_path: bool = false

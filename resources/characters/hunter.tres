@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="1_definition"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/characters/hunter.tscn" id="2_model"]
-[ext_resource type="Resource" path="res://resources/characters/temporary_movement.tres" id="3_movement"]
+[ext_resource type="Resource" path="res://resources/characters/forward_back_movement.tres" id="3_movement"]
 [ext_resource type="Material" path="res://materials/ash_statue.tres" id="4_ash"]
 [ext_resource type="Material" path="res://materials/slate_statue.tres" id="5_slate"]
 
@@ -16,7 +16,7 @@ script = ExtResource("1_definition")
 character_id = &"hunter"
 title = "The Last Pursuer"
 deployment_category = &"hunt"
-gameplay_description = "Lean hunting statue. Uses the current one-square movement prototype."
+gameplay_description = "Last Arrow: once per match, shoot an enemy exactly 2 tiles forward, forward-diagonally, left or right. Intervening statues block. Stay put; spends the turn."
 unlocked_by_default = true
 archetype_id = &"hunter"
 display_name = "Hunter"
@@ -26,3 +26,7 @@ movement_behavior = ExtResource("3_movement")
 team_materials = Array[Material]([ExtResource("4_ash"), ExtResource("5_slate")])
 capture_behavior = ExtResource("6_capture")
 audio_profile = ExtResource("8_audio")
+
+passive_ability = &""
+active_ability = &"bow"
+ability_description = "Last Arrow: once per match, shoot an enemy exactly 2 tiles forward, forward-diagonally, left or right. Intervening statues block. Stay put; spends the turn."

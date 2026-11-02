@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="1_definition"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/characters/warden.tscn" id="2_model"]
-[ext_resource type="Resource" path="res://resources/characters/temporary_movement.tres" id="3_movement"]
+[ext_resource type="Resource" path="res://resources/characters/orthogonal_movement.tres" id="3_movement"]
 [ext_resource type="Material" path="res://materials/ash_statue.tres" id="4_ash"]
 [ext_resource type="Material" path="res://materials/slate_statue.tres" id="5_slate"]
 
@@ -16,7 +16,7 @@ script = ExtResource("1_definition")
 character_id = &"warden"
 title = "The Stone Bastion"
 deployment_category = &"guard"
-gameplay_description = "Reliable defensive statue. Uses the current one-square movement prototype."
+gameplay_description = "Shield of Stone: the first capture against this statue breaks its shield instead. Both statues stay put; the attacker spends the turn."
 unlocked_by_default = true
 archetype_id = &"warden"
 display_name = "Warden"
@@ -26,3 +26,7 @@ movement_behavior = ExtResource("3_movement")
 team_materials = Array[Material]([ExtResource("4_ash"), ExtResource("5_slate")])
 capture_behavior = ExtResource("6_capture")
 audio_profile = ExtResource("8_audio")
+
+passive_ability = &"shield"
+active_ability = &""
+ability_description = "Shield of Stone: the first capture against this statue breaks its shield instead. Both statues stay put; the attacker spends the turn."

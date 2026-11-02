@@ -1,14 +1,16 @@
-[gd_resource type="Resource" load_steps=9 format=3]
+[gd_resource type="Resource" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/army/character_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="2_definition"]
 [ext_resource type="Resource" path="res://resources/characters/core.tres" id="core"]
 [ext_resource type="Resource" path="res://resources/characters/warden.tres" id="warden"]
 [ext_resource type="Resource" path="res://resources/characters/hunter.tres" id="hunter"]
-[ext_resource type="Resource" path="res://resources/characters/executioner.tres" id="executioner"]
+[ext_resource type="Resource" path="res://resources/characters/werewolf.tres" id="executioner"]
 [ext_resource type="Resource" path="res://resources/characters/witch.tres" id="witch"]
-[ext_resource type="Resource" path="res://resources/characters/wyrm.tres" id="wyrm"]
+[ext_resource type="Resource" path="res://resources/characters/dragon.tres" id="wyrm"]
+
+[ext_resource type="Resource" path="res://resources/characters/elf.tres" id="elf"]
 
 [resource]
 script = ExtResource("1_catalog")
-characters = Array[ExtResource("2_definition")]([ExtResource("core"), ExtResource("warden"), ExtResource("hunter"), ExtResource("executioner"), ExtResource("witch"), ExtResource("wyrm")])
+characters = Array[ExtResource("2_definition")]([ExtResource("core"), ExtResource("warden"), ExtResource("hunter"), ExtResource("executioner"), ExtResource("witch"), ExtResource("wyrm"), ExtResource("elf")])

@@ -1,23 +1,18 @@
-# SHATTERGRID · 0.9
+# SHATTERGRID · 0.10
 
 [Master Game Vision](docs/MASTER_GAME_VISION.md) is the user’s guiding product
 and creative direction. Read it before future design or architectural work;
 planned features are implemented only when requested.
 
-A local two-player Godot 4 battlefield prototype. Version 0.9 prepares external
-GLB/PBR integration: stable visual attachment/corrections, non-destructive wrapper
-templates, simple pick proxies, named team surfaces, a native stone-map profile,
-optional event-driven AnimationPlayer captures and development asset inspection.
-The current six models remain explicitly marked prototypes. No production model,
-texture image, rig, animation file or third-party asset was generated/downloaded.
+A local two-player Godot 4 tactical prototype. Version 0.10 implements the requested
+character rules, shield protection, optional Witch rescue, ranged Hunter shot,
+Werewolf day/night forms, Dragon flight and the Random-category Elf.
 
-See [the 0.9 asset pipeline and exact GLB replacement workflow](docs/asset_pipeline.md)
-and [external source/license register template](docs/ASSET_SOURCES.md).
-The [audio manifest](docs/audio_foundation.md), [game flow](docs/game_flow.md),
-[character design](docs/character_system.md) and [visual report](docs/version_0_5.md)
-describe preserved foundations. There are still no real sound assets; Hex remains
-unimplemented. Board, movement, abilities, roster and reflected loadout rules stay
-unchanged.
+Read [the current roster rules, exact timing and manual tests](docs/roster_rules.md).
+The [0.9 GLB/PBR pipeline](docs/asset_pipeline.md) remains available for real asset
+integration. Models, capture animation and destruction remain prototypes; there
+are still no real recordings, final rigs or imported production textures/models.
+Historical version reports describe their original versions, not current rules.
 
 ## Open and play
 
@@ -26,7 +21,7 @@ The repository retains your Godot 4.7 project metadata and animation compatibili
 setting. Runtime validation here uses Godot **4.6.3** and Compatibility rendering.
 F5 opens `scenes/ui/army_builder.tscn`. Choose/confirm each player's Core, Guard,
 Hunt, Power and Special, then click **START MATCH**. Guard, Hunt and Power choices
-spawn twice, reflected around the Core column. Special offers Witch or Wyrm.
+spawn twice, reflected around the Core column. Power offers Werewolf or Dragon. Special/Wildcard offers Witch or Elf.
 The preview shows both players' actual coordinates; highlighted cells share a
 single choice. Focus a selector to see the name, title and gameplay description.
 F6 on `scenes/main.tscn` directly runs the last confirmed loadouts, or defaults in
@@ -39,7 +34,7 @@ to locate `project.godot` for import into Godot.
 ## Controls and temporary rules
 
 - Player 1 (weathered ash stone) starts. Player 2 controls the darker
-  slate statues. Both armies draw from the same six available prototype silhouettes. Both players
+  slate statues. Both armies draw from the same seven available prototype characters. Both players
   use the same mouse locally.
 - Hover an active-player statue for short pedestal corner marks. Left-click it
   to select it. The information panel shows role, movement, ability and statuses. A muted brass
@@ -48,13 +43,20 @@ to locate `project.godot` for import into Godot.
 - Brass tile borders mark empty destinations; rust borders and an X mark legal
   captures. Hover a legal enemy for CAPTURE feedback; only a click starts it.
   A + marks status-derived destinations; grey indicates unavailable tiles.
-- B/T markers show Blood Step/Terror on individual pedestals. One/two pedestal
+- B/F markers show Blood Step/Terror Flight on individual pedestals. One/two pedestal
   cuts and textual Player I/II identity supplement the two stone palettes.
 - A threatened Core gains rust corners and a textual warning. This is tactical
   information only: it imposes no check/checkmate or forced response rule.
-- Every placeholder temporarily moves **exactly one square in any of eight
-  directions**, including diagonals. This is a prototype rule, not a final roster
-  or final movement system. Friendly occupied tiles are blocked.
+- Base movement is one tile: Warden orthogonally; Hunter and human Werewolf
+  forward/backward; Witch and Elf forward/left/right; Dragon, night Werewolf and
+  Core in all eight directions. Forward reverses for Player 2. Friendly tiles block.
+- Select Hunter, Dragon with available flight, or Elf and use the ability button
+  (or **A**) to preview targets. Click a marked target; A again cancels ability mode.
+- The first capture against each Warden breaks his shield and spends the attacker’s
+  turn. A living Witch can optionally save one allied statue, including herself or
+  Core. Her player chooses SAVE STATUE or ALLOW CAPTURE in the rescue dialog.
+- Start in daylight. After **five turns for each player**, night begins; after five
+  more each, daylight returns. The label counts rounds until the next change.
 - Click a marked tile, or the enemy on it, to move. The statue slides briefly to
   the tile. Occupancy commits immediately and input is locked during the tween;
   the turn changes only after the movement completes.
@@ -77,31 +79,26 @@ event. There is no permanent skip button in the match UI.
 
 ## Prototype characters
 
-These are **recognition and scale studies**, not final character art or final
-roster balance. Each model uses 6–10 native primitives, an architectural stone
-base and no external assets. The two armies differ by muted stone palette and
-face one another; crowns and pointed team hats have been removed.
+These are replaceable stone prototypes, not final character art or roster balance.
+Werewolf has distinct simple human/beast silhouettes. Elf reuses the lean Hunter
+prototype with ear markers; Dragon reuses the existing winged creature study.
+No production model, texture or final skeletal animation was generated.
 
-| Archetype | Dominant temporary silhouette |
-| --- | --- |
-| Core | Tall symmetrical shrine, open pointed arch, pillars and a bound figure |
-| Warden | Broad armored mass and a large offset shield |
-| Hunter | Lean forward body with a dominant crossbow shape |
-| Executioner | Heavy upper body and a large asymmetric raised axe |
-| Witch | Tall narrow robe, restrained arms and a crooked forked branch; no pointed hat or broom |
-| Wyrm | Low elongated body, reptilian head, folded wings, horns and a tail |
+| Character | Category | Ability |
+| --- | --- | --- |
+| Core | Core | Destroying it ends the match; old Terror immunity retained |
+| Warden | Guard | First capture breaks shield instead of destroying him |
+| Hunter | Hunter (`hunt`) | Once-per-statue bow shot at exact range two; stays put |
+| Werewolf | Power | Night transformation; night kills earn next-turn two-tile Blood Step |
+| Dragon | Power | Capture earns optional next-turn flight; flight costs next army turn |
+| Witch | Special | Once-per-match optional rescue while alive, including herself/Core |
+| Elf | Random (working category name) | Once-per-match adjacent allied non-Core swap |
 
-Each eight-piece army deploys Warden, Hunter, Executioner, Core, Executioner,
-Hunter, Warden, then Witch **or** Wyrm. The three pairs reflect around Core column
-3; the configurable single Special occupies column 7. Both armies still start on
-opposite board edges. All six definitions remain available, while one army now
-uses five distinct characters. This is **not a final roster or formation**.
-Movement retains the provisional eight-direction rule from 0.2. Character models,
-attack animation and destruction remain prototypes. There is no Hex ability or
-final character movement roster.
-
-The fixed camera has been raised slightly to make the taller shrine readable
-without blocking empty tile centers. No free-camera controls were introduced.
+The Power selection deploys twice by the Law of Reflection. The single
+Special/Wildcard slot accepts Witch or Elf without changing either character's
+category. Each army still has eight statues. Executioner/Wyrm are no longer
+selectable; their original scene/resource files remain for compatibility and
+historical presentation regression tests. [Full rules](docs/roster_rules.md).
 
 ## Architecture
 
@@ -114,7 +111,7 @@ without blocking empty tile centers. No free-camera controls were introduced.
 - `scripts/pieces/character_definition.gd`: typed shared Resource containing the
   unique character ID, title, deployment category, gameplay description,
   unlock metadata and existing model/movement/capture/ability/material references.
-  Six definitions live in `resources/characters/`. `archetype_id` is a presentation
+  Seven active definitions live in `resources/characters/`; legacy definitions remain available to old fixtures. `archetype_id` is a presentation
   family, not the unique character key.
 - `scripts/pieces/piece.gd`: per-instance ID, owning army, coordinate and optional
   name/movement overrides. `get_display_name()` and `get_movement_behavior()`
@@ -122,7 +119,7 @@ without blocking empty tile centers. No free-camera controls were introduced.
 - `scripts/pieces/placeholder_visual.gd`: reusable visual adapter at the legacy
   path. Model corrections, reflected art variants, simple production proxies,
   authored/named team surfaces and optional animation integration are isolated
-  from Piece/board transforms. Each of the six models is an independently editable scene under
+  from Piece/board transforms. Models and simple inherited form scenes are editable under
   `scenes/pieces/characters/`. Native compound picking follows primitive parts,
   including weapons and low bodies. Production wrappers use authored simple
   Shape3D proxies or one bounds box, never detailed rendered-mesh collision.
@@ -131,7 +128,8 @@ without blocking empty tile centers. No free-camera controls were introduced.
   `get_destinations(origin, army, board)`. GameManager filters its destinations
   against board bounds and friendly occupancy.
 - `scripts/game/game_manager.gd`: authoritative selection, validation and explicit
-  READY / MOVING / CAPTURING / RESOLVING / GAME_OVER / RESTARTING phases. Board occupancy
+  READY / MOVING / CAPTURING / RESOLVING / GAME_OVER / RESTARTING plus
+  DECIDING / DEFENDING phases for optional rescues and prevented captures. Board occupancy
   changes at the shatter event; statuses, victory and turn resolution wait for
   camera restoration. The obsolete instant-removal helper has been retired.
 - `scripts/interaction/board_interaction.gd`: mouse/keyboard input and physics
@@ -196,10 +194,11 @@ only through the audio library; optional missing streams skip safely.
 | Attacker | Prototype sequence |
 | --- | --- |
 | Warden — The Bastion | Weighted withdrawal, grounded shield drive, recoil and heavy collapse |
-| Hunter — The Final Hunt | Quick precise pass, silent beat, delayed cracking and destruction |
-| Executioner — The Sentence | Threatening axe wind-up, downward chop, local hit pause and heavy debris |
+| Hunter / Elf — The Final Hunt | Quick precise pass, silent beat, delayed cracking and destruction |
+| Hunter bow — The Last Arrow | Stationary shot, short prototype arrow, target fracture |
+| Werewolf human — The Bastion | Short physical charge, recoil and stone impact |
 | Witch — Wither | Stationary tilt, victim tremble, dark crack marks, contraction and inward collapse |
-| Wyrm — Maul | Low crouch, sudden animal lunge, sideways maul and fracture |
+| Dragon / Werewolf beast — Maul | Low crouch, sudden animal lunge, sideways maul and fracture |
 | Core — The Unseen | Almost stationary shrine, invisible push/compression and quiet collapse |
 
 Normal captures target roughly **1.7–2.0 seconds**, with a short additional hold
@@ -262,19 +261,14 @@ of that piece's owner**, never seconds or animation duration. Shared status
 Resources contain modifiers; `status_state.gd` stores per-piece start/expiry.
 `movement_resolver.gd` composes and validates the resulting destinations.
 
-- **Blood Step:** a successful Executioner capture grants four one-square
-  diagonal options on its owner's next turn. It adds no extra action. Empty and
-  enemy destinations are allowed, friendly destinations are blocked. It expires
-  at the end of that owner turn even if another piece is played. A new capture
-  refreshes the specific Executioner's bonus for the following turn; it does not
-  stack. Since the current provisional base rule already includes diagonals,
-  the union introduces no duplicate destinations. The runtime test also uses an
-  orthogonal base rule to verify the additional options actually work.
-- **Terror:** after a Wyrm capture, enemies on all eight adjacent tiles around
-  its final tile become Terrified until the end of their owner's next turn.
-  They retain empty legal moves but cannot capture. The destroyed victim is no
-  longer in occupancy; allies and the Wyrm are excluded. Core definitions declare
-  immunity. Reapplication refreshes one status rather than stacking copies.
+- **Blood Step:** a successful Werewolf night capture adds exact two-tile moves
+  along all eight directions on its owner's next turn. Intermediate tiles must be
+  clear. No extra action or stacking; expires even if another ally acts. An earned
+  bonus survives dawn until its promised turn ends.
+- **Terror Flight:** a successful Dragon capture offers flight on its owner's next
+  turn. Using it reaches any empty tile and makes the army skip its following turn.
+  Declining flight expires the offer without a penalty. The old Terror debuff and
+  one-square diagonal bonus remain only in historical regression fixtures.
 
 `resources/abilities/` selects the two post-capture effects from character data.
 They are applied after camera return, then Core victory is checked, then the
@@ -287,19 +281,20 @@ To see every capture without advancing armies across the board:
 
 1. Open `scenes/debug/capture_lab.tscn` in the Godot editor.
 2. Press **F6** to run only that scene. F5 opens the army builder.
-3. Press **1–6** for Warden, Hunter, Executioner, Witch, Wyrm and Core.
+3. Press **1–7** for Warden, Hunter, Werewolf, Witch, Dragon, Core and Elf.
 4. Press **Enter** to replay, **C** to toggle a Core victim, or **Space** to
    fast-forward. **R** leaves the lab and starts a normal fresh match.
 
-This separate developer scene contains nearby opponents for Terror checks and a
-Core immune to it. It is never inserted into the normal match or its UI.
+This developer scene isolates capture presentation: shields/rescue are already
+spent and it bypasses movement eligibility for its fixed preview setup. It is
+never inserted into the normal match or its UI.
 
 ## Validation
 
 Run from the repository root:
 
 ```sh
-godot --headless --path . --editor --import
+godot --headless --path . --editor --import --quit
 godot --headless --path . --script res://tests/battlefield_smoke.gd
 godot --headless --path . --script res://tests/interaction_smoke.gd
 godot --headless --path . --script res://tests/character_smoke.gd
@@ -309,6 +304,7 @@ godot --headless --path . --script res://tests/army_smoke.gd
 godot --headless --path . --script res://tests/feel_smoke.gd
 godot --headless --path . --script res://tests/audio_smoke.gd
 godot --headless --path . --script res://tests/asset_smoke.gd
+godot --headless --path . --script res://tests/roster_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -342,8 +338,11 @@ stream fixtures exist only in test RAM; no audio samples/files are generated.
 `asset_smoke.gd` verifies model/environment replacements preserve gameplay,
 proxy/material isolation, pair variants, PBR channels and actual method-track
 impact timing/cancellation using existing scenes and RAM-only clip fixtures.
-All nine scripts report executed
-checks and return nonzero on failure.
+`roster_smoke.gd` tests the seven current characters, protection choices, bow,
+night boundaries, two-tile Blood Step, flight/army skips, Elf swaps and reset. Older
+presentation/input suites explicitly load `tests/legacy_fixture.gd` to keep their
+controlled historical rules; these are not the live roster. All ten scripts report
+executed checks and return nonzero on failure.
 
 Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
 rendering. See the asset-pipeline report for 0.9 validation;
@@ -351,34 +350,10 @@ the visual report records the earlier 0.5 checks. Testing on the local
 Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
 
-Headless checks do not demonstrate rendered appearance. In a graphical Play
-session, verify the full board remains visible, selected pieces and both hint
-colors are readable, tiles near the edges can be clicked, statues slide smoothly,
-and the turn label updates after every successful move. Confirm you can identify
-Core, Warden, Hunter, Executioner, Witch and Wyrm by their shape at the normal
-camera distance; the selected character's name appears in the existing turn
-panel. For a capture test,
-advance opposing statues until they are neighbors and click the rust-marked
-opponent. The cinematic should play before the turn changes once.
-
-Manual review checklist:
-
-- F5: choose Witch for Player 1 and Wyrm for Player 2; confirm pair labels and
-  highlighted formation cells, then START MATCH. Try ordinary moves, friendly
-  blocking, both players and selection cancellation.
-- R/REMATCH retain loadouts and create 16 fresh statues. ARMY LOADOUT and the
-  victory return button preserve choices without duplicating pieces/effects.
-- Lab: all six identities, both actors visible, restrained shake/dust, no clipping.
-- Hunter: destruction is delayed after the fast strike. Witch/Core: no physical
-  charge before the victim collapses. Executioner: visible wind-up and axe chop.
-- Core victim: destruction shot and camera return finish before victory appears.
-- Wyrm: select an adjacent affected enemy on its next turn; empty moves remain
-  available, enemy capture highlights do not. The nearby Core stays immune.
-- Executioner: observe Blood Step on its next turn and its expiry after that turn.
-  The default eight-direction rule already permits those diagonal destinations.
-- Repeated captures: no lingering debris, camera drift or permanently locked input.
-- R during a capture, R after a capture, and REMATCH after victory all reset
-  pieces, statuses, effects, winner and camera.
+Headless checks do not demonstrate rendered appearance. Follow the
+[current manual roster checklist](docs/roster_rules.md#manual-checks-in-godot) for
+both armies, ability buttons, rescue choices, night transformations, flight costs
+and cancellation/restart. Check strategic readability and frame rate on your GPU.
 
 Development controls: **F3** toggles FPS/state/player/selection/hover/camera and
 performance counters, including audio allocation, missing references, music,
@@ -411,3 +386,5 @@ be required in sandboxed environments. Rendering can vary slightly by GPU.
 Multiplayer, AI, final menus/progression, final characters and advanced combat remain out of scope.
 
 Rapporto v0.9: [audit, file, workflow e verifiche](docs/v09_report.md).
+
+Current character-rule implementation and limitations: [roster report](docs/roster_rules.md).

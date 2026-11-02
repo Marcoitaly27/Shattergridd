@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/movement/directional_movement.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+summary = "1 tile forward or backward."
+offsets = Array[Vector2i]([Vector2i(0, -1), Vector2i(0, 1)])

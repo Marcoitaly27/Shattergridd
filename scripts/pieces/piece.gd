@@ -11,6 +11,9 @@ const StatusState = preload("res://scripts/status/status_state.gd")
 const DEFAULT_MOVEMENT: Resource = preload("res://resources/characters/temporary_movement.tres")
 const AUTHORED_CAPTURE: Resource = preload("res://resources/visuals/authored_capture.tres")
 var statuses: RefCounted = StatusState.new()
+var is_night: bool = false
+var shield_spent: bool = false
+var ability_spent: bool = false
 
 @export var piece_id: StringName = &"placeholder"
 @export var character_definition: CharacterDefinition:
@@ -59,6 +62,8 @@ func get_display_name() -> String:
 func get_movement_behavior() -> Resource:
 	if movement_behavior != null:
 		return movement_behavior
+	if is_night and character_definition != null and character_definition.night_movement_behavior != null:
+		return character_definition.night_movement_behavior
 	if character_definition != null and character_definition.movement_behavior != null:
 		return character_definition.movement_behavior
 	return DEFAULT_MOVEMENT
@@ -75,13 +80,56 @@ func get_capture_behavior() -> Resource:
 	var visuals := get_node_or_null("Visuals")
 	if visuals != null and visuals.has_method("authored_capture_ready") and visuals.authored_capture_ready():
 		return AUTHORED_CAPTURE
+	if is_night and character_definition != null and character_definition.night_capture_behavior != null:
+		return character_definition.night_capture_behavior
 	return character_definition.capture_behavior if character_definition != null else null
+
+
+func set_night(night: bool) -> void:
+	is_night = night
+	if $Visuals.has_method("set_night"):
+		$Visuals.set_night(night)
+	_sync_persistent_visual_state()
+	_refresh_picking_body()
+	request_visual_animation(&"idle")
+
+
+func ability_summary() -> String:
+	var description: String = character_definition.ability_description
+	if character_definition.passive_ability == &"shield":
+		description += "\nShield: " + ("BROKEN" if shield_spent else "READY")
+	if character_definition.active_ability in [&"bow", &"exchange"] or character_definition.passive_ability == &"rescue":
+		description += "\nOnce-per-match use: " + ("SPENT" if ability_spent else "READY")
+	if character_definition.night_model_scene != null:
+		description += "\nForm: " + ("WEREWOLF" if is_night else "HUMAN")
+	return description
+
+
+func lose_shield() -> Tween:
+	shield_spent = true
+	if $Visuals.has_method("set_presentation_locked"):
+		$Visuals.set_presentation_locked(true)
+	var tween := create_tween().set_parallel(true)
+	for part_name in ["Shield", "ShieldRib"]:
+		var part := $Visuals.find_child(part_name, true, false) as Node3D
+		if part == null:
+			continue
+		tween.tween_property(part, "position", part.position + Vector3(0.10, -0.65, 0.12), 0.48).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.tween_property(part, "rotation:z", part.rotation.z + 1.1, 0.48)
+		tween.tween_callback(part.hide).set_delay(0.48)
+	tween.tween_interval(0.50)
+	tween.finished.connect(_refresh_picking_body, CONNECT_ONE_SHOT)
+	tween.finished.connect(func() -> void:
+		if $Visuals.has_method("set_presentation_locked"):
+			$Visuals.set_presentation_locked(false), CONNECT_ONE_SHOT)
+	return tween
 
 
 func replace_visual(scene: PackedScene) -> bool:
 	var visuals := get_node_or_null("Visuals")
 	if visuals == null or not visuals.set_model_override(scene):
 		return false
+	_sync_persistent_visual_state()
 	_refresh_picking_body()
 	return true
 
@@ -175,6 +223,19 @@ func animate_to(destination: Vector3, duration: float) -> Tween:
 		if $Visuals.has_method("set_presentation_locked"):
 			$Visuals.set_presentation_locked(false)
 		request_visual_animation(&"idle"), CONNECT_ONE_SHOT)
+	return animation
+
+
+func animate_flight(destination: Vector3) -> Tween:
+	var origin := position
+	if $Visuals.has_method("set_presentation_locked"):
+		$Visuals.set_presentation_locked(true)
+	var animation := create_tween()
+	animation.tween_method(func(weight: float) -> void:
+		position = origin.lerp(destination, weight) + Vector3.UP * sin(weight * PI) * 2.0, 0.0, 1.0, 0.85)
+	animation.finished.connect(func() -> void:
+		if $Visuals.has_method("set_presentation_locked"):
+			$Visuals.set_presentation_locked(false), CONNECT_ONE_SHOT)
 	return animation
 
 
@@ -282,3 +343,13 @@ func _apply_appearance() -> void:
 		visuals.call("set_character", character_definition)
 	if visuals != null and visuals.has_method("set_army"):
 		visuals.call("set_army", army)
+	_sync_persistent_visual_state()
+
+
+func _sync_persistent_visual_state() -> void:
+	if character_definition == null or character_definition.passive_ability != &"shield" or not shield_spent:
+		return
+	for part_name in ["Shield", "ShieldRib"]:
+		var part := $Visuals.find_child(part_name, true, false) as Node3D
+		if part != null:
+			part.hide()

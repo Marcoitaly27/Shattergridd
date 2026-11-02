@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://scenes/pieces/characters/werewolf_human.tscn" id="base"]
+[ext_resource type="Material" path="res://materials/ash_statue.tres" id="stone"]
+[sub_resource type="BoxMesh" id="muzzle"]
+size = Vector3(0.24, 0.18, 0.30)
+[sub_resource type="PrismMesh" id="ear"]
+size = Vector3(0.14, 0.25, 0.15)
+[node name="MoonboundBeastPrototype" instance=ExtResource("base")]
+metadata/asset_stage = "prototype"
+[node name="HeavyTorso" parent="." index="1"]
+scale = Vector3(1.25, 1.15, 1.2)
+[node name="Shoulders" parent="." index="2"]
+scale = Vector3(1.35, 1.3, 1.25)
+[node name="Muzzle" type="MeshInstance3D" parent="."]
+position = Vector3(-0.12, 1.08, -0.22)
+mesh = SubResource("muzzle")
+material_override = ExtResource("stone")
+[node name="LeftEar" type="MeshInstance3D" parent="."]
+position = Vector3(-0.25, 1.31, -0.02)
+mesh = SubResource("ear")
+material_override = ExtResource("stone")
+[node name="RightEar" type="MeshInstance3D" parent="."]
+position = Vector3(0.02, 1.31, -0.02)
+mesh = SubResource("ear")
+material_override = ExtResource("stone")

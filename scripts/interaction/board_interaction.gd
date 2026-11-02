@@ -26,6 +26,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion or event is InputEventMouseButton:
 		_pointer_position = event.position
 	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_A and game.can_accept_input():
+			game.toggle_ability()
+			get_viewport().set_input_as_handled()
+			return
 		if event.keycode == KEY_R:
 			_pending_clicks.clear()
 			game.restart_match()

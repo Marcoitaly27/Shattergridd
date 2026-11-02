@@ -15,6 +15,7 @@ func _initialize() -> void:
 func _run() -> void:
 	var scene := load("res://scenes/main.tscn").instantiate() as Node3D
 	root.add_child(scene)
+	load("res://tests/legacy_fixture.gd").configure(scene, false)
 	await process_frame
 	# Exercise all six model contracts, including the optional Wyrm, independently
 	# from the default formation's three required mirrored pairs.

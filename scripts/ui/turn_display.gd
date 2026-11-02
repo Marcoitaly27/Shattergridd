@@ -1,6 +1,9 @@
 extends CanvasLayer
 ## Production feedback consumes game signals; it never changes legal moves or locks.
 
+var ability_button: Button
+var cycle_label: Label
+var rescue_dialog: ConfirmationDialog
 var info_panel: PanelContainer
 var info_text: Label
 var hover_text: Label
@@ -22,6 +25,8 @@ var _turn_tween: Tween
 func _ready() -> void:
 	_build_feedback()
 	game.turn_changed.connect(_show_turn)
+	game.cycle_changed.connect(_show_cycle)
+	game.rescue_requested.connect(_offer_rescue)
 	game.selection_changed.connect(_show_selection)
 	game.phase_changed.connect(_show_phase)
 	game.tactics_changed.connect(_show_tactics)
@@ -32,17 +37,21 @@ func _ready() -> void:
 	$VictoryScreen/Center/Result/Margin/Rows/Restart.pressed.connect(game.restart_match)
 	$VictoryScreen/Center/Result/Margin/Rows/Loadout.pressed.connect(game.return_to_loadout)
 	$Loadout.pressed.connect(game.return_to_loadout)
+	_show_cycle(game.is_night, 5)
 	_show_turn(game.current_player, false)
 
 
 func _build_feedback() -> void:
 	$Panel.offset_left = -240
 	$Panel.offset_right = 240
-	$Panel.offset_bottom = 110
+	$Panel.offset_bottom = 136
 	var rows := $Panel/Margin/Rows
 	identity_text = _label(13)
 	rows.add_child(identity_text)
 	rows.move_child(identity_text, 1)
+	cycle_label = _label(13)
+	rows.add_child(cycle_label)
+	rows.move_child(cycle_label, 2)
 	var style: StyleBox = $Panel.get_theme_stylebox("panel")
 	info_panel = PanelContainer.new()
 	info_panel.name = "PieceInformation"
@@ -64,7 +73,28 @@ func _build_feedback() -> void:
 	info_text.name = "Details"
 	info_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(info_text)
+	var info_rows := VBoxContainer.new()
+	info_rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(info_rows)
+	info_rows.add_child(info_text)
+	ability_button = Button.new()
+	ability_button.name = "CharacterAbility"
+	ability_button.pressed.connect(game.toggle_ability)
+	info_rows.add_child(ability_button)
+	rescue_dialog = ConfirmationDialog.new()
+	rescue_dialog.title = "LAST MERCY"
+	rescue_dialog.ok_button_text = "SAVE STATUE"
+	rescue_dialog.cancel_button_text = "ALLOW CAPTURE"
+	rescue_dialog.confirmed.connect(func() -> void: game.resolve_rescue(true))
+	rescue_dialog.canceled.connect(func() -> void: game.resolve_rescue(false))
+	rescue_dialog.add_button("ARMY LOADOUT", true, &"loadout")
+	rescue_dialog.custom_action.connect(func(action: StringName) -> void:
+		if action == &"loadout":
+			game.return_to_loadout())
+	rescue_dialog.window_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
+			game.restart_match())
+	add_child(rescue_dialog)
 	info_panel.hide()
 	var footer := VBoxContainer.new()
 	footer.name = "InteractionFeedback"
@@ -122,7 +152,7 @@ func _show_selection(piece: Node3D) -> void:
 	if not is_instance_valid(piece):
 		hint_label.text = "Moving…" if game.is_moving else "Select a statue"
 		return
-	hint_label.text = "%s · choose a marked tile" % piece.get_display_name()
+	hint_label.text = "%s · choose a marked %s" % [piece.get_display_name(), "ability target" if game.ability_mode else "tile"]
 	var definition: Resource = piece.character_definition
 	var effect: Resource = definition.post_capture_effect if definition != null else null
 	var ability := "None\nNo capture-triggered ability."
@@ -130,6 +160,13 @@ func _show_selection(piece: Node3D) -> void:
 		var name: Variant = effect.get("display_name")
 		var description: Variant = effect.get("description")
 		ability = "%s\n%s" % [name if name != null else "Capture effect", description if description != null else "Triggers after a successful capture."]
+	if definition != null and not definition.ability_description.is_empty():
+		ability = piece.ability_summary()
+	var kind: StringName = definition.active_ability if definition != null else &""
+	ability_button.visible = kind != &""
+	ability_button.disabled = not game.ability_mode and game.ability_targets(piece).is_empty()
+	var names := {&"bow": "BOW SHOT", &"flight": "TERROR FLIGHT", &"exchange": "VEIL EXCHANGE"}
+	ability_button.text = "CANCEL ABILITY" if game.ability_mode else String(names.get(kind, "ABILITY"))
 	var status: String = piece.statuses.describe(game.completed_turns[piece.army])
 	if definition != null and not definition.status_immunities.is_empty():
 		status += "\nImmune: " + ", ".join(definition.status_immunities)
@@ -141,7 +178,15 @@ func _show_selection(piece: Node3D) -> void:
 
 
 func _show_phase(phase: int) -> void:
-	if phase == game.Phase.READY:
+	if phase != game.Phase.DECIDING:
+		rescue_dialog.hide()
+	if phase == game.Phase.DECIDING:
+		turn_label.text = "LAST MERCY"
+		hint_label.text = "Defending player chooses whether to save the statue"
+	elif phase == game.Phase.DEFENDING:
+		turn_label.text = "CAPTURE PREVENTED"
+		hint_label.text = "Both statues remain · attacker spends the turn"
+	elif phase == game.Phase.READY:
 		_show_turn(game.current_player, false)
 	elif phase == game.Phase.CAPTURING:
 		turn_label.text = "CAPTURE"
@@ -167,6 +212,7 @@ func _show_hover(cell: Vector2i, kind: StringName, piece: Node3D) -> void:
 	var name: String = piece.get_display_name() if is_instance_valid(piece) else "(%d, %d)" % [cell.x, cell.y]
 	match kind:
 		&"capture": hover_text.text = "CAPTURE × %s · click to begin" % name
+		&"exchange": hover_text.text = "EXCHANGE with %s · click to confirm" % name
 		&"move": hover_text.text = "MOVE to %s · click to confirm" % name
 		&"selectable": hover_text.text = "SELECT %s · Player %d" % [name, game.current_player + 1]
 		&"selected": hover_text.text = "SELECTED %s · click again or Esc to cancel" % name
@@ -208,3 +254,13 @@ func _show_victory(player: int) -> void:
 	victory_label.text = "PLAYER %d VICTORIOUS" % (player + 1)
 	victory_screen.show()
 	$VictoryScreen/Center/Result/Margin/Rows/Restart.grab_focus()
+
+
+func _show_cycle(night: bool, rounds_remaining: int) -> void:
+	cycle_label.text = "%s · %d round%s until %s" % ["NIGHT" if night else "DAY", rounds_remaining,
+		"" if rounds_remaining == 1 else "s", "dawn" if night else "nightfall"]
+
+
+func _offer_rescue(witch: Node3D, target: Node3D) -> void:
+	rescue_dialog.dialog_text = "PLAYER %d · Last Mercy\nSave %s?\nThis uses your Witch's only rescue this match.\nBoth statues stay in place; the attacker's turn ends." % [witch.army + 1, target.get_display_name()]
+	rescue_dialog.popup_centered(Vector2i(460, 180))

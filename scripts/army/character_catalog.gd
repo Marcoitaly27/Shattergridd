@@ -2,7 +2,7 @@ extends Resource
 ## Explicit registry: no gameplay controller needs a roster switch or file scan.
 
 const CharacterDefinition = preload("res://scripts/pieces/character_definition.gd")
-const CATEGORIES: Array[StringName] = [&"core", &"guard", &"hunt", &"power", &"special"]
+const CATEGORIES: Array[StringName] = [&"core", &"guard", &"hunt", &"power", &"special", &"random"]
 @export var characters: Array[CharacterDefinition] = []
 
 

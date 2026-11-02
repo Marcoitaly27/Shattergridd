@@ -24,6 +24,11 @@ func has(status_id: StringName) -> bool:
 	return _entries.has(status_id)
 
 
+func remove(status_id: StringName) -> void:
+	if _entries.erase(status_id):
+		changed.emit()
+
+
 func expire(completed_owner_turns: int) -> void:
 	var removed := false
 	for key in _entries.keys():

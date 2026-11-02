@@ -35,6 +35,7 @@ func _run() -> void:
 func _setup() -> void:
 	scene = Match.instantiate() as Node3D
 	root.add_child(scene)
+	load("res://tests/legacy_fixture.gd").configure(scene)
 	game = scene.get_node("GameManager")
 	interaction = scene.get_node("Interaction")
 	ui = scene.get_node("Interface")

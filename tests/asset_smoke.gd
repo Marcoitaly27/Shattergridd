@@ -52,6 +52,7 @@ func _run() -> void:
 func _setup() -> void:
 	scene = Match.instantiate() as Node3D
 	root.add_child(scene)
+	load("res://tests/legacy_fixture.gd").configure(scene)
 	game = scene.get_node("GameManager")
 	await physics_frame
 	await process_frame

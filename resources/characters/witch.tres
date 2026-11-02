@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="1_definition"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/characters/witch.tscn" id="2_model"]
-[ext_resource type="Resource" path="res://resources/characters/temporary_movement.tres" id="3_movement"]
+[ext_resource type="Resource" path="res://resources/characters/forward_sides_movement.tres" id="3_movement"]
 [ext_resource type="Material" path="res://materials/ash_statue.tres" id="4_ash"]
 [ext_resource type="Material" path="res://materials/slate_statue.tres" id="5_slate"]
 
@@ -16,7 +16,7 @@ script = ExtResource("1_definition")
 character_id = &"witch"
 title = "The Unshriven"
 deployment_category = &"special"
-gameplay_description = "Tall occult statue with one-square movement and a restrained Wither capture."
+gameplay_description = "Last Mercy: once per match while alive, choose to prevent one allied capture, including your own. Both statues stay put; attacker spends the turn."
 unlocked_by_default = true
 archetype_id = &"witch"
 display_name = "Witch"
@@ -26,3 +26,7 @@ movement_behavior = ExtResource("3_movement")
 team_materials = Array[Material]([ExtResource("4_ash"), ExtResource("5_slate")])
 capture_behavior = ExtResource("6_capture")
 audio_profile = ExtResource("8_audio")
+
+passive_ability = &"rescue"
+active_ability = &""
+ability_description = "Last Mercy: once per match while alive, choose to prevent one allied capture, including your own. Both statues stay put; attacker spends the turn."

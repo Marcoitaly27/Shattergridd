@@ -2,6 +2,8 @@ extends Node
 ## Authoritative actions and occupancy. Presentation observes signals, never unlocks play.
 
 signal turn_changed(player: int)
+signal cycle_changed(night: bool, rounds_remaining: int)
+signal rescue_requested(witch: Node3D, target: Node3D)
 signal selection_changed(piece: Node3D)
 signal move_finished
 signal phase_changed(phase: int)
@@ -12,10 +14,11 @@ signal feedback_requested(message: String, kind: StringName)
 signal movement_cue(event: StringName, piece: Node3D)
 signal selection_cancelled
 
-enum Phase { READY, MOVING, CAPTURING, GAME_OVER, RESTARTING, RESOLVING }
+enum Phase { READY, MOVING, CAPTURING, GAME_OVER, RESTARTING, RESOLVING, DECIDING, DEFENDING }
 
 const BoardState = preload("res://scripts/board/board_state.gd")
 const MovementResolver = preload("res://scripts/movement/movement_resolver.gd")
+const Actions = preload("res://scripts/game/character_actions.gd")
 const MOVE_DURATION: float = 0.24
 const VICTORY_PAUSE: float = 0.30
 
@@ -30,7 +33,12 @@ var threatened_cores: Array[Node3D] = []
 var selected_destinations: Array[Vector2i] = []
 var is_moving: bool:
 	get:
-		return phase in [Phase.MOVING, Phase.CAPTURING, Phase.RESTARTING, Phase.RESOLVING]
+		return phase in [Phase.MOVING, Phase.CAPTURING, Phase.RESTARTING, Phase.RESOLVING, Phase.DECIDING, Phase.DEFENDING]
+var is_night: bool = false
+var ability_mode: bool = false
+var skipped_turns: Array[int] = [0, 0]
+var _pending_capture: Dictionary = {}
+var _ranged_capture: bool = false
 var _movement := MovementResolver.new()
 var _move_tween: Tween
 var _moving_piece: Node3D
@@ -71,7 +79,8 @@ func action_state_name() -> String:
 		return "PIECE_SELECTED" if is_instance_valid(selected_piece) else "TURN_IDLE"
 	return {Phase.MOVING: "MOVING", Phase.CAPTURING: "CAPTURE_CINEMATIC",
 		Phase.RESOLVING: "RESOLVING_ACTION", Phase.GAME_OVER: "VICTORY",
-		Phase.RESTARTING: "RESTARTING"}.get(phase, "UNKNOWN")
+		Phase.RESTARTING: "RESTARTING", Phase.DECIDING: "RESCUE_DECISION",
+		Phase.DEFENDING: "CAPTURE_PREVENTED"}.get(phase, "UNKNOWN")
 
 
 func valid_destinations(piece: Node3D) -> Array[Vector2i]:
@@ -79,6 +88,8 @@ func valid_destinations(piece: Node3D) -> Array[Vector2i]:
 		return []
 	if board_state.piece_at(piece.grid_coordinate) != piece:
 		return []
+	if ability_mode and piece == selected_piece:
+		return ability_targets(piece)
 	return _movement.destinations(piece, board_state, completed_turns[piece.army])
 
 
@@ -89,6 +100,8 @@ func interaction_kind(cell: Vector2i) -> StringName:
 	if occupant == selected_piece and occupant != null:
 		return &"selected"
 	if is_instance_valid(selected_piece) and selected_destinations.has(cell):
+		if ability_mode and selected_piece.character_definition.active_ability == &"exchange":
+			return &"exchange"
 		return &"capture" if occupant != null else &"move"
 	if occupant != null and occupant.army == current_player:
 		return &"selectable"
@@ -104,7 +117,10 @@ func handle_cell_clicked(cell: Vector2i) -> void:
 	if is_instance_valid(selected_piece):
 		var legal := valid_destinations(selected_piece)
 		if legal.has(cell) and selected_destinations.has(cell):
-			_start_move(cell)
+			if ability_mode:
+				_start_ability(cell)
+			else:
+				_start_move(cell)
 			return
 		if legal != selected_destinations:
 			_refresh_selection_preview()
@@ -139,6 +155,7 @@ func clear_selection() -> void:
 	if is_instance_valid(selected_piece):
 		selected_piece.set_selected(false)
 	selected_piece = null
+	ability_mode = false
 	selected_destinations.clear()
 	battlefield.clear_highlights()
 	interaction_revision += 1
@@ -185,7 +202,7 @@ func _refresh_selection_preview() -> void:
 			var cell: Vector2i = selected_piece.grid_coordinate + offset
 			if selected_destinations.has(cell) and not ability_cells.has(cell):
 				ability_cells.append(cell)
-	battlefield.show_destinations(selected_destinations, board_state, ability_cells)
+	battlefield.show_destinations(selected_destinations, board_state, ability_cells, ability_mode and selected_piece.character_definition.active_ability == &"exchange")
 	interaction_revision += 1
 
 
@@ -193,11 +210,7 @@ func _start_move(destination: Vector2i) -> void:
 	var mover := selected_piece
 	var victim: Node3D = board_state.piece_at(destination)
 	if victim != null:
-		_set_phase(Phase.CAPTURING)
-		clear_selection()
-		if not capture_director.start(mover, victim):
-			_set_phase(Phase.READY)
-			feedback_requested.emit("Capture unavailable · select the statue again", &"unavailable")
+		_request_capture(mover, victim, false)
 		return
 	if not board_state.move_piece(mover, destination):
 		feedback_requested.emit("Destination unavailable", &"unavailable")
@@ -228,7 +241,7 @@ func _on_victim_shattered(attacker: Node3D, victim: Node3D) -> void:
 		return
 	if not is_instance_valid(attacker) or not is_instance_valid(victim) \
 			or board_state.piece_at(victim.grid_coordinate) != victim \
-			or not board_state.move_piece(attacker, victim.grid_coordinate):
+			or not (board_state.remove_piece(victim) if _ranged_capture else board_state.move_piece(attacker, victim.grid_coordinate)):
 		push_error("Capture occupancy changed while gameplay was locked")
 		restart_match()
 
@@ -237,6 +250,7 @@ func _on_capture_completed(attacker: Node3D, victim: Node3D) -> void:
 	if phase != Phase.CAPTURING:
 		return
 	_set_phase(Phase.RESOLVING)
+	_ranged_capture = false
 	var victim_was_core: bool = victim.character_definition != null and victim.character_definition.is_core_objective
 	var effect: Resource = attacker.character_definition.post_capture_effect if attacker.character_definition != null else null
 	_status_feedback.clear()
@@ -273,17 +287,36 @@ func _present_victory() -> void:
 func _advance_turn() -> void:
 	if phase != Phase.RESOLVING or winner >= 0:
 		return
-	completed_turns[current_player] += 1
-	for piece in pieces.get_children():
-		if not piece.is_queued_for_deletion() and piece.army == current_player:
-			piece.statuses.expire(completed_turns[current_player])
+	_complete_owner_turn(current_player)
 	current_player = 1 - current_player
+	# Flight's cost belongs to the army, not the dragon that may later be captured.
+	if skipped_turns[current_player] > 0:
+		skipped_turns[current_player] -= 1
+		feedback_requested.emit("PLAYER %d skips this turn after Terror Flight" % (current_player + 1), &"status")
+		_complete_owner_turn(current_player)
+		current_player = 1 - current_player
 	_set_phase(Phase.READY)
 	refresh_tactics()
 	if OS.is_debug_build():
 		debug_validate_state()
 	turn_changed.emit(current_player)
 	move_finished.emit()
+
+
+func _complete_owner_turn(player: int) -> void:
+	completed_turns[player] += 1
+	for piece in pieces.get_children():
+		if not piece.is_queued_for_deletion() and piece.army == player:
+			piece.statuses.expire(completed_turns[player])
+	var rounds := mini(completed_turns[0], completed_turns[1])
+	var next_night := (rounds / 5) % 2 == 1
+	if next_night != is_night:
+		is_night = next_night
+		for piece in pieces.get_children():
+			if not piece.is_queued_for_deletion():
+				piece.set_night(is_night)
+		feedback_requested.emit("NIGHT FALLS" if is_night else "DAY BREAKS", &"status")
+	cycle_changed.emit(is_night, 5 - rounds % 5)
 
 
 func _on_status_changed(piece: Node3D) -> void:
@@ -315,6 +348,8 @@ func refresh_tactics() -> void:
 			cores.append(piece)
 	for enemy in active:
 		var legal := _movement.destinations(enemy, board_state, completed_turns[enemy.army])
+		if enemy.character_definition.active_ability == &"bow":
+			legal.append_array(Actions.targets(enemy, board_state, completed_turns[enemy.army]))
 		for core in cores:
 			if core.army != enemy.army and legal.has(core.grid_coordinate) and not threatened_cores.has(core):
 				threatened_cores.append(core)
@@ -360,3 +395,121 @@ func _reload_match(scene_path: String) -> void:
 	var error := get_tree().change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("Could not change match scene: %s" % error_string(error))
+
+
+func ability_targets(piece: Node3D) -> Array[Vector2i]:
+	if not can_accept_input() or not is_instance_valid(piece) or piece.army != current_player or board_state.piece_at(piece.grid_coordinate) != piece:
+		return []
+	return Actions.targets(piece, board_state, completed_turns[piece.army])
+
+
+func toggle_ability() -> void:
+	if not can_accept_input() or not is_instance_valid(selected_piece):
+		return
+	if not ability_mode and ability_targets(selected_piece).is_empty():
+		feedback_requested.emit("No available ability targets", &"unavailable")
+		return
+	ability_mode = not ability_mode
+	_refresh_selection_preview()
+	selection_changed.emit(selected_piece)
+
+
+func _start_ability(destination: Vector2i) -> void:
+	var mover := selected_piece
+	if not ability_targets(mover).has(destination):
+		return
+	var kind: StringName = mover.character_definition.active_ability
+	if kind == &"bow":
+		_request_capture(mover, board_state.piece_at(destination), true)
+		return
+	if kind == &"flight":
+		if not board_state.move_piece(mover, destination):
+			return
+		_set_phase(Phase.MOVING)
+		mover.statuses.remove(&"flight_ready")
+		skipped_turns[current_player] += 1
+		clear_selection()
+		_moving_piece = mover
+		movement_cue.emit(&"move_start", mover)
+		_move_tween = mover.animate_flight(battlefield.position_for_cell(destination))
+		_move_tween.finished.connect(_finish_normal_move, CONNECT_ONE_SHOT)
+	elif kind == &"exchange":
+		var ally: Node3D = board_state.piece_at(destination)
+		if not board_state.swap_pieces(mover, ally):
+			return
+		mover.ability_spent = true
+		_set_phase(Phase.MOVING)
+		clear_selection()
+		_moving_piece = mover
+		movement_cue.emit(&"move_start", mover)
+		# A single timeline owns both statues and the action lock.
+		_move_tween = create_tween().set_parallel(true)
+		_move_tween.tween_property(mover, "position", battlefield.position_for_cell(mover.grid_coordinate), 0.35)
+		_move_tween.tween_property(ally, "position", battlefield.position_for_cell(ally.grid_coordinate), 0.35)
+		_move_tween.finished.connect(_finish_normal_move, CONNECT_ONE_SHOT)
+
+
+func _rescuing_witch(target: Node3D) -> Node3D:
+	for piece in pieces.get_children():
+		if piece.army == target.army and not piece.is_queued_for_deletion() and not piece.ability_spent \
+				and board_state.piece_at(piece.grid_coordinate) == piece and piece.character_definition.passive_ability == &"rescue":
+			return piece
+	return null
+
+
+func _request_capture(attacker: Node3D, target: Node3D, ranged: bool) -> void:
+	_pending_capture = {"attacker": attacker, "target": target, "ranged": ranged}
+	clear_selection()
+	if ranged:
+		attacker.ability_spent = true
+	if target.character_definition.passive_ability == &"shield" and not target.shield_spent:
+		_set_phase(Phase.DEFENDING)
+		feedback_requested.emit("Warden's shield breaks · capture prevented", &"status")
+		_move_tween = target.lose_shield()
+		_move_tween.finished.connect(_finish_prevented_capture, CONNECT_ONE_SHOT)
+		return
+	var witch := _rescuing_witch(target)
+	if witch != null:
+		_pending_capture["witch"] = witch
+		_set_phase(Phase.DECIDING)
+		rescue_requested.emit(witch, target)
+	else:
+		_begin_pending_capture()
+
+
+func resolve_rescue(save: bool) -> void:
+	if phase != Phase.DECIDING or _pending_capture.is_empty():
+		return
+	var witch: Node3D = _pending_capture.witch
+	if save:
+		witch.ability_spent = true
+		_set_phase(Phase.DEFENDING)
+		feedback_requested.emit("Last Mercy · %s survives" % _pending_capture.target.get_display_name(), &"status")
+		_move_tween = create_tween()
+		_move_tween.tween_interval(0.35)
+		_move_tween.tween_callback(_finish_prevented_capture)
+	else:
+		_begin_pending_capture()
+
+
+func _finish_prevented_capture() -> void:
+	if phase != Phase.DEFENDING:
+		return
+	_move_tween = null
+	_pending_capture.clear()
+	_set_phase(Phase.RESOLVING)
+	_advance_turn()
+
+
+func _begin_pending_capture() -> void:
+	var attacker: Node3D = _pending_capture.attacker
+	var target: Node3D = _pending_capture.target
+	_ranged_capture = _pending_capture.ranged
+	_pending_capture.clear()
+	_set_phase(Phase.CAPTURING)
+	if not capture_director.start(attacker, target, _ranged_capture):
+		if _ranged_capture:
+			attacker.ability_spent = false
+		_ranged_capture = false
+		_set_phase(Phase.READY)
+		feedback_requested.emit("Capture unavailable · select the statue again", &"unavailable")

@@ -8,10 +8,11 @@ extends Resource
 @export var mirrored_coordinate: Vector2i
 ## Empty permits every character of this category, including future sidegrades.
 @export var allowed_character_ids: Array[StringName] = []
+@export var alternative_categories: Array[StringName] = []
 
 
 func accepts(character: Resource) -> bool:
-	return character != null and character.deployment_category == category \
+	return character != null and (character.deployment_category == category or alternative_categories.has(character.deployment_category)) \
 		and character.is_core_objective == (category == &"core") \
 		and (allowed_character_ids.is_empty() or allowed_character_ids.has(character.character_id))
 

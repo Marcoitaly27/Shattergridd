@@ -47,6 +47,7 @@ func _run() -> void:
 func _setup(archetype: String, victim_archetype: String = "warden", cell: Vector2i = Vector2i(3, 3), target: Vector2i = Vector2i(4, 3)) -> void:
 	fixture = load("res://scenes/main.tscn").instantiate() as Node3D
 	root.add_child(fixture)
+	load("res://tests/legacy_fixture.gd").configure(fixture)
 	game = fixture.get_node("GameManager")
 	director = fixture.get_node("CaptureDirector")
 	camera = fixture.get_node("Camera3D")
@@ -398,6 +399,9 @@ func _add_piece(archetype: String, army: int, cell: Vector2i, id: String) -> Nod
 	var piece := PieceScene.instantiate() as Node3D
 	piece.character_definition = load("res://resources/characters/%s.tres" % archetype)
 	piece.army = army
+	piece.movement_behavior = load("res://resources/characters/temporary_movement.tres")
+	piece.shield_spent = true
+	piece.ability_spent = true
 	piece.piece_id = StringName(id)
 	piece.grid_coordinate = cell
 	fixture.get_node("Pieces").add_child(piece)

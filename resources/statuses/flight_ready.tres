@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/status/status_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+status_id = &"flight_ready"
+display_name = "Terror Flight"
+marker_text = "F"
+description = "Use FLY on your next turn to reach any empty tile; then your army skips its following turn."

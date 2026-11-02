@@ -62,7 +62,7 @@ func _build_interface() -> void:
 	var title := _label("SHATTERGRID · LAW OF REFLECTION", 26)
 	rows.add_child(title)
 	rows.add_child(_label("“The Grid does not summon armies. It reflects them.”", 16))
-	rows.add_child(_label("Choose once for each pair: both statues share that character. Each army has one Core and one Special.", 15))
+	rows.add_child(_label("Choose once for each pair: both statues share that character. Each army has one Core and one Special/Wildcard.", 15))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -99,7 +99,7 @@ func _build_army_panel(parent: Control, player: int) -> void:
 	for slot in slots:
 		var row := HBoxContainer.new()
 		rows.add_child(row)
-		var label := _label(String(slot.category).to_upper() + (" PAIR ×2" if slot.paired else ""), 14)
+		var label := _label(("SPECIAL / WILDCARD" if slot.category == &"special" else String(slot.category).to_upper()) + (" PAIR ×2" if slot.paired else ""), 14)
 		label.custom_minimum_size.x = 145
 		row.add_child(label)
 		var options := OptionButton.new()

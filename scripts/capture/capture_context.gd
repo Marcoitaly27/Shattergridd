@@ -15,6 +15,8 @@ var contact: Vector3
 var victim_bounds: AABB
 var victim_is_core: bool = false
 var shattered: bool = false
+var ranged: bool = false
+var _projectile: MeshInstance3D
 var seed_value: int
 var _attacker_root: Transform3D
 var _victim_root: Transform3D
@@ -163,7 +165,7 @@ func append_hold(timeline: Tween, duration: float) -> void:
 
 
 func append_settle(timeline: Tween, duration: float) -> void:
-	timeline.tween_property(attacker, "global_position", destination, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	timeline.tween_property(attacker, "global_position", _attacker_root.origin if ranged else destination, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	timeline.parallel().tween_property(attacker_visual, "position", _attacker_pose.origin, duration)
 	timeline.parallel().tween_property(attacker_visual, "rotation", _attacker_pose.basis.get_euler(), duration)
 	timeline.parallel().tween_property(attacker_visual, "scale", _attacker_pose.basis.get_scale(), duration)
@@ -174,6 +176,8 @@ func append_settle(timeline: Tween, duration: float) -> void:
 
 
 func restore_visuals() -> void:
+	if is_instance_valid(_projectile):
+		_projectile.queue_free()
 	if is_instance_valid(attacker_visual):
 		if attacker_visual.has_method("end_authored_capture"):
 			attacker_visual.end_authored_capture()
@@ -190,6 +194,22 @@ func restore_visuals() -> void:
 	if is_instance_valid(_cracks):
 		_cracks.queue_free()
 	_parts.clear()
+
+
+func append_arrow(timeline: Tween) -> void:
+	_projectile = MeshInstance3D.new()
+	_projectile.name = "PrototypeArrow"
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.025, 0.025, 0.38)
+	_projectile.mesh = mesh
+	_projectile.material_override = preload("res://materials/slate_statue.tres")
+	_projectile.visible = false
+	director.effects.add_child(_projectile)
+	_projectile.global_position = start + Vector3.UP * 0.8
+	_projectile.look_at(destination + Vector3.UP * 0.8)
+	timeline.tween_callback(_projectile.show)
+	timeline.tween_property(_projectile, "global_position", destination + Vector3.UP * 0.8, 0.20)
+	timeline.tween_callback(_projectile.hide)
 
 
 func abort() -> void:

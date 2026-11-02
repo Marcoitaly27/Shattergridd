@@ -38,6 +38,7 @@ left_coordinate = Vector2i(3, 7)
 script = ExtResource("2_slot")
 slot_id = &"special"
 category = &"special"
+alternative_categories = Array[StringName]([&"random"])
 paired = false
 left_coordinate = Vector2i(7, 7)
 

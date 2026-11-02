@@ -12,6 +12,7 @@ var _override: PackedScene
 var _loaded_scene: PackedScene
 var _reflected: bool = false
 var _army: int = 0
+var _night: bool = false
 var _instance_tint: Color = Color.WHITE
 var _materials: Dictionary = {}
 
@@ -23,6 +24,8 @@ func set_character(definition: Resource) -> void:
 	var scene: PackedScene = _override
 	if scene == null and definition != null:
 		scene = definition.paired_model_scene if _reflected and definition.paired_model_scene != null else definition.model_scene
+		if _night and definition.night_model_scene != null:
+			scene = definition.night_model_scene
 	if scene != _loaded_scene or not is_instance_valid(_model):
 		animation.bind_model(null, null)
 		_materials.clear()
@@ -60,6 +63,12 @@ func set_model_override(scene: PackedScene) -> bool:
 func set_reflected(reflected: bool) -> void:
 	if _reflected != reflected:
 		_reflected = reflected
+		set_character(_definition)
+
+
+func set_night(night: bool) -> void:
+	if _night != night:
+		_night = night
 		set_character(_definition)
 
 
@@ -143,7 +152,7 @@ func _add_shape(body: StaticBody3D, source: Shape3D, local: Transform3D) -> void
 
 
 func _remember_materials() -> void:
-	for mesh in Geometry.meshes(_model):
+	for mesh in Geometry.meshes(_model, false):
 		var surfaces: Array[Material] = []
 		for index in range(mesh.mesh.get_surface_count()):
 			surfaces.append(mesh.get_active_material(index))

@@ -2,6 +2,7 @@ extends RefCounted
 ## Compose character movement with active status modifiers before final validation.
 
 var calculation_count: int = 0
+const Actions = preload("res://scripts/game/character_actions.gd")
 
 func destinations(piece: Node3D, board: RefCounted, completed_owner_turns: int) -> Array[Vector2i]:
 	calculation_count += 1
@@ -13,7 +14,9 @@ func destinations(piece: Node3D, board: RefCounted, completed_owner_turns: int) 
 	for status in piece.statuses.active(completed_owner_turns):
 		cannot_capture = cannot_capture or status.blocks_capture
 		for offset in status.extra_destinations:
-			candidates.append(piece.grid_coordinate + offset)
+			var destination: Vector2i = piece.grid_coordinate + offset
+			if not status.requires_clear_path or Actions.clear_path(piece.grid_coordinate, destination, board):
+				candidates.append(destination)
 	var result: Array[Vector2i] = []
 	for cell in candidates:
 		if not board.contains(cell) or cell == piece.grid_coordinate or result.has(cell):

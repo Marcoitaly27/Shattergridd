@@ -42,7 +42,7 @@ func clear_highlights() -> void:
 			child.queue_free()
 
 
-func show_destinations(cells: Array[Vector2i], state: RefCounted, ability_cells: Array[Vector2i] = []) -> void:
+func show_destinations(cells: Array[Vector2i], state: RefCounted, ability_cells: Array[Vector2i] = [], friendly_targets: bool = false) -> void:
 	clear_highlights()
 	for cell in cells:
 		var tile := _tiles.get(cell) as MeshInstance3D
@@ -50,11 +50,11 @@ func show_destinations(cells: Array[Vector2i], state: RefCounted, ability_cells:
 			continue
 		var hint: Node3D = tile.get_node("MoveHint")
 		for edge in hint.get_children():
-			edge.material_override = ATTACK_HINT if state.piece_at(cell) != null else MOVE_HINT
+			edge.material_override = ATTACK_HINT if state.piece_at(cell) != null and not friendly_targets else MOVE_HINT
 		hint.show()
-		if state.piece_at(cell) != null:
+		if state.piece_at(cell) != null and not friendly_targets:
 			_add_target_mark(cell, true)
-		if ability_cells.has(cell):
+		if ability_cells.has(cell) or friendly_targets:
 			_add_target_mark(cell, false)
 
 
@@ -78,7 +78,7 @@ func set_hover(cell: Vector2i, kind: StringName) -> void:
 		return
 	_hover_cursor.position = position_for_cell(cell) + Vector3.UP * 0.035
 	var material: Material = preload("res://materials/hover_hint.tres")
-	if kind in [&"move", &"selected", &"selectable"]:
+	if kind in [&"move", &"selected", &"selectable", &"exchange"]:
 		material = MOVE_HINT
 	elif kind == &"capture":
 		material = ATTACK_HINT

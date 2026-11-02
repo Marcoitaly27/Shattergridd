@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/status/status_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+status_id = &"blood_step"
+display_name = "Blood Step"
+marker_text = "B"
+description = "Exact 2-tile moves in all 8 directions, clear path required; ends with your next turn."
+requires_clear_path = true
+extra_destinations = Array[Vector2i]([Vector2i(0, -2), Vector2i(0, 2), Vector2i(-2, 0), Vector2i(2, 0), Vector2i(-2, -2), Vector2i(2, -2), Vector2i(-2, 2), Vector2i(2, 2)])

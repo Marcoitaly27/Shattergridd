@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_loadout")
-selections = {&"core": &"core", &"guard": &"warden", &"hunt": &"hunter", &"power": &"executioner", &"special": &"witch"}
+selections = {&"core": &"core", &"guard": &"warden", &"hunt": &"hunter", &"power": &"werewolf", &"special": &"witch"}

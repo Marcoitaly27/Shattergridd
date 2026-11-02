@@ -2,14 +2,25 @@
 extends RefCounted
 
 
-static func meshes(root: Node3D) -> Array[MeshInstance3D]:
+static func meshes(root: Node3D, visible_only: bool = true) -> Array[MeshInstance3D]:
 	var result: Array[MeshInstance3D] = []
-	if root is MeshInstance3D and root.mesh != null:
+	if root is MeshInstance3D and root.mesh != null and (not visible_only or root.visible):
 		result.append(root)
 	for node in root.find_children("*", "MeshInstance3D", true, false):
-		if node.mesh != null:
+		if node.mesh != null and (not visible_only or _visible_within(node, root)):
 			result.append(node)
 	return result
+
+
+static func _visible_within(node: Node3D, root: Node3D) -> bool:
+	var cursor: Node = node
+	while cursor != null:
+		if cursor is Node3D and not cursor.visible:
+			return false
+		if cursor == root:
+			break
+		cursor = cursor.get_parent()
+	return true
 
 
 static func bounds_in(root: Node3D, space: Transform3D) -> AABB:

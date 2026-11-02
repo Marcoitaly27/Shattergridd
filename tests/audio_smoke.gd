@@ -224,6 +224,7 @@ func _test_ambience_and_music() -> void:
 func _test_movement_and_contacts() -> void:
 	var scene := Match.instantiate() as Node3D
 	root.add_child(scene)
+	load("res://tests/legacy_fixture.gd").configure(scene)
 	await physics_frame
 	var game: Node = scene.get_node("GameManager")
 	var mover: Node3D = scene.get_node("Pieces/Ash_01")
@@ -261,6 +262,7 @@ func _test_capture_events() -> void:
 	for name in ["warden", "hunter", "executioner", "witch", "wyrm", "core"]:
 		var scene := Match.instantiate() as Node3D
 		root.add_child(scene)
+		load("res://tests/legacy_fixture.gd").configure(scene)
 		await physics_frame
 		var game: Node = scene.get_node("GameManager")
 		var attacker: Node3D = scene.get_node("Pieces/Ash_01")
@@ -305,6 +307,7 @@ func _test_scene_cleanup() -> void:
 	change_scene_to_file("res://scenes/main.tscn")
 	await _wait_scene("Shattergrid")
 	var scene := current_scene
+	load("res://tests/legacy_fixture.gd").configure(scene)
 	var game: Node = scene.get_node("GameManager")
 	var attacker: Node3D = scene.get_node("Pieces/Ash_03")
 	var victim: Node3D = scene.get_node("Pieces/Slate_04")

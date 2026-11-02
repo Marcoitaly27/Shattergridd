@@ -36,3 +36,21 @@ func move_piece(piece: Node3D, destination: Vector2i) -> bool:
 	_occupants[destination] = piece
 	piece.grid_coordinate = destination
 	return true
+
+
+func remove_piece(piece: Node3D) -> bool:
+	if piece_at(piece.grid_coordinate) != piece:
+		return false
+	_occupants.erase(piece.grid_coordinate)
+	return true
+
+
+func swap_pieces(first: Node3D, second: Node3D) -> bool:
+	if first == second or first.army != second.army or piece_at(first.grid_coordinate) != first or piece_at(second.grid_coordinate) != second:
+		return false
+	var origin: Vector2i = first.grid_coordinate
+	_occupants[origin] = second
+	_occupants[second.grid_coordinate] = first
+	first.grid_coordinate = second.grid_coordinate
+	second.grid_coordinate = origin
+	return true

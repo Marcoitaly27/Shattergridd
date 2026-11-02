@@ -30,6 +30,12 @@ const StoneSurface = preload("res://scripts/visuals/stone_surface.gd")
 @export var movement_behavior: Resource
 @export var capture_behavior: Resource
 @export var post_capture_effect: Resource
+@export var active_ability: StringName
+@export var passive_ability: StringName
+@export_multiline var ability_description: String
+@export var night_movement_behavior: Resource
+@export var night_model_scene: PackedScene
+@export var night_capture_behavior: Resource
 @export var audio_profile: Resource
 @export var is_core_objective: bool = false
 @export var status_immunities: Array[StringName] = []

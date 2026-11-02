@@ -3,7 +3,7 @@ extends Node
 
 const MatchScene = preload("res://scenes/main.tscn")
 const BoardState = preload("res://scripts/board/board_state.gd")
-const ARCHETYPES := ["warden", "hunter", "executioner", "witch", "wyrm", "core"]
+const ARCHETYPES := ["warden", "hunter", "werewolf", "witch", "dragon", "core", "elf"]
 var archetype_index: int = 0
 var core_victim: bool = false
 var _match: Node3D
@@ -18,7 +18,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
-	if event.keycode >= KEY_1 and event.keycode <= KEY_6:
+	if event.keycode >= KEY_1 and event.keycode <= KEY_7:
 		archetype_index = event.keycode - KEY_1
 		_load_scenario()
 	elif event.keycode == KEY_ENTER:
@@ -43,10 +43,14 @@ func _load_scenario() -> void:
 	var attacker: Node3D = _match.get_node("Pieces/Ash_01")
 	var victim: Node3D = _match.get_node("Pieces/Slate_01")
 	attacker.character_definition = load("res://resources/characters/%s.tres" % ARCHETYPES[archetype_index])
-	victim.character_definition = load("res://resources/characters/%s.tres" % ("core" if core_victim else "warden"))
+	victim.character_definition = load("res://resources/characters/%s.tres" % ("core" if core_victim else "hunter"))
 	attacker.grid_coordinate = Vector2i(3, 4)
 	victim.grid_coordinate = Vector2i(4, 4)
-	# Neighbors demonstrate Terror and Core immunity, without covering the shot.
+	# The lab isolates presentation from optional defensive abilities.
+	for piece in _match.get_node("Pieces").get_children():
+		piece.ability_spent = true
+		piece.shield_spent = true
+	attacker.set_night(ARCHETYPES[archetype_index] == "werewolf")
 	_match.get_node("Pieces/Slate_02").grid_coordinate = Vector2i(4, 3)
 	_match.get_node("Pieces/Slate_03").grid_coordinate = Vector2i(5, 3)
 	_match.get_node("Pieces/Slate_04").grid_coordinate = Vector2i(3, 3)
@@ -56,11 +60,12 @@ func _load_scenario() -> void:
 	for piece in _match.get_node("Pieces").get_children():
 		piece.position = game.battlefield.position_for_cell(piece.grid_coordinate)
 		game.board_state.register_piece(piece)
-	instructions.text = "CAPTURE LAB · 1 Warden · 2 Hunter · 3 Executioner · 4 Witch · 5 Wyrm · 6 Core\nEnter: replay · C: Core victim (%s) · Space: fast-forward · R: return to normal match" % ("ON" if core_victim else "OFF")
+	instructions.text = "CAPTURE LAB · 1 Warden · 2 Hunter · 3 Werewolf · 4 Witch · 5 Dragon · 6 Core · 7 Elf\nEnter: replay · C: Core victim (%s) · Space: fast-forward · R: return to normal match" % ("ON" if core_victim else "OFF")
 	_begin_capture.call_deferred()
 
 
 func _begin_capture() -> void:
 	var game: Node = _match.get_node("GameManager")
-	game.handle_cell_clicked(Vector2i(3, 4))
-	game.handle_cell_clicked(Vector2i(4, 4))
+	# Direct presentation preview: does not pretend that this horizontal setup
+	# is a legal move for every character in an actual match.
+	game._request_capture(_match.get_node("Pieces/Ash_01"), _match.get_node("Pieces/Slate_01"), false)

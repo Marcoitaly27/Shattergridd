@@ -27,6 +27,7 @@ func _run() -> void:
 	_test_logical_rules()
 	scene = load("res://scenes/main.tscn").instantiate()
 	root.add_child(scene)
+	load("res://tests/legacy_fixture.gd").configure(scene)
 	game = scene.get_node("GameManager")
 	board = scene.get_node("Battlefield")
 	interaction = scene.get_node("Interaction")

@@ -9,6 +9,7 @@ signal destruction_spawned(effect: Node3D)
 
 const CaptureContext = preload("res://scripts/capture/capture_context.gd")
 const FALLBACK_BEHAVIOR: Resource = preload("res://resources/captures/warden.tres")
+const RANGED_BEHAVIOR: Resource = preload("res://resources/captures/hunter_shot.tres")
 var active: bool = false
 var playback_speed: float = 1.0
 var _timeline: Tween
@@ -55,7 +56,7 @@ func hold(duration: float) -> void:
 	_hold_until_usec = Time.get_ticks_usec() + int(_hold_advance_seconds * 1000000.0)
 
 
-func start(attacker: Node3D, victim: Node3D) -> bool:
+func start(attacker: Node3D, victim: Node3D, ranged: bool = false) -> bool:
 	if active or not is_instance_valid(attacker) or not is_instance_valid(victim):
 		return false
 	var game := get_node_or_null("../GameManager")
@@ -65,10 +66,13 @@ func start(attacker: Node3D, victim: Node3D) -> bool:
 	active = true
 	_capture_serial += 1
 	var behavior: Resource = attacker.get_capture_behavior()
+	if ranged:
+		behavior = RANGED_BEHAVIOR
 	if behavior == null or not behavior.has_method("append"):
 		behavior = FALLBACK_BEHAVIOR
 	_context = CaptureContext.new()
 	_context.setup(self, attacker, victim, int(victim.grid_coordinate.x * 83 + victim.grid_coordinate.y * 31 + _capture_serial))
+	_context.ranged = ranged
 	camera_director.save_strategic_state()
 	var bounds: AABB = attacker.get_visual_bounds().merge(victim.get_visual_bounds())
 	var actors: Array[Node3D] = [attacker, victim]

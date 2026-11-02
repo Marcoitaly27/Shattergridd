@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://scenes/pieces/characters/executioner.tscn" id="base"]
+[node name="MoonboundHumanPrototype" instance=ExtResource("base")]
+metadata/asset_stage = "prototype"
+[node name="AxeRig" parent="." index="4"]
+visible = false
