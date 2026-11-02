@@ -1,4 +1,4 @@
-# SHATTERGRID · 0.10
+# SHATTERGRID · 0.10.1
 
 [Master Game Vision](docs/MASTER_GAME_VISION.md) is the user’s guiding product
 and creative direction. Read it before future design or architectural work;
@@ -7,6 +7,10 @@ planned features are implemented only when requested.
 A local two-player Godot 4 tactical prototype. Version 0.10 implements the requested
 character rules, shield protection, optional Witch rescue, ranged Hunter shot,
 Werewolf day/night forms, Dragon flight and the Random-category Elf.
+
+The free [0.10.1 visual pass](docs/visual_pass_0_10_1.md) refines stone palettes,
+directional shadows, undercroft proportions and isolated day/night atmosphere.
+It adds no production model or paid asset.
 
 Read [the current roster rules, exact timing and manual tests](docs/roster_rules.md).
 The [0.9 GLB/PBR pipeline](docs/asset_pipeline.md) remains available for real asset

@@ -54,17 +54,18 @@ near = 0.1
 far = 250.0
 
 [node name="Moonlight" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-48, -32, -12)
-light_color = Color(0.80, 0.86, 0.90, 1)
-light_energy = 1.20
+rotation_degrees = Vector3(-38, -54, -12)
+light_color = Color(0.93, 0.90, 0.82, 1)
+light_energy = 1.65
 shadow_enabled = true
-directional_shadow_max_distance = 65.0
-shadow_bias = 0.035
+directional_shadow_max_distance = 45.0
+shadow_bias = 0.025
+shadow_normal_bias = 0.8
 
 [node name="DuskFill" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-22, 142, 0)
+rotation_degrees = Vector3(-24, 138, 0)
 light_color = Color(0.55, 0.62, 0.67, 1)
-light_energy = 0.24
+light_energy = 0.32
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("3_environment")

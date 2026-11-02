@@ -6,7 +6,7 @@ frequency = 0.035
 fractal_octaves = 3
 
 [sub_resource type="Gradient" id="StoneRange"]
-colors = PackedColorArray(0.20, 0.22, 0.185, 1, 0.32, 0.34, 0.29, 1)
+colors = PackedColorArray(0.18, 0.21, 0.19, 1, 0.34, 0.36, 0.31, 1)
 
 [sub_resource type="NoiseTexture2D" id="Albedo"]
 width = 128
@@ -17,7 +17,7 @@ color_ramp = SubResource("StoneRange")
 
 [resource]
 resource_name = "Distant architectural stone"
-shading_mode = 2
+shading_mode = 0
 albedo_texture = SubResource("Albedo")
 roughness = 1.0
 metallic_specular = 0.15

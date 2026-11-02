@@ -9,7 +9,7 @@ fractal_octaves = 4
 
 [sub_resource type="Gradient" id="Gradient_stone"]
 offsets = PackedFloat32Array(0.2, 0.8)
-colors = PackedColorArray(0.19, 0.22, 0.225, 1, 0.3, 0.325, 0.31, 1)
+colors = PackedColorArray(0.22, 0.25, 0.25, 1, 0.32, 0.345, 0.33, 1)
 
 [sub_resource type="NoiseTexture2D" id="Texture_color"]
 width = 256
@@ -37,10 +37,10 @@ albedo_texture = SubResource("Texture_color")
 roughness = 0.98
 roughness_texture = ExtResource("1_roughness")
 roughness_texture_channel = 0
-metallic_specular = 0.25
+metallic_specular = 0.18
 normal_enabled = true
-normal_scale = 0.25
+normal_scale = 0.28
 normal_texture = SubResource("Texture_normal")
 uv1_triplanar = true
-uv1_scale = Vector3(0.8, 0.8, 0.8)
+uv1_scale = Vector3(0.9, 0.9, 0.9)
 texture_filter = 4

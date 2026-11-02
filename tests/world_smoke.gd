@@ -59,6 +59,22 @@ func _run() -> void:
 		"Native fog is concentrated below the arena")
 	_expect(environment.fog_density < 0.01 and environment.background_mode == Environment.BG_SKY,
 		"Restrained distance fog and native sky")
+	var source: Environment = load("res://environments/suspended_sanctum.tres")
+	var presentation: Node = scene.get_node("DayNightPresentation")
+	var day_energy := environment.ambient_light_energy
+	var turn_snapshot: Array = scene.get_node("GameManager").completed_turns.duplicate()
+	_expect(environment != source, "Each match owns its atmospheric parameters")
+	presentation._apply(true, false)
+	_expect(environment.ambient_light_energy < day_energy and environment.background_energy_multiplier < 1,
+		"Night darkens background and fill without hiding the tactical board")
+	_expect(source.ambient_light_energy == day_energy and source.background_energy_multiplier == 1,
+		"Night presentation cannot mutate the shared daylight source")
+	_expect(environment.sky == source.sky, "The immutable sky is shared without per-frame panorama rebakes")
+	_expect(scene.get_node("GameManager").completed_turns == turn_snapshot and not scene.get_node("GameManager").is_night,
+		"Presentation changes cannot advance turns or transform gameplay state")
+	presentation._apply(false, false)
+	_expect(environment.ambient_light_energy == day_energy and environment.background_energy_multiplier == 1,
+		"Daylight presentation restores after a night preview")
 	var camera: Camera3D = scene.get_node("Camera3D")
 	_expect(exp(-camera.position.length() * environment.fog_density) > 0.85, "Board-distance transmission remains high")
 	var game: Node = scene.get_node("GameManager")

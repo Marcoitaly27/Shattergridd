@@ -20,8 +20,8 @@ func _ready() -> void:
 			var position := Vector3((bay - 1) * 3.6, -2.25, 6.25).rotated(Vector3.UP, yaw)
 			arches.append(Transform3D(orientation, position))
 		for pier in range(4):
-			var position := Vector3((pier - 1.5) * 3.6, -3.15, 6.18).rotated(Vector3.UP, yaw)
-			supports.append(Transform3D(orientation * Basis.from_scale(Vector3(0.55, 2.8 - (0.45 if pier == side else 0), 0.75)), position))
+			var position := Vector3((pier - 1.5) * 3.6, -3.65, 6.18).rotated(Vector3.UP, yaw)
+			supports.append(Transform3D(orientation * Basis.from_scale(Vector3(0.55, 3.8 - (0.45 if pier == side else 0), 0.75)), position))
 		for patch in range(5):
 			var position := Vector3((patch - 2) * 2.5, -0.15 - (patch % 2) * 0.17, 6.58).rotated(Vector3.UP, yaw)
 			moss.append(Transform3D(orientation * Basis.from_scale(Vector3(0.65 + patch * 0.10, 0.10, 0.23)), position))
