@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/placeholder_piece.tscn" id="2_piece"]
@@ -14,6 +14,9 @@
 [ext_resource type="Resource" path="res://resources/characters/executioner.tres" id="character_executioner"]
 [ext_resource type="Resource" path="res://resources/characters/witch.tres" id="character_witch"]
 [ext_resource type="Resource" path="res://resources/characters/wyrm.tres" id="character_wyrm"]
+
+[ext_resource type="Script" path="res://scripts/capture/camera_director.gd" id="7_camera_director"]
+[ext_resource type="Script" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.025, 0.032, 0.036, 0.90)
@@ -173,6 +176,14 @@ light_energy = 0.35
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("3_environment")
 
+[node name="Effects" type="Node3D" parent="."]
+
+[node name="CameraDirector" type="Node" parent="."]
+script = ExtResource("7_camera_director")
+
+[node name="CaptureDirector" type="Node" parent="."]
+script = ExtResource("8_capture_director")
+
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("4_game")
 
@@ -221,3 +232,65 @@ theme_override_colors/font_color = Color(0.58, 0.60, 0.58, 1)
 theme_override_font_sizes/font_size = 13
 text = "Select a statue"
 horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="Interface/Panel/Margin/Rows"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.63, 0.52, 0.34, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="VictoryScreen" type="Control" parent="Interface"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Interface/VictoryScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.006, 0.012, 0.016, 0.52)
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="Interface/VictoryScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Result" type="PanelContainer" parent="Interface/VictoryScreen/Center"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="Interface/VictoryScreen/Center/Result"]
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
+
+[node name="Rows" type="VBoxContainer" parent="Interface/VictoryScreen/Center/Result/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Winner" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+layout_mode = 2
+text = "PLAYER 1 VICTORY"
+label_settings = SubResource("Text_turn")
+horizontal_alignment = 1
+
+[node name="Detail" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+layout_mode = 2
+text = "The opposing Core has fallen."
+horizontal_alignment = 1
+
+[node name="Restart" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+layout_mode = 2
+text = "PLAY AGAIN"

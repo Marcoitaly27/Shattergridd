@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/capture/behaviors/executioner.gd" id="1_behavior"]
+
+[resource]
+resource_name = "The Sentence"
+script = ExtResource("1_behavior")
+sequence_name = "The Sentence"
+camera_distance = 5.0
+camera_height = 2.6
+camera_side_bias = 0.85

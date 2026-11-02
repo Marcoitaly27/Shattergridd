@@ -116,7 +116,7 @@ func _run() -> void:
 	_expect(attack_edge.material_override == preload("res://materials/attack_hint.tres"), "Enemy move uses restrained attack color")
 	await _click_cell(slate.grid_coordinate)
 	await _finish_move()
-	_expect(not is_instance_valid(slate), "Temporary capture removes enemy placeholder")
+	_expect(not is_instance_valid(slate), "Cinematic capture removes enemy placeholder")
 	_expect(game.board_state.piece_at(Vector2i(1, 5)) == ash_two and game.board_state.piece_at(Vector2i(0, 6)) == null,
 		"Capture updates both occupancy cells")
 	_expect(scene.get_node("Pieces").get_child_count() == 15, "One enemy removed, other pieces retained")
@@ -190,10 +190,10 @@ func _settle() -> void:
 
 
 func _finish_move() -> void:
-	var deadline := Time.get_ticks_msec() + 2000
+	var deadline := Time.get_ticks_msec() + 4000
 	while game.is_moving and Time.get_ticks_msec() < deadline:
 		await process_frame
-	_expect(not game.is_moving, "Move animation completes within two seconds")
+	_expect(not game.is_moving, "Movement or cinematic completes within four seconds")
 
 
 func _hint_count() -> int:

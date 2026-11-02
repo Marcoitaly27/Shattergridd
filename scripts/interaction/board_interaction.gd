@@ -8,14 +8,26 @@ var _pending_clicks: Array[Vector2] = []
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_R:
+			_pending_clicks.clear()
+			game.restart_match()
+			get_viewport().set_input_as_handled()
+			return
+		if event.keycode == KEY_SPACE and OS.is_debug_build() and game.capture_director.active:
+			game.capture_director.accelerate()
+			get_viewport().set_input_as_handled()
+			return
+	if not game.can_accept_input():
+		_pending_clicks.clear()
+		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		_pending_clicks.clear()
 		game.clear_selection()
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if not game.is_moving:
-				_pending_clicks.append(event.position)
+			_pending_clicks.append(event.position)
 			get_viewport().set_input_as_handled()
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_pending_clicks.clear()
@@ -24,6 +36,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if not game.can_accept_input():
+		_pending_clicks.clear()
+		return
 	var clicks := _pending_clicks.duplicate()
 	_pending_clicks.clear()
 	for screen_position in clicks:

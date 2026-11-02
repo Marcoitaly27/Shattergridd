@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/status/status_definition.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"blood_step"
+display_name = "Blood Step"
+extra_destinations = Array[Vector2i]([Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(1, 1)])

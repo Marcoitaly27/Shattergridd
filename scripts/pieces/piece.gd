@@ -5,7 +5,9 @@ extends Node3D
 
 enum Army { ASH, SLATE }
 const CharacterDefinition = preload("res://scripts/pieces/character_definition.gd")
+const StatusState = preload("res://scripts/status/status_state.gd")
 const DEFAULT_MOVEMENT: Resource = preload("res://resources/characters/temporary_movement.tres")
+var statuses: RefCounted = StatusState.new()
 
 @export var piece_id: StringName = &"placeholder"
 @export var character_definition: CharacterDefinition:
@@ -55,6 +57,30 @@ func get_pick_point() -> Vector3:
 	if visuals != null and visuals.has_method("get_pick_point"):
 		return visuals.call("get_pick_point")
 	return global_position + Vector3.UP * picking_height * 0.6
+
+
+func get_capture_behavior() -> Resource:
+	return character_definition.capture_behavior if character_definition != null else null
+
+
+func apply_status(definition: Resource, starts_after: int, expires_at: int) -> bool:
+	if character_definition != null and character_definition.status_immunities.has(definition.status_id):
+		return false
+	statuses.grant(definition, starts_after, expires_at)
+	return true
+
+
+func get_visual_bounds() -> AABB:
+	var bounds := AABB(global_position, Vector3.ZERO)
+	var started := false
+	for mesh_node in $Visuals.find_children("*", "MeshInstance3D", true, false):
+		var mesh := mesh_node as MeshInstance3D
+		if mesh.mesh == null:
+			continue
+		var part := mesh.global_transform * mesh.mesh.get_aabb()
+		bounds = bounds.merge(part) if started else part
+		started = true
+	return bounds
 
 
 func set_selected(selected: bool) -> void:

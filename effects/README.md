@@ -1,1 +1,1 @@
-Reserved for future character-specific native effects. Captures currently remove the placeholder; cinematic destruction, dust and other effects are not implemented.
+Version 0.4 uses scripts/effects/stone_destruction.gd: bounded native rigid-body stone chunks and CPU dust. These are temporary capture effects, not final mesh fracturing, authored VFX or audio.

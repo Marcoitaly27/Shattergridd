@@ -138,6 +138,19 @@ func _build_foundation(random: RandomNumberGenerator) -> void:
 	add_child(foundation)
 	# Broad courses and a tapered underside expose the floating structure's depth.
 	_add_block(foundation, "UpperCourse", Vector3(13.65, 0.38, 13.65), Vector3(0, -0.32, 0))
+	# Debris can land on the real rim/slab, then fall when it leaves the platform.
+	# This collider follows visible stone; there is no catch floor in the abyss.
+	var platform_body := StaticBody3D.new()
+	platform_body.name = "PlatformSurface"
+	platform_body.collision_layer = 1
+	platform_body.collision_mask = 0
+	var platform_shape := BoxShape3D.new()
+	platform_shape.size = Vector3(13.65, 0.38, 13.65)
+	var platform_collision := CollisionShape3D.new()
+	platform_collision.shape = platform_shape
+	platform_collision.position.y = -0.32
+	platform_body.add_child(platform_collision)
+	foundation.add_child(platform_body)
 	_add_block(foundation, "CentralMass", Vector3(13.15, 1.25, 13.15), Vector3(0, -1.08, 0))
 	_add_block(foundation, "LowerCourse", Vector3(13.5, 0.22, 13.5), Vector3(0, -1.82, 0))
 	_add_block(foundation, "Underside", Vector3(11.9, 0.6, 11.9), Vector3(0, -2.2, 0))
