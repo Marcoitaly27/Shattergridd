@@ -35,6 +35,11 @@ func _ready() -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if enabled and panel != null and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F4:
+		get_node("/root/SoundManager").play_ui(&"ui.confirm")
+		_refresh()
+		get_viewport().set_input_as_handled()
+		return
 	if enabled and panel != null and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F3:
 		panel.visible = not panel.visible
 		set_process(panel.visible)
@@ -68,3 +73,5 @@ func _refresh() -> void:
 		"ACTIVE" if game.capture_director.active else "idle", "cinematic" if game.capture_director.active else "strategic",
 		get_tree().get_node_count(), Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		game._movement.calculation_count, interaction.ray_query_count]
+
+	text.text += "\n" + get_node("/root/SoundManager").debug_text()

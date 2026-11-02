@@ -14,6 +14,7 @@ extends Resource
 @export var movement_behavior: Resource
 @export var capture_behavior: Resource
 @export var post_capture_effect: Resource
+@export var audio_profile: Resource
 @export var is_core_objective: bool = false
 @export var status_immunities: Array[StringName] = []
 ## Empty means the model keeps its authored materials (for later imported statues).

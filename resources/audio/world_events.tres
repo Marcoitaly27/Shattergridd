@@ -1,0 +1,39 @@
+[gd_resource type="Resource" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/audio/ambient_group.gd" id="1_group"]
+[ext_resource type="Script" path="res://scripts/audio/ambient_event.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Event_0"]
+script = ExtResource("2_event")
+cue_id = &"distant.crow"
+weight = 3.0
+has_position = true
+position = Vector3(20, -27, -30)
+
+[sub_resource type="Resource" id="Event_1"]
+script = ExtResource("2_event")
+cue_id = &"distant.chain"
+weight = 2.0
+has_position = true
+position = Vector3(-16, -43, 32)
+
+[sub_resource type="Resource" id="Event_2"]
+script = ExtResource("2_event")
+cue_id = &"distant.wood"
+weight = 2.0
+has_position = true
+position = Vector3(31, -37, 20)
+
+[sub_resource type="Resource" id="Event_3"]
+script = ExtResource("2_event")
+cue_id = &"distant.thunder"
+weight = 1.0
+has_position = true
+position = Vector3(0, -30, -70)
+
+[resource]
+script = ExtResource("1_group")
+category = &"world_events"
+min_interval = 90.0
+max_interval = 240.0
+events = Array[ExtResource("2_event")]([SubResource("Event_0"), SubResource("Event_1"), SubResource("Event_2"), SubResource("Event_3")])

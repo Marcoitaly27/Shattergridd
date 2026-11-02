@@ -1,6 +1,7 @@
 extends Control
 ## Development UI only. Validation and spawn planning live in the army domain.
 
+const SetupAudio = preload("res://scripts/audio/setup_audio.gd")
 const Rules = preload("res://scripts/army/army_rules.gd")
 var loadouts: Array[Resource] = []
 var selectors: Array[Dictionary] = [{}, {}]
@@ -21,6 +22,7 @@ func _ready() -> void:
 		_show_details(player, &"core")
 	_refresh_validation()
 	start_button.grab_focus()
+	add_child(SetupAudio.new())
 
 
 func _build_interface() -> void:
@@ -136,6 +138,7 @@ func _build_army_panel(parent: Control, player: int) -> void:
 func _on_choice(index: int, player: int, slot_id: StringName, options: OptionButton) -> void:
 	if index < 0 or options.is_item_disabled(index):
 		return
+	get_node("/root/SoundManager").play_ui(&"ui.army_select")
 	loadouts[player].set_character(slot_id, options.get_item_metadata(index))
 	_refresh_preview(player)
 	_show_details(player, slot_id)
@@ -197,6 +200,7 @@ func _start_match() -> void:
 	if not errors.is_empty():
 		_message.text = "\n".join(errors)
 		return
+	get_node("/root/SoundManager").play_ui(&"ui.match_start")
 	_starting = true
 	start_button.disabled = true
 	var error := get_tree().change_scene_to_file("res://scenes/main.tscn")

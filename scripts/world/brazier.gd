@@ -7,6 +7,8 @@ var _age: float = 0.0
 
 func _ready() -> void:
 	set_process(not Engine.is_editor_hint())
+	if not Engine.is_editor_hint():
+		add_to_group("audio_fire")
 
 
 func _process(delta: float) -> void:

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=7 format=3]
+[gd_resource type="Resource" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/pieces/character_definition.gd" id="1_definition"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/characters/hunter.tscn" id="2_model"]
@@ -7,6 +7,8 @@
 [ext_resource type="Material" path="res://materials/slate_statue.tres" id="5_slate"]
 
 [ext_resource type="Resource" path="res://resources/captures/hunter.tres" id="6_capture"]
+
+[ext_resource type="Resource" path="res://resources/audio/profiles/hunter.tres" id="8_audio"]
 
 [resource]
 resource_name = "Hunter prototype"
@@ -23,3 +25,4 @@ model_scene = ExtResource("2_model")
 movement_behavior = ExtResource("3_movement")
 team_materials = Array[Material]([ExtResource("4_ash"), ExtResource("5_slate")])
 capture_behavior = ExtResource("6_capture")
+audio_profile = ExtResource("8_audio")

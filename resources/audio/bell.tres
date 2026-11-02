@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/audio/ambient_group.gd" id="1_group"]
+[ext_resource type="Script" path="res://scripts/audio/ambient_event.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Event_0"]
+script = ExtResource("2_event")
+cue_id = &"distant.bell"
+weight = 1.0
+has_position = true
+position = Vector3(-32, -30, -12)
+
+[resource]
+script = ExtResource("1_group")
+category = &"bell"
+min_interval = 240.0
+max_interval = 720.0
+events = Array[ExtResource("2_event")]([SubResource("Event_0")])

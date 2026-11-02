@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/audio/audio_profile.gd" id="1_profile"]
+[ext_resource type="Resource" path="res://resources/audio/profiles/movement_medium.tres" id="2_movement"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"wyrm_prototype"
+movement_profile = ExtResource("2_movement")
+events = {&"anticipation": [&"capture.wyrm.anticipation"], &"predatory_lunge": [&"capture.wyrm.motion"], &"impact": [&"capture.wyrm.impact"]}

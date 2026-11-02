@@ -4,6 +4,8 @@ extends Node
 signal cue_emitted(event: StringName, attacker: Node3D, victim: Node3D)
 signal victim_shattered(attacker: Node3D, victim: Node3D)
 signal completed(attacker: Node3D, victim: Node3D)
+signal cancelled
+signal destruction_spawned(effect: Node3D)
 
 const CaptureContext = preload("res://scripts/capture/capture_context.gd")
 const FALLBACK_BEHAVIOR: Resource = preload("res://resources/captures/warden.tres")
@@ -81,6 +83,7 @@ func start(attacker: Node3D, victim: Node3D) -> bool:
 		_timeline.tween_interval(0.18)
 	_timeline.tween_callback(_context.cue.bind(&"settling"))
 	_context.append_settle(_timeline, 0.28)
+	_timeline.tween_callback(_context.cue.bind(&"attacker_settled"))
 	_timeline.tween_interval(0.12)
 	_timeline.tween_callback(_context.cue.bind(&"camera_return"))
 	camera_director.append_move(_timeline, pose, camera_director.strategic_pose(), camera_director.CINEMATIC_FOV, camera_director.strategic_fov(), 0.34)
@@ -106,6 +109,7 @@ func accelerate() -> void:
 
 
 func abort() -> void:
+	var was_active := active
 	if is_instance_valid(_timeline):
 		_timeline.kill()
 	_timeline = null
@@ -119,6 +123,8 @@ func abort() -> void:
 	playback_speed = 1.0
 	if is_instance_valid(camera_director):
 		camera_director.restore_strategic_state()
+	if was_active:
+		cancelled.emit()
 
 
 func _finish() -> void:

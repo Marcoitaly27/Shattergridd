@@ -104,6 +104,7 @@ func shatter(inward: bool = false) -> void:
 	_effect.name = "StoneDestruction"
 	director.effects.add_child(_effect)
 	_effect.spawn(victim_bounds, material, direction, inward, victim_is_core, seed_value)
+	director.destruction_spawned.emit(_effect)
 	victim.hide()
 	var body := victim.get_node_or_null("PickBody") as CollisionObject3D
 	if body != null:

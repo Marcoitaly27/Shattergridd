@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
 [ext_resource type="Script" path="res://scripts/army/army_deployment.gd" id="2_deployment"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://scenes/world/medieval_world.tscn" id="9_world"]
 
 [ext_resource type="Script" path="res://scripts/debug/debug_overlay.gd" id="10_debug"]
+
+[ext_resource type="Script" path="res://scripts/audio/match_audio.gd" id="11_audio"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.025, 0.032, 0.036, 0.90)
@@ -199,3 +201,6 @@ text = "RETURN TO ARMY SETUP"
 
 [node name="DebugOverlay" type="CanvasLayer" parent="."]
 script = ExtResource("10_debug")
+
+[node name="MatchAudio" type="Node" parent="."]
+script = ExtResource("11_audio")

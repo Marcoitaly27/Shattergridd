@@ -9,6 +9,8 @@ signal capture_resolved(attacker: Node3D, victim: Node3D)
 signal victory(player: int)
 signal tactics_changed
 signal feedback_requested(message: String, kind: StringName)
+signal movement_cue(event: StringName, piece: Node3D)
+signal selection_cancelled
 
 enum Phase { READY, MOVING, CAPTURING, GAME_OVER, RESTARTING, RESOLVING }
 
@@ -31,6 +33,7 @@ var is_moving: bool:
 		return phase in [Phase.MOVING, Phase.CAPTURING, Phase.RESTARTING, Phase.RESOLVING]
 var _movement := MovementResolver.new()
 var _move_tween: Tween
+var _moving_piece: Node3D
 var _victory_tween: Tween
 var _threat_ids: Array[StringName] = []
 var _status_feedback: Dictionary = {}
@@ -96,7 +99,7 @@ func handle_cell_clicked(cell: Vector2i) -> void:
 	if not can_accept_input():
 		return
 	if not board_state.contains(cell):
-		clear_selection()
+		cancel_selection()
 		return
 	if is_instance_valid(selected_piece):
 		var legal := valid_destinations(selected_piece)
@@ -109,7 +112,7 @@ func handle_cell_clicked(cell: Vector2i) -> void:
 			return
 	var occupant: Node3D = board_state.piece_at(cell)
 	if occupant == selected_piece and occupant != null:
-		clear_selection()
+		cancel_selection()
 	elif occupant != null and occupant.army == current_player:
 		_select(occupant)
 	else:
@@ -124,6 +127,12 @@ func handle_cell_clicked(cell: Vector2i) -> void:
 		elif selected_piece != null:
 			feedback_requested.emit("Unavailable destination · choose a marked tile", &"unavailable")
 		clear_selection()
+
+
+func cancel_selection() -> void:
+	if is_instance_valid(selected_piece):
+		selection_cancelled.emit()
+	clear_selection()
 
 
 func clear_selection() -> void:
@@ -196,6 +205,8 @@ func _start_move(destination: Vector2i) -> void:
 		return
 	_set_phase(Phase.MOVING)
 	clear_selection()
+	_moving_piece = mover
+	movement_cue.emit(&"move_start", mover)
 	_move_tween = mover.animate_to(battlefield.position_for_cell(destination), MOVE_DURATION)
 	_move_tween.finished.connect(_finish_normal_move, CONNECT_ONE_SHOT)
 
@@ -205,6 +216,9 @@ func _finish_normal_move() -> void:
 	if phase != Phase.MOVING:
 		return
 	_move_tween = null
+	if is_instance_valid(_moving_piece):
+		movement_cue.emit(&"move_end", _moving_piece)
+	_moving_piece = null
 	_set_phase(Phase.RESOLVING)
 	_advance_turn()
 

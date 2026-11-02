@@ -1,11 +1,13 @@
 extends Node3D
 ## Bounded native rigid bodies and a short CPU dust puff; no mesh fracturing.
 
+signal fragment_contact(position: Vector3, strength: float)
 const LIFETIME: float = 2.4
 var elapsed: float = 0.0
 var fragment_count: int = 0
 var _meshes: Array[MeshInstance3D] = []
 var _born_usec: int = 0
+var _reported_contacts: Dictionary = {}
 
 
 func spawn(bounds: AABB, stone: Material, attack_direction: Vector3, inward: bool, core: bool, seed_value: int) -> void:
@@ -41,6 +43,10 @@ func spawn(bounds: AABB, stone: Material, attack_direction: Vector3, inward: boo
 		visual.material_override = stone
 		body.add_child(visual)
 		add_child(body)
+		if index < 2:
+			body.contact_monitor = true
+			body.max_contacts_reported = 2
+			body.body_entered.connect(_on_contact.bind(body, index))
 		var angle := TAU * float(index) / fragment_count + random.randf_range(-0.12, 0.12)
 		var outward := Vector3(cos(angle), 0, sin(angle))
 		body.global_position = center + outward * random.randf_range(0.12, 0.30)
@@ -51,6 +57,16 @@ func spawn(bounds: AABB, stone: Material, attack_direction: Vector3, inward: boo
 		body.angular_velocity = Vector3(random.randf_range(-1.8, 1.8), random.randf_range(-1.8, 1.8), random.randf_range(-1.8, 1.8))
 		_meshes.append(visual)
 	_spawn_dust(center, core)
+
+
+func _on_contact(other: Node, body: RigidBody3D, index: int) -> void:
+	if _reported_contacts.has(index) or _reported_contacts.size() >= 2:
+		return
+	if not other is PhysicsBody3D or (other.collision_layer & 1) == 0:
+		return
+	# Only actual tile/slab contacts count. Falling into the void has no event.
+	_reported_contacts[index] = true
+	fragment_contact.emit(body.global_position, minf(body.linear_velocity.length(), 6.0))
 
 
 func _process(_delta: float) -> void:

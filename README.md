@@ -1,16 +1,17 @@
-# SHATTERGRID · 0.7
+# SHATTERGRID · 0.8
 
-A local two-player Godot 4 battlefield prototype. Version 0.7 improves hover,
-selection/capture previews, piece information, status indicators, Core warnings,
-turn/victory feedback and guarded action resolution. F3 opens a separate debug
-overlay. The six characters, reflected loadouts, provisional movement/abilities,
-medieval world and cinematic captures are preserved. No external assets/plugins.
+A local two-player Godot 4 battlefield prototype. Version 0.8 adds a centralized,
+bounded audio foundation: native buses, character audio profiles, event-timed
+capture/destruction hooks, layered ambience, rare events, music crossfades,
+cinematic ducking, volume/mute APIs and development audio diagnostics.
 
-See [the 0.7 game-flow and validation report](docs/game_flow.md) for the repository
-audit, states, input locks, feedback language, debugging, performance and manual
-tests. The [character-system design](docs/character_system.md) and
-[visual report](docs/version_0_5.md) describe the preserved foundations.
-Hex remains unimplemented.
+**There are no real sound assets in this repository. The game remains silent.**
+All optional stream references are empty by design; nothing was downloaded or
+fabricated. See [the audio report and real-asset manifest](docs/audio_foundation.md)
+for the audit, file changes, architecture, asset requirements and exact tests.
+The [game-flow report](docs/game_flow.md), [character-system design](docs/character_system.md)
+and [visual report](docs/version_0_5.md) describe the preserved foundations.
+Hex remains unimplemented. Characters, rules and medieval presentation are unchanged.
 
 ## Open and play
 
@@ -145,7 +146,11 @@ without blocking empty tile centers. No free-camera controls were introduced.
   lower settlement, landmarks and two braziers. World objects have no gameplay
   collision or rule dependencies; repeated distant forms use MultiMesh.
 - `materials/`, `environments/`: native procedural stone, hint colors and sky/fog.
-- `assets/`, `effects/`: reserved for future original models, audio and effects.
+- `scripts/audio/`, `resources/audio/`, `default_bus_layout.tres`: centralized
+  bounded playback, optional stream entries, profiles, scope cleanup, layered
+  ambience/music and user/mix gain separation. Media folders should be added
+  only when real sound files are supplied.
+- `assets/`, `effects/`: reserved for future original models and effects.
 
 The battlefield builds its meshes on load, including in the editor with `@tool`.
 Generated children are not serialized. Reopen the scene after changing generation
@@ -169,8 +174,9 @@ later be used as a presentation target. When replacing `Visuals` entirely, its
 optional. The piece retains a simple configurable picking fallback. Model-specific
 AnimationPlayers, audio and effects can live under the model. `Piece.animate_to`
 and the character-owned `capture_behavior` Resource are the replacement points
-for future motion and cinematic execution. No empty ability, animation or audio
-systems have been added just to reserve future fields.
+for future motion and cinematic execution. `CharacterDefinition.audio_profile`
+now selects a replaceable event/layer profile. Actual AudioStreams are assigned
+only through the audio library; optional missing streams skip safely.
 
 ## Cinematic captures
 
@@ -220,10 +226,11 @@ Responsibilities and extension points:
   replaceable character behaviors. `CharacterDefinition.capture_behavior`
   selects one; GameManager has no archetype-specific animation branches.
 - `scripts/effects/stone_destruction.gd`: bounded temporary destruction and dust.
-- `cue_emitted(event, attacker, victim)`: future spatial-audio/VFX hooks such as
-  anticipation, weapon swing, stone impact, crack, debris, Wither, Wyrm impact
-  and Core destruction. The prototype is intentionally silent; no audio is
-  downloaded or represented by fake asset files.
+- `cue_emitted(event, attacker, victim)`: precise audio/VFX hooks for anticipation,
+  motion, impact, crack, debris, attacker settle and Core destruction. MatchAudio
+  consumes them without guessed timers or gameplay authority. Only two chunks
+  can report real platform contacts; falling into the void has no landing event.
+  The prototype remains silent until real streams are assigned.
 
 Future authored AnimationPlayer clips can replace the behavior Resource's
 `append(timeline, context)` implementation. Use timeline callbacks or authored
@@ -287,6 +294,7 @@ godot --headless --path . --script res://tests/capture_smoke.gd
 godot --headless --path . --script res://tests/world_smoke.gd
 godot --headless --path . --script res://tests/army_smoke.gd
 godot --headless --path . --script res://tests/feel_smoke.gd
+godot --headless --path . --script res://tests/audio_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -313,11 +321,15 @@ transitions. The character suite explicitly includes the optional Wyrm in its
 model fixture. `feel_smoke.gd` checks hover, preview/action equality, live status
 updates, nonbinding Core warnings, repeated callback guards, three desktop sizes,
 corner camera fitting, debug toggling, idle counters and victory pause ordering.
-All seven scripts report executed
+`audio_smoke.gd` checks missing references, native routing, volume/mute conversion,
+variation/voice limits, owned loops, rare categories, music/ducking restoration,
+exact impact hooks, actual platform/void contacts and scope replacement. Native
+stream fixtures exist only in test RAM; no audio samples/files are generated.
+All eight scripts report executed
 checks and return nonzero on failure.
 
 Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
-rendering. See the game-flow report for 0.7 validation;
+rendering. See the audio report for 0.8 validation;
 the visual report records the earlier 0.5 checks. Testing on the local
 Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
@@ -352,7 +364,10 @@ Manual review checklist:
   pieces, statuses, effects, winner and camera.
 
 Development controls: **F3** toggles FPS/state/player/selection/hover/camera and
-performance counters. It is debug-build-only and can be disabled on DebugOverlay.
+performance counters, including audio allocation, missing references, music,
+cinematic mix and bus gains. **F4** requests the configured `ui.confirm` cue;
+without a stream it records `missing`. These are debug-build-only controls and
+can be disabled on DebugOverlay.
 Run `godot --path . --script res://scripts/debug/performance_probe.gd` for a
 reproducible idle sample. See the game-flow report for interpretation and the full
 manual checklist, including hover/status/Core warnings and desktop resizing.

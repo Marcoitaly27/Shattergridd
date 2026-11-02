@@ -42,6 +42,9 @@ func _run() -> void:
 		"idle_pick_rays": interaction.ray_query_count - rays,
 		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 	}
+	var sound := root.get_node_or_null("SoundManager")
+	if sound != null:
+		report["audio"] = sound.metrics()
 	print("SHATTERGRID idle baseline: " + JSON.stringify(report))
 	scene.queue_free()
 	await process_frame

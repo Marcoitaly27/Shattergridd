@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/audio/audio_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"movement_supernatural"
+events = {&"move_start": [&"move.supernatural.start"], &"move_end": [&"move.supernatural.settle"]}
