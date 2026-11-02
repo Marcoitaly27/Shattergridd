@@ -32,6 +32,9 @@ func setup(owner_director: Node, source: Node3D, target: Node3D, seed_number: in
 	seed_value = seed_number
 	attacker_visual = attacker.get_node("Visuals")
 	victim_visual = victim.get_node("Visuals")
+	for visual in [attacker_visual, victim_visual]:
+		if visual.has_method("set_presentation_locked"):
+			visual.set_presentation_locked(true)
 	_attacker_root = attacker.global_transform
 	_victim_root = victim.global_transform
 	_attacker_pose = attacker_visual.transform
@@ -50,6 +53,38 @@ func setup(owner_director: Node, source: Node3D, target: Node3D, seed_number: in
 func cue(event: StringName) -> void:
 	if is_instance_valid(director) and director.active:
 		director.cue_emitted.emit(event, attacker, victim)
+
+
+func begin_authored_capture() -> void:
+	attacker_visual.begin_authored_capture(_authored_event)
+
+
+func advance_authored_capture(time: float) -> void:
+	attacker_visual.advance_authored_capture(time)
+
+
+func _authored_event(event: StringName) -> void:
+	if not director.active:
+		return
+	if event == &"impact":
+		if shattered:
+			return
+		var config: Resource = attacker.character_definition.animation_config
+		impact(config.impact_shake)
+		if director.active:
+			shatter()
+			if config.hit_pause > 0:
+				director.hold(config.hit_pause)
+	else:
+		cue(&"weapon_swing" if event == &"swing" else event)
+
+
+func finish_authored_capture() -> void:
+	attacker_visual.end_authored_capture()
+	if not shattered and director.active:
+		push_warning("Authored clip did not emit impact; resolving once at clip end")
+		impact(0.0)
+		shatter()
 
 
 func impact(strength: float, duration: float = 0.16) -> void:
@@ -99,7 +134,8 @@ func shatter(inward: bool = false) -> void:
 	var meshes := victim_visual.find_children("*", "MeshInstance3D", true, false)
 	if not meshes.is_empty():
 		var mesh := meshes[0] as MeshInstance3D
-		material = mesh.material_override if mesh.material_override != null else material
+		if mesh.mesh != null and mesh.mesh.get_surface_count() > 0:
+			material = mesh.get_active_material(0) if mesh.get_active_material(0) != null else material
 	_effect = StoneDestruction.new()
 	_effect.name = "StoneDestruction"
 	director.effects.add_child(_effect)
@@ -138,6 +174,14 @@ func append_settle(timeline: Tween, duration: float) -> void:
 
 
 func restore_visuals() -> void:
+	if is_instance_valid(attacker_visual):
+		if attacker_visual.has_method("end_authored_capture"):
+			attacker_visual.end_authored_capture()
+	if is_instance_valid(victim_visual):
+		if victim_visual.has_method("set_presentation_locked"):
+			victim_visual.set_presentation_locked(false)
+	if is_instance_valid(attacker_visual) and attacker_visual.has_method("set_presentation_locked"):
+		attacker_visual.set_presentation_locked(false)
 	if is_instance_valid(attacker_visual):
 		attacker_visual.transform = _attacker_pose
 	for part in _parts:

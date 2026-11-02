@@ -2,6 +2,8 @@
 extends Resource
 ## Shared character data. Category, character identity and cinematic archetype are distinct.
 
+const AnimationConfig = preload("res://scripts/visuals/animation_config.gd")
+const StoneSurface = preload("res://scripts/visuals/stone_surface.gd")
 @export var character_id: StringName
 @export var title: String
 @export var deployment_category: StringName
@@ -11,6 +13,20 @@ extends Resource
 @export var display_name: String
 @export_multiline var lore_description: String
 @export var model_scene: PackedScene
+@export_group("Visual integration")
+@export var visual_scale: Vector3 = Vector3.ONE
+@export var visual_offset: Vector3 = Vector3.ZERO
+@export var visual_rotation_degrees: Vector3 = Vector3.ZERO
+@export var paired_model_scene: PackedScene
+@export var prototype_visual: bool = true
+@export_enum("Bounds proxy", "Authored proxies", "Prototype parts") var picking_mode: int = 2
+@export var framing_bounds: AABB
+@export var animation_config: AnimationConfig
+@export_enum("Keep authored", "Whole mesh prototype", "Named surfaces") var team_material_mode: int = 1
+@export var team_surface_names: Array[StringName] = []
+@export var stone_material_profile: StoneSurface
+@export var team_tints: Array[Color] = []
+@export_group("Gameplay")
 @export var movement_behavior: Resource
 @export var capture_behavior: Resource
 @export var post_capture_effect: Resource

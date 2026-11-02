@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="SHATTERGRID"
-config/version="0.8"
+config/version="0.9"
 run/main_scene="res://scenes/ui/army_builder.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 

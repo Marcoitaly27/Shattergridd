@@ -33,6 +33,7 @@ size = Vector3(0.13, 0.58, 0.19)
 size = Vector3(0.13, 0.58, 0.19)
 
 [node name="CorePrototype" type="Node3D"]
+metadata/asset_stage = "prototype"
 
 [node name="Pedestal" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.08, 0)

@@ -39,6 +39,7 @@ height = 0.14
 radial_segments = 12
 
 [node name="WyrmPrototype" type="Node3D"]
+metadata/asset_stage = "prototype"
 
 [node name="RelicStone" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.05, 0)

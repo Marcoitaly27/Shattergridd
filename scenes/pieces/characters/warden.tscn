@@ -21,6 +21,7 @@ size = Vector3(0.64, 0.84, 0.14)
 size = Vector3(0.08, 0.77, 0.055)
 
 [node name="WardenPrototype" type="Node3D"]
+metadata/asset_stage = "prototype"
 
 [node name="FortressStone" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.075, 0)

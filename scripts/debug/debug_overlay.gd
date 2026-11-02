@@ -2,6 +2,8 @@ extends CanvasLayer
 ## F3 diagnostics exist only in debug builds and do no work while hidden/disabled.
 
 @export var enabled: bool = true
+const AssetValidation = preload("res://scripts/visuals/asset_validation.gd")
+var _asset_mode: bool = false
 var panel: PanelContainer
 var text: Label
 var _age: float = 0.0
@@ -35,6 +37,13 @@ func _ready() -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if enabled and panel != null and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F7:
+		_asset_mode = not _asset_mode
+		panel.show()
+		set_process(true)
+		_refresh()
+		get_viewport().set_input_as_handled()
+		return
 	if enabled and panel != null and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F4:
 		get_node("/root/SoundManager").play_ui(&"ui.confirm")
 		_refresh()
@@ -75,3 +84,17 @@ func _refresh() -> void:
 		game._movement.calculation_count, interaction.ray_query_count]
 
 	text.text += "\n" + get_node("/root/SoundManager").debug_text()
+	if _asset_mode:
+		text.text += "\nASSET INSPECTOR · F7"
+		if is_instance_valid(game.selected_piece):
+			var piece: Node3D = game.selected_piece
+			var visuals := piece.get_node("Visuals")
+			if visuals.has_method("asset_info"):
+				var data: Dictionary = visuals.asset_info()
+				text.text += "\n%s · %s\nScene: %s\nScale %s\nOffset %s · rotation %s\nAnimation: %s\nMaterial mode %d · team %d · reflected %s" % [
+					piece.character_definition.character_id, data.stage, data.scene,
+					data.scale, data.offset, data.rotation, data.animation, data.team_mode, data.team + 1, data.reflected]
+				var warnings := AssetValidation.inspect_piece(piece)
+				text.text += "\nAsset warnings: " + ("none" if warnings.is_empty() else "; ".join(warnings))
+		else:
+			text.text += "\nSelect a statue to inspect its visual configuration"

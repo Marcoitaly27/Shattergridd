@@ -9,6 +9,7 @@ signal status_applied(piece: Node3D, definition: Resource)
 const CharacterDefinition = preload("res://scripts/pieces/character_definition.gd")
 const StatusState = preload("res://scripts/status/status_state.gd")
 const DEFAULT_MOVEMENT: Resource = preload("res://resources/characters/temporary_movement.tres")
+const AUTHORED_CAPTURE: Resource = preload("res://resources/visuals/authored_capture.tres")
 var statuses: RefCounted = StatusState.new()
 
 @export var piece_id: StringName = &"placeholder"
@@ -46,6 +47,7 @@ func _ready() -> void:
 	_add_army_mark()
 	statuses.changed.connect(func() -> void: status_changed.emit(self))
 	statuses.granted.connect(func(definition: Resource) -> void: status_applied.emit(self, definition))
+	request_visual_animation(&"idle")
 
 
 func get_display_name() -> String:
@@ -70,7 +72,23 @@ func get_pick_point() -> Vector3:
 
 
 func get_capture_behavior() -> Resource:
+	var visuals := get_node_or_null("Visuals")
+	if visuals != null and visuals.has_method("authored_capture_ready") and visuals.authored_capture_ready():
+		return AUTHORED_CAPTURE
 	return character_definition.capture_behavior if character_definition != null else null
+
+
+func replace_visual(scene: PackedScene) -> bool:
+	var visuals := get_node_or_null("Visuals")
+	if visuals == null or not visuals.set_model_override(scene):
+		return false
+	_refresh_picking_body()
+	return true
+
+
+func request_visual_animation(state: StringName) -> bool:
+	var visuals := get_node_or_null("Visuals")
+	return visuals != null and visuals.has_method("request_animation") and visuals.request_animation(state)
 
 
 func apply_status(definition: Resource, starts_after: int, expires_at: int) -> bool:
@@ -127,6 +145,8 @@ func refresh_status_indicators(completed_owner_turns: int) -> void:
 
 
 func get_visual_bounds() -> AABB:
+	if $Visuals.has_method("get_visual_bounds"):
+		return $Visuals.get_visual_bounds()
 	var bounds := AABB(global_position, Vector3.ZERO)
 	var started := false
 	for mesh_node in $Visuals.find_children("*", "MeshInstance3D", true, false):
@@ -146,8 +166,15 @@ func set_selected(selected: bool) -> void:
 
 
 func animate_to(destination: Vector3, duration: float) -> Tween:
+	if $Visuals.has_method("set_presentation_locked"):
+		$Visuals.set_presentation_locked(true)
+	request_visual_animation(&"move")
 	var animation := create_tween()
 	animation.tween_property(self, "position", destination, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	animation.finished.connect(func() -> void:
+		if $Visuals.has_method("set_presentation_locked"):
+			$Visuals.set_presentation_locked(false)
+		request_visual_animation(&"idle"), CONNECT_ONE_SHOT)
 	return animation
 
 
@@ -249,6 +276,8 @@ func _add_army_mark() -> void:
 func _apply_appearance() -> void:
 	# Future model scenes keep their own materials and animation hierarchy.
 	var visuals := get_node_or_null("Visuals")
+	if visuals != null and visuals.has_method("set_reflected"):
+		visuals.set_reflected(reflected_member == 1)
 	if visuals != null and visuals.has_method("set_character"):
 		visuals.call("set_character", character_definition)
 	if visuals != null and visuals.has_method("set_army"):

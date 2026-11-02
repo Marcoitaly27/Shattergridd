@@ -1,17 +1,19 @@
-# SHATTERGRID · 0.8
+# SHATTERGRID · 0.9
 
-A local two-player Godot 4 battlefield prototype. Version 0.8 adds a centralized,
-bounded audio foundation: native buses, character audio profiles, event-timed
-capture/destruction hooks, layered ambience, rare events, music crossfades,
-cinematic ducking, volume/mute APIs and development audio diagnostics.
+A local two-player Godot 4 battlefield prototype. Version 0.9 prepares external
+GLB/PBR integration: stable visual attachment/corrections, non-destructive wrapper
+templates, simple pick proxies, named team surfaces, a native stone-map profile,
+optional event-driven AnimationPlayer captures and development asset inspection.
+The current six models remain explicitly marked prototypes. No production model,
+texture image, rig, animation file or third-party asset was generated/downloaded.
 
-**There are no real sound assets in this repository. The game remains silent.**
-All optional stream references are empty by design; nothing was downloaded or
-fabricated. See [the audio report and real-asset manifest](docs/audio_foundation.md)
-for the audit, file changes, architecture, asset requirements and exact tests.
-The [game-flow report](docs/game_flow.md), [character-system design](docs/character_system.md)
-and [visual report](docs/version_0_5.md) describe the preserved foundations.
-Hex remains unimplemented. Characters, rules and medieval presentation are unchanged.
+See [the 0.9 asset pipeline and exact GLB replacement workflow](docs/asset_pipeline.md)
+and [external source/license register template](docs/ASSET_SOURCES.md).
+The [audio manifest](docs/audio_foundation.md), [game flow](docs/game_flow.md),
+[character design](docs/character_system.md) and [visual report](docs/version_0_5.md)
+describe preserved foundations. There are still no real sound assets; Hex remains
+unimplemented. Board, movement, abilities, roster and reflected loadout rules stay
+unchanged.
 
 ## Open and play
 
@@ -113,11 +115,13 @@ without blocking empty tile centers. No free-camera controls were introduced.
 - `scripts/pieces/piece.gd`: per-instance ID, owning army, coordinate and optional
   name/movement overrides. `get_display_name()` and `get_movement_behavior()`
   resolve shared archetype data without character branches in GameManager.
-- `scripts/pieces/placeholder_visual.gd`: loads the character model, applies its
-  optional team palette, or preserves authored materials when the palette is
-  empty. Each of the six models is an independently editable scene under
+- `scripts/pieces/placeholder_visual.gd`: reusable visual adapter at the legacy
+  path. Model corrections, reflected art variants, simple production proxies,
+  authored/named team surfaces and optional animation integration are isolated
+  from Piece/board transforms. Each of the six models is an independently editable scene under
   `scenes/pieces/characters/`. Native compound picking follows primitive parts,
-  including weapons and low bodies, instead of a generic tall cylinder.
+  including weapons and low bodies. Production wrappers use authored simple
+  Shape3D proxies or one bounds box, never detailed rendered-mesh collision.
 - `scripts/movement/adjacent_movement.gd`: isolated eight-direction prototype
   rule. Future characters can supply another Resource implementing
   `get_destinations(origin, army, board)`. GameManager filters its destinations
@@ -150,6 +154,8 @@ without blocking empty tile centers. No free-camera controls were introduced.
   bounded playback, optional stream entries, profiles, scope cleanup, layered
   ambience/music and user/mix gain separation. Media folders should be added
   only when real sound files are supplied.
+- `scripts/visuals/`, `scenes/assets/`, `resources/visuals/`: wrapper templates,
+  animation/event adapter, validation and PBR configuration. No fake GLB/maps.
 - `assets/`, `effects/`: reserved for future original models and effects.
 
 The battlefield builds its meshes on load, including in the editor with `@tool`.
@@ -174,7 +180,10 @@ later be used as a presentation target. When replacing `Visuals` entirely, its
 optional. The piece retains a simple configurable picking fallback. Model-specific
 AnimationPlayers, audio and effects can live under the model. `Piece.animate_to`
 and the character-owned `capture_behavior` Resource are the replacement points
-for future motion and cinematic execution. `CharacterDefinition.audio_profile`
+for future motion and cinematic execution. A valid wrapper-local AnimationPlayer
+capture with an impact method track uses the authored adapter on the director's
+clock; missing/unsafe clips retain the existing procedural fallback.
+`CharacterDefinition.audio_profile`
 now selects a replaceable event/layer profile. Actual AudioStreams are assigned
 only through the audio library; optional missing streams skip safely.
 
@@ -295,6 +304,7 @@ godot --headless --path . --script res://tests/world_smoke.gd
 godot --headless --path . --script res://tests/army_smoke.gd
 godot --headless --path . --script res://tests/feel_smoke.gd
 godot --headless --path . --script res://tests/audio_smoke.gd
+godot --headless --path . --script res://tests/asset_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -325,11 +335,14 @@ corner camera fitting, debug toggling, idle counters and victory pause ordering.
 variation/voice limits, owned loops, rare categories, music/ducking restoration,
 exact impact hooks, actual platform/void contacts and scope replacement. Native
 stream fixtures exist only in test RAM; no audio samples/files are generated.
-All eight scripts report executed
+`asset_smoke.gd` verifies model/environment replacements preserve gameplay,
+proxy/material isolation, pair variants, PBR channels and actual method-track
+impact timing/cancellation using existing scenes and RAM-only clip fixtures.
+All nine scripts report executed
 checks and return nonzero on failure.
 
 Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
-rendering. See the audio report for 0.8 validation;
+rendering. See the asset-pipeline report for 0.9 validation;
 the visual report records the earlier 0.5 checks. Testing on the local
 Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
@@ -367,7 +380,8 @@ Development controls: **F3** toggles FPS/state/player/selection/hover/camera and
 performance counters, including audio allocation, missing references, music,
 cinematic mix and bus gains. **F4** requests the configured `ui.confirm` cue;
 without a stream it records `missing`. These are debug-build-only controls and
-can be disabled on DebugOverlay.
+can be disabled on DebugOverlay. **F7** adds selected-asset ID/path, correction,
+animation/material/team information and nonfatal integration warnings.
 Run `godot --path . --script res://scripts/debug/performance_probe.gd` for a
 reproducible idle sample. See the game-flow report for interpretation and the full
 manual checklist, including hover/status/Core warnings and desktop resizing.
@@ -391,3 +405,5 @@ mkdir -p "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
 A graphical session requires a display. Editor-local socket permissions may also
 be required in sandboxed environments. Rendering can vary slightly by GPU.
 Multiplayer, AI, final menus/progression, final characters and advanced combat remain out of scope.
+
+Rapporto v0.9: [audit, file, workflow e verifiche](docs/v09_report.md).

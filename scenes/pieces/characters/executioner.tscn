@@ -27,6 +27,7 @@ radial_segments = 16
 size = Vector3(0.43, 0.39, 0.16)
 
 [node name="ExecutionerPrototype" type="Node3D"]
+metadata/asset_stage = "prototype"
 
 [node name="ExecutionStone" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.07, 0)
