@@ -12,6 +12,11 @@
 [resource]
 resource_name = "Wyrm prototype"
 script = ExtResource("1_definition")
+character_id = &"wyrm"
+title = "Echo of the Old Flight"
+deployment_category = &"special"
+gameplay_description = "Captures terrify adjacent enemies through their next turn: they may move but cannot capture. Cores are immune."
+unlocked_by_default = true
 archetype_id = &"wyrm"
 display_name = "Wyrm"
 lore_description = "A crouching relic of the serpentine creatures once feared beyond the settlement walls."

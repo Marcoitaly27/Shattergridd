@@ -28,6 +28,9 @@ var statuses: RefCounted = StatusState.new()
 			_apply_appearance()
 			_refresh_picking_body()
 @export var grid_coordinate: Vector2i = Vector2i.ZERO
+## Deployment provenance is instance identity; it grants no in-match privileges.
+var deployment_slot_id: StringName
+var reflected_member: int = 0
 
 
 func _ready() -> void:

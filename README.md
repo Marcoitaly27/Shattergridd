@@ -1,22 +1,29 @@
-# SHATTERGRID · 0.5
+# SHATTERGRID · 0.6
 
-A local two-player battlefield prototype for Godot 4. The suspended stone
-platform, 64 worn tiles, 16 primitive statues, fog, lighting and fixed camera
-from 0.1 are preserved. Version 0.5 adds an independent medieval world: hanging
-gothic foundations, a ruined lower settlement, chapel, fog and two ritual fires.
-The six cinematic captures, Blood Step, Terror, Core victory and restart from 0.4
-remain in place. No external assets, plugins or packages are used.
+A local two-player Godot 4 battlefield prototype. Version 0.6 adds a development
+army builder, data-driven character identities, configurable reflected deployment
+slots, independent loadouts and an in-memory character collection. The medieval
+world from 0.5 and cinematic captures/statuses from 0.4 remain in place.
+No external assets, plugins or packages are used.
 
-See [the 0.5 audit and visual report](docs/version_0_5.md) for actual feature state,
-world composition, files, performance budgets and the manual review checklist.
-Hex is not implemented; this visual pass does not invent new gameplay rules.
+See [the character-system design and 0.6 report](docs/character_system.md) for the
+repository audit, Law of Reflection, data contracts, migration, validation,
+limitations and instructions for adding one character. The
+[0.5 visual report](docs/version_0_5.md) describes the preserved environment.
+Hex remains unimplemented.
 
 ## Open and play
 
 Import `project.godot` in your **Godot 4** editor, then press **F5 / Play**.
 The repository retains your Godot 4.7 project metadata and animation compatibility
 setting. Runtime validation here uses Godot **4.6.3** and Compatibility rendering.
-The configured main scene is `scenes/main.tscn`; F6 also runs that scene directly.
+F5 opens `scenes/ui/army_builder.tscn`. Choose/confirm each player's Core, Guard,
+Hunt, Power and Special, then click **START MATCH**. Guard, Hunt and Power choices
+spawn twice, reflected around the Core column. Special offers Witch or Wyrm.
+The preview shows both players' actual coordinates; highlighted cells share a
+single choice. Focus a selector to see the name, title and gameplay description.
+F6 on `scenes/main.tscn` directly runs the last confirmed loadouts, or defaults in
+a new process.
 
 If using GitHub Desktop: select this repository and `main`, click **Fetch origin**
 and then **Pull origin** when offered. Choose **Repository → Show in Explorer**
@@ -25,7 +32,7 @@ to locate `project.godot` for import into Godot.
 ## Controls and temporary rules
 
 - Player 1 (weathered ash stone) starts. Player 2 controls the darker
-  slate statues. Both armies use the same six prototype silhouettes. Both players
+  slate statues. Both armies draw from the same six available prototype silhouettes. Both players
   use the same mouse locally.
 - Left-click a statue belonging to the active player to select it. A muted brass
   outline around its architectural base marks the selection. Clicking another
@@ -45,7 +52,10 @@ to locate `project.godot` for import into Godot.
 
 The restrained label at the top shows `PLAYER 1 TURN` or `PLAYER 2 TURN`.
 There are no free-camera controls. **R** restarts a match, including during a
-capture; **PLAY AGAIN** restarts after victory. In a debug/editor run, **Space**
+capture; **PLAY AGAIN** restarts after victory, keeping confirmed loadouts.
+**ARMY LOADOUT** returns to the builder during a match/capture;
+**RETURN TO LOADOUT** does the same after victory. Choices survive scene changes
+within one run, but are not saved when the application closes. In a debug/editor run, **Space**
 fast-forwards an active capture while still executing every impact and resolution
 event. There is no permanent skip button in the match UI.
 
@@ -65,9 +75,11 @@ face one another; crowns and pointed team hats have been removed.
 | Witch | Tall narrow robe, restrained arms and a crooked forked branch; no pointed hat or broom |
 | Wyrm | Low elongated body, reptilian head, folded wings, horns and a tail |
 
-Each eight-piece army currently demonstrates all six archetypes, with Hunter and
-Warden repeated: Warden, Hunter, Executioner, Core, Witch, Wyrm, Hunter, Warden.
-This retains the 16-piece, opposite-edge test layout; it is **not a final roster**.
+Each eight-piece army deploys Warden, Hunter, Executioner, Core, Executioner,
+Hunter, Warden, then Witch **or** Wyrm. The three pairs reflect around Core column
+3; the configurable single Special occupies column 7. Both armies still start on
+opposite board edges. All six definitions remain available, while one army now
+uses five distinct characters. This is **not a final roster or formation**.
 Movement retains the provisional eight-direction rule from 0.2. Character models,
 attack animation and destruction remain prototypes. There is no Hex ability or
 final character movement roster.
@@ -84,8 +96,10 @@ without blocking empty tile centers. No free-camera controls were introduced.
   coordinate-to-position conversion and separate move-hint geometry. Original
   stone materials are never overwritten by selection or movement highlighting.
 - `scripts/pieces/character_definition.gd`: typed shared Resource containing the
-  archetype ID, display name, lore, replaceable model scene, movement resource and
-  optional team material palette. Six definitions live in `resources/characters/`.
+  unique character ID, title, deployment category, gameplay description,
+  unlock metadata and existing model/movement/capture/ability/material references.
+  Six definitions live in `resources/characters/`. `archetype_id` is a presentation
+  family, not the unique character key.
 - `scripts/pieces/piece.gd`: per-instance ID, owning army, coordinate and optional
   name/movement overrides. `get_display_name()` and `get_movement_behavior()`
   resolve shared archetype data without character branches in GameManager.
@@ -106,8 +120,14 @@ without blocking empty tile centers. No free-camera controls were introduced.
   picking, evaluated during the physics step. Tile bodies use layer 1 and piece
   bodies use layer 2; queries include both.
 - `scripts/ui/turn_display.gd`: turn and selection text, driven by game signals.
-- `scenes/main.tscn`: composition, 16 initially placed pieces, lighting, camera,
-  controllers and minimal UI. Board and piece scenes remain separate.
+- `scripts/army/` and `resources/armies/`: catalog, formation/slot definitions,
+  loadout choices, collection availability and pure validated deployment plans.
+  `MatchSession` carries snapshots between scenes; `ArmyDeployment` spawns before
+  GameManager registers occupancy. The board never reads progression/UI state.
+- `scenes/ui/army_builder.tscn` and `scripts/ui/army_builder.gd`: development-only
+  presentation of two independent loadouts, text details and formation previews.
+- `scenes/main.tscn`: match composition, an empty Pieces container, deployment,
+  lighting, camera, controllers and minimal UI. No hand-placed character roster.
 - `scenes/world/` and `scripts/world/`: replaceable presentation-only arena shell,
   lower settlement, landmarks and two braziers. World objects have no gameplay
   collision or rule dependencies; repeated distant forms use MultiMesh.
@@ -117,12 +137,14 @@ without blocking empty tile centers. No free-camera controls were introduced.
 The battlefield builds its meshes on load, including in the editor with `@tool`.
 Generated children are not serialized. Reopen the scene after changing generation
 code; do not hand-edit generated children. Random wear uses a fixed seed.
-Initial coordinates in the main scene are authoritative at startup, after which
-BoardState owns occupancy and updates each piece's `grid_coordinate` on a move.
+Formation Resources supply startup coordinates; deployment resolves definitions
+from loadout IDs and positions pieces using the battlefield. BoardState then owns
+occupancy and updates each piece's `grid_coordinate` on a move.
 
 To introduce a later statue, duplicate a character definition, assign its model
-scene and movement resource, and reference it from a piece's `character_definition`.
-Leave `team_materials` empty to preserve a future model's authored materials.
+scene, movement, capture/ability references and deployment category. Register it
+in `resources/armies/prototype_catalog.tres`; eligible builder slots discover it
+without editing controllers. See the design document for the exact steps. Leave `team_materials` empty to preserve a future model's authored materials.
 The per-instance `piece_id`, army and coordinate remain unchanged when its model
 is replaced. The prototype wrapper generates compound picking from each primitive
 part; a complex imported model should provide a simpler custom picking setup
@@ -231,7 +253,7 @@ turn. The existing selected-piece panel displays active status names.
 To see every capture without advancing armies across the board:
 
 1. Open `scenes/debug/capture_lab.tscn` in the Godot editor.
-2. Press **F6** to run only that scene. F5 still runs the normal match.
+2. Press **F6** to run only that scene. F5 opens the army builder.
 3. Press **1–6** for Warden, Hunter, Executioner, Witch, Wyrm and Core.
 4. Press **Enter** to replay, **C** to toggle a Core victim, or **Space** to
    fast-forward. **R** leaves the lab and starts a normal fresh match.
@@ -250,6 +272,7 @@ godot --headless --path . --script res://tests/interaction_smoke.gd
 godot --headless --path . --script res://tests/character_smoke.gd
 godot --headless --path . --script res://tests/capture_smoke.gd
 godot --headless --path . --script res://tests/world_smoke.gd
+godot --headless --path . --script res://tests/army_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -269,12 +292,16 @@ Core victory ordering, repeated captures, fast-forward, restart during both earl
 and late capture phases, and the victory restart button. The new `world_smoke.gd`
 checks collision-free scenery, shared-instance budgets,
 vertical placement, cinematic clearance, native fog and picking, then removes the
-entire world and verifies gameplay still works. All five scripts report executed
+entire world and verifies gameplay still works. `army_smoke.gd` checks mirrored
+planning, rejected configurations, independent collection/loadout state, future
+character/Core definitions and real builder → match → restart/return/victory
+transitions. The character suite explicitly includes the optional Wyrm in its
+model fixture. All six scripts report executed
 checks and return nonzero on failure.
 
 Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
-rendering. See the visual report for the 0.5 checks; the earlier capture report
-and scripts remain available for gameplay regressions. Testing on the local
+rendering. See the character-system report for 0.6 validation;
+the visual report records the earlier 0.5 checks. Testing on the local
 Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
 
@@ -290,7 +317,11 @@ opponent. The cinematic should play before the turn changes once.
 
 Manual review checklist:
 
-- F5: ordinary moves, friendly blocking, both players and selection cancellation.
+- F5: choose Witch for Player 1 and Wyrm for Player 2; confirm pair labels and
+  highlighted formation cells, then START MATCH. Try ordinary moves, friendly
+  blocking, both players and selection cancellation.
+- R/PLAY AGAIN retain loadouts and create 16 fresh statues. ARMY LOADOUT and the
+  victory return button preserve choices without duplicating pieces/effects.
 - Lab: all six identities, both actors visible, restrained shake/dust, no clipping.
 - Hunter: destruction is delayed after the fast strike. Witch/Core: no physical
   charge before the victim collapses. Executioner: visible wind-up and axe chop.
@@ -321,4 +352,4 @@ mkdir -p "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
 
 A graphical session requires a display. Editor-local socket permissions may also
 be required in sandboxed environments. Rendering can vary slightly by GPU.
-Multiplayer, AI, menus, final characters and advanced combat remain out of scope.
+Multiplayer, AI, final menus/progression, final characters and advanced combat remain out of scope.

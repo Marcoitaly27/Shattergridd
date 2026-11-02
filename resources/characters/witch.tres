@@ -11,6 +11,11 @@
 [resource]
 resource_name = "Witch prototype"
 script = ExtResource("1_definition")
+character_id = &"witch"
+title = "The Unshriven"
+deployment_category = &"special"
+gameplay_description = "Tall occult statue with one-square movement and a restrained Wither capture."
+unlocked_by_default = true
 archetype_id = &"witch"
 display_name = "Witch"
 lore_description = "A restrained figure carved to condemn or commemorate a woman whose story was erased."

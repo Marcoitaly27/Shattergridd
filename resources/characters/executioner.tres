@@ -12,6 +12,11 @@
 [resource]
 resource_name = "Executioner prototype"
 script = ExtResource("1_definition")
+character_id = &"executioner"
+title = "Bearer of the Sentence"
+deployment_category = &"power"
+gameplay_description = "Captures earn Blood Step: diagonal destinations on its next owner turn; no extra action."
+unlocked_by_default = true
 archetype_id = &"executioner"
 display_name = "Executioner"
 lore_description = "A public instrument of punishment, frozen beneath the weight of an unfinished sentence."

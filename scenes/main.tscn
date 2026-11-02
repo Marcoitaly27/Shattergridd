@@ -1,19 +1,13 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
-[ext_resource type="PackedScene" path="res://scenes/pieces/placeholder_piece.tscn" id="2_piece"]
+[ext_resource type="Script" path="res://scripts/army/army_deployment.gd" id="2_deployment"]
 [ext_resource type="Environment" path="res://environments/suspended_sanctum.tres" id="3_environment"]
 
 [ext_resource type="Script" path="res://scripts/game/game_manager.gd" id="4_game"]
 [ext_resource type="Script" path="res://scripts/interaction/board_interaction.gd" id="5_input"]
 [ext_resource type="Script" path="res://scripts/ui/turn_display.gd" id="6_ui"]
 
-[ext_resource type="Resource" path="res://resources/characters/core.tres" id="character_core"]
-[ext_resource type="Resource" path="res://resources/characters/warden.tres" id="character_warden"]
-[ext_resource type="Resource" path="res://resources/characters/hunter.tres" id="character_hunter"]
-[ext_resource type="Resource" path="res://resources/characters/executioner.tres" id="character_executioner"]
-[ext_resource type="Resource" path="res://resources/characters/witch.tres" id="character_witch"]
-[ext_resource type="Resource" path="res://resources/characters/wyrm.tres" id="character_wyrm"]
 
 [ext_resource type="Script" path="res://scripts/capture/camera_director.gd" id="7_camera_director"]
 [ext_resource type="Script" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
@@ -42,117 +36,8 @@ font_color = Color(0.78, 0.73, 0.61, 1)
 
 [node name="Pieces" type="Node3D" parent="."]
 
-[node name="Ash_01" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-5.25, 0.14, 5.25)
-piece_id = &"ash_01"
-character_definition = ExtResource("character_warden")
-army = 0
-grid_coordinate = Vector2i(0, 7)
-
-[node name="Ash_02" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-3.75, 0.14, 5.25)
-piece_id = &"ash_02"
-character_definition = ExtResource("character_hunter")
-army = 0
-grid_coordinate = Vector2i(1, 7)
-
-[node name="Ash_03" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-2.25, 0.14, 5.25)
-piece_id = &"ash_03"
-character_definition = ExtResource("character_executioner")
-army = 0
-grid_coordinate = Vector2i(2, 7)
-
-[node name="Ash_04" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-0.75, 0.14, 5.25)
-piece_id = &"ash_04"
-character_definition = ExtResource("character_core")
-army = 0
-grid_coordinate = Vector2i(3, 7)
-
-[node name="Ash_05" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(0.75, 0.14, 5.25)
-piece_id = &"ash_05"
-character_definition = ExtResource("character_witch")
-army = 0
-grid_coordinate = Vector2i(4, 7)
-
-[node name="Ash_06" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(2.25, 0.14, 5.25)
-piece_id = &"ash_06"
-character_definition = ExtResource("character_wyrm")
-army = 0
-grid_coordinate = Vector2i(5, 7)
-
-[node name="Ash_07" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(3.75, 0.14, 5.25)
-piece_id = &"ash_07"
-character_definition = ExtResource("character_hunter")
-army = 0
-grid_coordinate = Vector2i(6, 7)
-
-[node name="Ash_08" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(5.25, 0.14, 5.25)
-piece_id = &"ash_08"
-character_definition = ExtResource("character_warden")
-army = 0
-grid_coordinate = Vector2i(7, 7)
-
-[node name="Slate_01" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-5.25, 0.14, -5.25)
-piece_id = &"slate_01"
-character_definition = ExtResource("character_warden")
-army = 1
-grid_coordinate = Vector2i(0, 0)
-
-[node name="Slate_02" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-3.75, 0.14, -5.25)
-piece_id = &"slate_02"
-character_definition = ExtResource("character_hunter")
-army = 1
-grid_coordinate = Vector2i(1, 0)
-
-[node name="Slate_03" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-2.25, 0.14, -5.25)
-piece_id = &"slate_03"
-character_definition = ExtResource("character_executioner")
-army = 1
-grid_coordinate = Vector2i(2, 0)
-
-[node name="Slate_04" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(-0.75, 0.14, -5.25)
-piece_id = &"slate_04"
-character_definition = ExtResource("character_core")
-army = 1
-grid_coordinate = Vector2i(3, 0)
-
-[node name="Slate_05" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(0.75, 0.14, -5.25)
-piece_id = &"slate_05"
-character_definition = ExtResource("character_witch")
-army = 1
-grid_coordinate = Vector2i(4, 0)
-
-[node name="Slate_06" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(2.25, 0.14, -5.25)
-piece_id = &"slate_06"
-character_definition = ExtResource("character_wyrm")
-army = 1
-grid_coordinate = Vector2i(5, 0)
-
-[node name="Slate_07" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(3.75, 0.14, -5.25)
-piece_id = &"slate_07"
-character_definition = ExtResource("character_hunter")
-army = 1
-grid_coordinate = Vector2i(6, 0)
-
-[node name="Slate_08" parent="Pieces" instance=ExtResource("2_piece")]
-position = Vector3(5.25, 0.14, -5.25)
-piece_id = &"slate_08"
-character_definition = ExtResource("character_warden")
-army = 1
-grid_coordinate = Vector2i(7, 0)
+[node name="ArmyDeployment" type="Node" parent="."]
+script = ExtResource("2_deployment")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 position = Vector3(14, 22, 19)
@@ -298,3 +183,14 @@ horizontal_alignment = 1
 [node name="Restart" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
 layout_mode = 2
 text = "PLAY AGAIN"
+
+[node name="Loadout" type="Button" parent="Interface"]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 190.0
+offset_bottom = 54.0
+text = "ARMY LOADOUT"
+
+[node name="Loadout" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+layout_mode = 2
+text = "RETURN TO LOADOUT"

@@ -11,6 +11,11 @@
 [resource]
 resource_name = "Warden prototype"
 script = ExtResource("1_definition")
+character_id = &"warden"
+title = "The Stone Bastion"
+deployment_category = &"guard"
+gameplay_description = "Reliable defensive statue. Uses the current one-square movement prototype."
+unlocked_by_default = true
 archetype_id = &"warden"
 display_name = "Warden"
 lore_description = "A nameless defender still guarding the memory of a fortress that no longer stands."

@@ -11,6 +11,11 @@
 [resource]
 resource_name = "Hunter prototype"
 script = ExtResource("1_definition")
+character_id = &"hunter"
+title = "The Last Pursuer"
+deployment_category = &"hunt"
+gameplay_description = "Lean hunting statue. Uses the current one-square movement prototype."
+unlocked_by_default = true
 archetype_id = &"hunter"
 display_name = "Hunter"
 lore_description = "A pursuer of monsters and heretics whose definition of either has been lost."

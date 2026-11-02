@@ -11,6 +11,11 @@
 [resource]
 resource_name = "Core prototype"
 script = ExtResource("1_definition")
+character_id = &"core"
+title = "The Veiled Sovereign"
+deployment_category = &"core"
+gameplay_description = "Unique army objective. Its destruction ends the match. Immune to Terror."
+unlocked_by_default = true
 archetype_id = &"core"
 display_name = "Core"
 lore_description = "A bound figure in a sealed shrine. Saint, corpse or forbidden god: the stone offers no answer."

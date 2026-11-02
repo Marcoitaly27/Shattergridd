@@ -33,6 +33,10 @@ var _move_tween: Tween
 
 func _ready() -> void:
 	board_state = BoardState.new(battlefield.board_dimensions)
+	var deployment := get_node_or_null("../ArmyDeployment")
+	if deployment != null and not deployment.validation_errors.is_empty():
+		_set_phase(Phase.GAME_OVER)
+		return
 	for piece in pieces.get_children():
 		if not board_state.register_piece(piece):
 			push_error("Invalid or duplicate starting coordinate for %s" % piece.name)
@@ -79,6 +83,14 @@ func clear_selection() -> void:
 
 
 func restart_match() -> void:
+	_leave_match("res://scenes/main.tscn")
+
+
+func return_to_loadout() -> void:
+	_leave_match("res://scenes/ui/army_builder.tscn")
+
+
+func _leave_match(scene_path: String) -> void:
 	if phase == Phase.RESTARTING:
 		return
 	_set_phase(Phase.RESTARTING)
@@ -86,7 +98,7 @@ func restart_match() -> void:
 	if is_instance_valid(_move_tween):
 		_move_tween.kill()
 	capture_director.abort()
-	_reload_match.call_deferred()
+	_reload_match.call_deferred(scene_path)
 
 
 func _select(piece: Node3D) -> void:
@@ -162,7 +174,7 @@ func _set_phase(value: Phase) -> void:
 	phase_changed.emit(value)
 
 
-func _reload_match() -> void:
-	var error := get_tree().change_scene_to_file("res://scenes/main.tscn")
+func _reload_match(scene_path: String) -> void:
+	var error := get_tree().change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("Could not restart match: %s" % error_string(error))

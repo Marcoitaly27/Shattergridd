@@ -15,6 +15,8 @@ func _ready() -> void:
 	game.victory.connect(_show_victory)
 	game.capture_director.cue_emitted.connect(_show_capture_cue)
 	$VictoryScreen/Center/Result/Margin/Rows/Restart.pressed.connect(game.restart_match)
+	$VictoryScreen/Center/Result/Margin/Rows/Loadout.pressed.connect(game.return_to_loadout)
+	$Loadout.pressed.connect(game.return_to_loadout)
 	_show_turn(game.current_player)
 
 

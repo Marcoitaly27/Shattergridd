@@ -11,8 +11,9 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var main_path: String = ProjectSettings.get_setting("application/run/main_scene", "")
-	var packed := load(main_path) as PackedScene
-	_expect(packed != null, "Configured main scene loads")
+	_expect(load(main_path) is PackedScene, "Configured launch scene loads")
+	# The launch scene is now the army builder; this suite verifies the battlefield.
+	var packed := load("res://scenes/main.tscn") as PackedScene
 	if packed == null:
 		quit(1)
 		return

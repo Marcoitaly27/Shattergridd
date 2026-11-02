@@ -16,6 +16,10 @@ func _run() -> void:
 	var scene := load("res://scenes/main.tscn").instantiate() as Node3D
 	root.add_child(scene)
 	await process_frame
+	# Exercise all six model contracts, including the optional Wyrm, independently
+	# from the default formation's three required mirrored pairs.
+	for army in ["Ash", "Slate"]:
+		scene.get_node("Pieces/%s_05" % army).character_definition = load("res://resources/characters/wyrm.tres")
 	var camera: Camera3D = scene.get_node("Camera3D")
 	var player_types := [{}, {}]
 	var model_paths: Dictionary = {}
