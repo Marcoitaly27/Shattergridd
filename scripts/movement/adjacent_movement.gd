@@ -2,6 +2,7 @@ extends Resource
 ## Temporary rule. Future characters can supply a different movement resource
 ## implementing get_destinations(origin, army, board) without changing interaction.
 
+@export var summary: String = "1 tile in any of 8 directions. Friendly tiles blocked."
 
 func get_destinations(origin: Vector2i, army: int, board: RefCounted) -> Array[Vector2i]:
 	var destinations: Array[Vector2i] = []

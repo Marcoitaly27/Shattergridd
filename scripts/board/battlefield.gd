@@ -13,6 +13,10 @@ const ATTACK_HINT: Material = preload("res://materials/attack_hint.tres")
 
 @export var board_dimensions: Vector2i = Vector2i(8, 8)
 var _tiles: Dictionary = {}
+var _capture_marks: Node3D
+var _hover_cursor: Node3D
+var _hover_kind: StringName = &"none"
+var _hover_cell: Vector2i = Vector2i(-1, -1)
 
 
 func grid_to_local(cell: Vector2i) -> Vector3:
@@ -32,9 +36,13 @@ func position_for_cell(cell: Vector2i) -> Vector3:
 func clear_highlights() -> void:
 	for tile in _tiles.values():
 		tile.get_node("MoveHint").hide()
+	if is_instance_valid(_capture_marks):
+		for child in _capture_marks.get_children():
+			_capture_marks.remove_child(child)
+			child.queue_free()
 
 
-func show_destinations(cells: Array[Vector2i], state: RefCounted) -> void:
+func show_destinations(cells: Array[Vector2i], state: RefCounted, ability_cells: Array[Vector2i] = []) -> void:
 	clear_highlights()
 	for cell in cells:
 		var tile := _tiles.get(cell) as MeshInstance3D
@@ -44,6 +52,57 @@ func show_destinations(cells: Array[Vector2i], state: RefCounted) -> void:
 		for edge in hint.get_children():
 			edge.material_override = ATTACK_HINT if state.piece_at(cell) != null else MOVE_HINT
 		hint.show()
+		if state.piece_at(cell) != null:
+			_add_target_mark(cell, true)
+		if ability_cells.has(cell):
+			_add_target_mark(cell, false)
+
+
+func set_hover(cell: Vector2i, kind: StringName) -> void:
+	if kind == _hover_kind and cell == _hover_cell:
+		return
+	_hover_cell = cell
+	_hover_kind = kind
+	if not is_instance_valid(_hover_cursor):
+		_hover_cursor = Node3D.new()
+		_hover_cursor.name = "HoverCursor"
+		for side in range(4):
+			var edge := _box(Vector3(0.35, 0.012, 0.035), MOVE_HINT)
+			edge.position = Vector3(0.43, 0, 0.64).rotated(Vector3.UP, side * PI * 0.5)
+			edge.rotation.y = side * PI * 0.5
+			edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			_hover_cursor.add_child(edge)
+		add_child(_hover_cursor)
+	_hover_cursor.visible = kind != &"none" and _tiles.has(cell)
+	if not _hover_cursor.visible:
+		return
+	_hover_cursor.position = position_for_cell(cell) + Vector3.UP * 0.035
+	var material: Material = preload("res://materials/hover_hint.tres")
+	if kind in [&"move", &"selected", &"selectable"]:
+		material = MOVE_HINT
+	elif kind == &"capture":
+		material = ATTACK_HINT
+	for edge in _hover_cursor.get_children():
+		edge.material_override = material
+	_hover_cursor.scale = Vector3.ONE * (0.85 if kind == &"unavailable" else 1.0)
+
+
+func _add_target_mark(cell: Vector2i, capture: bool) -> void:
+	if not is_instance_valid(_capture_marks):
+		_capture_marks = Node3D.new()
+		_capture_marks.name = "TargetMarks"
+		add_child(_capture_marks)
+	var symbol := Node3D.new()
+	symbol.position = position_for_cell(cell) + Vector3(0.56, 0.035, 0.56)
+	symbol.set_meta("grid_coordinate", cell)
+	symbol.set_meta("kind", &"capture" if capture else &"ability")
+	_capture_marks.add_child(symbol)
+	# Capture is an X; status-derived movement is a smaller +. Color is secondary.
+	for angle in [-PI * 0.25, PI * 0.25] if capture else [0.0, PI * 0.5]:
+		var stroke := _box(Vector3(0.25 if capture else 0.16, 0.014, 0.035), ATTACK_HINT if capture else MOVE_HINT)
+		stroke.rotation.y = angle
+		stroke.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		symbol.add_child(stroke)
 
 
 func _ready() -> void:

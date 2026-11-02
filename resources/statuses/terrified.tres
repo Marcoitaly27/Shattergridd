@@ -5,5 +5,7 @@
 [resource]
 script = ExtResource("1_status")
 status_id = &"terrified"
-display_name = "Terrified (no captures)"
+display_name = "Terrified"
+marker_text = "T"
+description = "May move to empty legal tiles, but cannot capture."
 blocks_capture = true

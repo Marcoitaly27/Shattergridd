@@ -6,4 +6,6 @@
 script = ExtResource("1_status")
 status_id = &"blood_step"
 display_name = "Blood Step"
+marker_text = "B"
+description = "Adds diagonals, no extra action. Expires even if another allied statue acts."
 extra_destinations = Array[Vector2i]([Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(1, 1)])

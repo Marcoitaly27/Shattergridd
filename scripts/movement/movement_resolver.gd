@@ -1,8 +1,10 @@
 extends RefCounted
 ## Compose character movement with active status modifiers before final validation.
 
+var calculation_count: int = 0
 
 func destinations(piece: Node3D, board: RefCounted, completed_owner_turns: int) -> Array[Vector2i]:
+	calculation_count += 1
 	var candidates: Array[Vector2i] = []
 	var behavior: Resource = piece.get_movement_behavior()
 	if behavior != null and behavior.has_method("get_destinations"):

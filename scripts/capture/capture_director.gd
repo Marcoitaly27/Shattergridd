@@ -56,6 +56,10 @@ func hold(duration: float) -> void:
 func start(attacker: Node3D, victim: Node3D) -> bool:
 	if active or not is_instance_valid(attacker) or not is_instance_valid(victim):
 		return false
+	var game := get_node_or_null("../GameManager")
+	if game != null and (game.phase != game.Phase.CAPTURING or attacker.army != game.current_player \
+			or attacker.army == victim.army):
+		return false
 	active = true
 	_capture_serial += 1
 	var behavior: Resource = attacker.get_capture_behavior()

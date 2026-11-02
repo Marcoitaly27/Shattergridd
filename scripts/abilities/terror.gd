@@ -1,5 +1,7 @@
 extends Resource
 
+@export var display_name: String = "Terror"
+@export_multiline var description: String = "Capture: adjacent enemies cannot capture through their next turn. Empty moves allowed; Cores immune."
 const TERROR: Resource = preload("res://resources/statuses/terrified.tres")
 
 

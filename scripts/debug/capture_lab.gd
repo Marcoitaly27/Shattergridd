@@ -37,6 +37,7 @@ func _load_scenario() -> void:
 		remove_child(_match)
 		_match.queue_free()
 	_match = MatchScene.instantiate() as Node3D
+	_match.set_meta("capture_lab", true)
 	add_child(_match)
 	var game: Node = _match.get_node("GameManager")
 	var attacker: Node3D = _match.get_node("Pieces/Ash_01")

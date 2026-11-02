@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
 [ext_resource type="Script" path="res://scripts/army/army_deployment.gd" id="2_deployment"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
 
 [ext_resource type="PackedScene" path="res://scenes/world/medieval_world.tscn" id="9_world"]
+
+[ext_resource type="Script" path="res://scripts/debug/debug_overlay.gd" id="10_debug"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.025, 0.032, 0.036, 0.90)
@@ -182,7 +184,7 @@ horizontal_alignment = 1
 
 [node name="Restart" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
 layout_mode = 2
-text = "PLAY AGAIN"
+text = "REMATCH"
 
 [node name="Loadout" type="Button" parent="Interface"]
 offset_left = 18.0
@@ -193,4 +195,7 @@ text = "ARMY LOADOUT"
 
 [node name="Loadout" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
 layout_mode = 2
-text = "RETURN TO LOADOUT"
+text = "RETURN TO ARMY SETUP"
+
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("10_debug")

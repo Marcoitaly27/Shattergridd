@@ -2,6 +2,8 @@ extends Node
 ## Cinematic pose interpolation and non-accumulating local shake.
 
 const CINEMATIC_FOV: float = 46.0
+const MIN_CINEMATIC_HEIGHT: float = 3.0
+var fallback_count: int = 0
 var base_pose: Transform3D
 var playback_speed: float = 1.0
 var _saved: Dictionary = {}
@@ -56,15 +58,17 @@ func calculate_pose(attacker: Vector3, victim: Vector3, bounds: AABB, behavior: 
 	var viewport_size := camera.get_viewport().get_visible_rect().size
 	var aspect := viewport_size.x / maxf(viewport_size.y, 1.0)
 	var pose := Transform3D.IDENTITY
+	var best_fitted := strategic_pose()
 	# Fit the complete statues, not just their roots; includes motion clearance.
 	for attempt in range(12):
 		var fitted := false
 		for angle in [view, opposite]:
 			pose.origin = center + angle * distance + Vector3.UP * height
-			pose.origin.y = maxf(pose.origin.y, 3.0)
+			pose.origin.y = maxf(pose.origin.y, MIN_CINEMATIC_HEIGHT)
 			pose = pose.looking_at(center, Vector3.UP)
 			if _fits(bounds.grow(0.35), pose, aspect):
 				fitted = true
+				best_fitted = pose
 				if _actors_visible(pose.origin, actors):
 					return pose
 		if fitted:
@@ -72,7 +76,13 @@ func calculate_pose(attacker: Vector3, victim: Vector3, bounds: AABB, behavior: 
 		else:
 			distance *= 1.10
 			height *= 1.04
-	return pose
+	# Keep a proven fit if crowding exhausts the closer views. Never return an
+	# unfitted final trial merely because it was the last camera position tested.
+	fallback_count += 1
+	var strategic := strategic_pose()
+	if _fits(bounds.grow(0.35), strategic, aspect) and _actors_visible(strategic.origin, actors):
+		return strategic
+	return best_fitted
 
 
 func _actors_visible(origin: Vector3, actors: Array[Node3D]) -> bool:
@@ -136,6 +146,7 @@ func _apply_pose() -> void:
 		var strength := _shake_intensity * pow(1.0 - _shake_age / _shake_duration, 2.0)
 		pose.origin += pose.basis.x * sin(_shake_age * 91.0) * strength
 		pose.origin += pose.basis.y * sin(_shake_age * 67.0) * strength * 0.55
+	pose.origin.y = maxf(pose.origin.y, MIN_CINEMATIC_HEIGHT)
 	camera.global_transform = pose
 
 

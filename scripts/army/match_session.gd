@@ -10,6 +10,10 @@ var collection: Resource = Collection.new()
 var _loadouts: Array[Resource] = []
 
 
+func _ready() -> void:
+	get_window().min_size = Vector2i(960, 640)
+
+
 func get_loadouts() -> Array[Resource]:
 	var source: Array = _loadouts if not _loadouts.is_empty() else [DEFAULT_LOADOUT, DEFAULT_LOADOUT]
 	var result: Array[Resource] = []

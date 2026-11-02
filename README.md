@@ -1,15 +1,15 @@
-# SHATTERGRID · 0.6
+# SHATTERGRID · 0.7
 
-A local two-player Godot 4 battlefield prototype. Version 0.6 adds a development
-army builder, data-driven character identities, configurable reflected deployment
-slots, independent loadouts and an in-memory character collection. The medieval
-world from 0.5 and cinematic captures/statuses from 0.4 remain in place.
-No external assets, plugins or packages are used.
+A local two-player Godot 4 battlefield prototype. Version 0.7 improves hover,
+selection/capture previews, piece information, status indicators, Core warnings,
+turn/victory feedback and guarded action resolution. F3 opens a separate debug
+overlay. The six characters, reflected loadouts, provisional movement/abilities,
+medieval world and cinematic captures are preserved. No external assets/plugins.
 
-See [the character-system design and 0.6 report](docs/character_system.md) for the
-repository audit, Law of Reflection, data contracts, migration, validation,
-limitations and instructions for adding one character. The
-[0.5 visual report](docs/version_0_5.md) describes the preserved environment.
+See [the 0.7 game-flow and validation report](docs/game_flow.md) for the repository
+audit, states, input locks, feedback language, debugging, performance and manual
+tests. The [character-system design](docs/character_system.md) and
+[visual report](docs/version_0_5.md) describe the preserved foundations.
 Hex remains unimplemented.
 
 ## Open and play
@@ -34,10 +34,17 @@ to locate `project.godot` for import into Godot.
 - Player 1 (weathered ash stone) starts. Player 2 controls the darker
   slate statues. Both armies draw from the same six available prototype silhouettes. Both players
   use the same mouse locally.
-- Left-click a statue belonging to the active player to select it. A muted brass
+- Hover an active-player statue for short pedestal corner marks. Left-click it
+  to select it. The information panel shows role, movement, ability and statuses. A muted brass
   outline around its architectural base marks the selection. Clicking another
   friendly statue changes selection.
-- Brass tile borders mark empty destinations; rust borders mark potential attacks.
+- Brass tile borders mark empty destinations; rust borders and an X mark legal
+  captures. Hover a legal enemy for CAPTURE feedback; only a click starts it.
+  A + marks status-derived destinations; grey indicates unavailable tiles.
+- B/T markers show Blood Step/Terror on individual pedestals. One/two pedestal
+  cuts and textual Player I/II identity supplement the two stone palettes.
+- A threatened Core gains rust corners and a textual warning. This is tactical
+  information only: it imposes no check/checkmate or forced response rule.
 - Every placeholder temporarily moves **exactly one square in any of eight
   directions**, including diagonals. This is a prototype rule, not a final roster
   or final movement system. Friendly occupied tiles are blocked.
@@ -48,11 +55,13 @@ to locate `project.godot` for import into Godot.
   camera return, then abilities resolve and the turn changes. Destroying the
   opposing Core ends the match only after its cinematic completes.
 - Click an invalid destination or outside the board to clear selection.
-  **Esc** or **right-click** also cancel. Cancelling does not consume a turn.
+  **Esc**, **right-click** or clicking the selected statue again also cancel. Cancelling does not consume a turn.
 
-The restrained label at the top shows `PLAYER 1 TURN` or `PLAYER 2 TURN`.
+The restrained label at the top shows `PLAYER 1 TURN` or `PLAYER 2 TURN` and the
+army identity. A brief opacity transition communicates a turn change without
+locking gameplay. Invalid moves receive a contextual explanation.
 There are no free-camera controls. **R** restarts a match, including during a
-capture; **PLAY AGAIN** restarts after victory, keeping confirmed loadouts.
+capture; **REMATCH** restarts after the solemn victory pause, keeping confirmed loadouts.
 **ARMY LOADOUT** returns to the builder during a match/capture;
 **RETURN TO LOADOUT** does the same after victory. Choices survive scene changes
 within one run, but are not saved when the application closes. In a debug/editor run, **Space**
@@ -113,13 +122,17 @@ without blocking empty tile centers. No free-camera controls were introduced.
   `get_destinations(origin, army, board)`. GameManager filters its destinations
   against board bounds and friendly occupancy.
 - `scripts/game/game_manager.gd`: authoritative selection, validation and explicit
-  READY / MOVING / CAPTURING / GAME_OVER / RESTARTING phases. Board occupancy
+  READY / MOVING / CAPTURING / RESOLVING / GAME_OVER / RESTARTING phases. Board occupancy
   changes at the shatter event; statuses, victory and turn resolution wait for
   camera restoration. The obsolete instant-removal helper has been retired.
 - `scripts/interaction/board_interaction.gd`: mouse/keyboard input and physics
   picking, evaluated during the physics step. Tile bodies use layer 1 and piece
   bodies use layer 2; queries include both.
-- `scripts/ui/turn_display.gd`: turn and selection text, driven by game signals.
+- `scripts/ui/turn_display.gd`: turn identity/transition, bounded piece information,
+  contextual capture/rejection/status feedback and persistent Core warnings.
+- `scripts/debug/debug_overlay.gd`: F3 diagnostics in debug builds, separate from
+  production UI; hidden and not processing by default.
+- `scripts/debug/performance_probe.gd`: optional three-second idle baseline.
 - `scripts/army/` and `resources/armies/`: catalog, formation/slot definitions,
   loadout choices, collection availability and pure validated deployment plans.
   `MatchSession` carries snapshots between scenes; `ArmyDeployment` spawns before
@@ -245,8 +258,8 @@ Resources contain modifiers; `status_state.gd` stores per-piece start/expiry.
 
 `resources/abilities/` selects the two post-capture effects from character data.
 They are applied after camera return, then Core victory is checked, then the
-turn advances. A winning capture ends the match instead of handing over another
-turn. The existing selected-piece panel displays active status names.
+turn advances. A winning capture holds a short locked pause after camera return, then presents
+victory instead of handing over another turn. The existing selected-piece panel displays active status names.
 
 ## Quick cinematic lab (optional)
 
@@ -273,6 +286,7 @@ godot --headless --path . --script res://tests/character_smoke.gd
 godot --headless --path . --script res://tests/capture_smoke.gd
 godot --headless --path . --script res://tests/world_smoke.gd
 godot --headless --path . --script res://tests/army_smoke.gd
+godot --headless --path . --script res://tests/feel_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -296,11 +310,14 @@ entire world and verifies gameplay still works. `army_smoke.gd` checks mirrored
 planning, rejected configurations, independent collection/loadout state, future
 character/Core definitions and real builder → match → restart/return/victory
 transitions. The character suite explicitly includes the optional Wyrm in its
-model fixture. All six scripts report executed
+model fixture. `feel_smoke.gd` checks hover, preview/action equality, live status
+updates, nonbinding Core warnings, repeated callback guards, three desktop sizes,
+corner camera fitting, debug toggling, idle counters and victory pause ordering.
+All seven scripts report executed
 checks and return nonzero on failure.
 
 Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
-rendering. See the character-system report for 0.6 validation;
+rendering. See the game-flow report for 0.7 validation;
 the visual report records the earlier 0.5 checks. Testing on the local
 Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
@@ -320,7 +337,7 @@ Manual review checklist:
 - F5: choose Witch for Player 1 and Wyrm for Player 2; confirm pair labels and
   highlighted formation cells, then START MATCH. Try ordinary moves, friendly
   blocking, both players and selection cancellation.
-- R/PLAY AGAIN retain loadouts and create 16 fresh statues. ARMY LOADOUT and the
+- R/REMATCH retain loadouts and create 16 fresh statues. ARMY LOADOUT and the
   victory return button preserve choices without duplicating pieces/effects.
 - Lab: all six identities, both actors visible, restrained shake/dust, no clipping.
 - Hunter: destruction is delayed after the fast strike. Witch/Core: no physical
@@ -331,8 +348,14 @@ Manual review checklist:
 - Executioner: observe Blood Step on its next turn and its expiry after that turn.
   The default eight-direction rule already permits those diagonal destinations.
 - Repeated captures: no lingering debris, camera drift or permanently locked input.
-- R during a capture, R after a capture, and PLAY AGAIN after victory all reset
+- R during a capture, R after a capture, and REMATCH after victory all reset
   pieces, statuses, effects, winner and camera.
+
+Development controls: **F3** toggles FPS/state/player/selection/hover/camera and
+performance counters. It is debug-build-only and can be disabled on DebugOverlay.
+Run `godot --path . --script res://scripts/debug/performance_probe.gd` for a
+reproducible idle sample. See the game-flow report for interpretation and the full
+manual checklist, including hover/status/Core warnings and desktop resizing.
 
 Known limitations: primitive bodies are not fractured versions of the real mesh;
 crack marks are temporary geometry; there is no final sound, rigged animation or

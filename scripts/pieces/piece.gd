@@ -4,6 +4,8 @@ extends Node3D
 ## Replace the Visuals child with a model scene later; retain this root and its data.
 
 enum Army { ASH, SLATE }
+signal status_changed(piece: Node3D)
+signal status_applied(piece: Node3D, definition: Resource)
 const CharacterDefinition = preload("res://scripts/pieces/character_definition.gd")
 const StatusState = preload("res://scripts/status/status_state.gd")
 const DEFAULT_MOVEMENT: Resource = preload("res://resources/characters/temporary_movement.tres")
@@ -27,6 +29,8 @@ var statuses: RefCounted = StatusState.new()
 		if is_node_ready():
 			_apply_appearance()
 			_refresh_picking_body()
+			if not Engine.is_editor_hint():
+				_add_army_mark()
 @export var grid_coordinate: Vector2i = Vector2i.ZERO
 ## Deployment provenance is instance identity; it grants no in-match privileges.
 var deployment_slot_id: StringName
@@ -39,6 +43,9 @@ func _ready() -> void:
 		return
 	_add_picking_body()
 	_add_selection_ring()
+	_add_army_mark()
+	statuses.changed.connect(func() -> void: status_changed.emit(self))
+	statuses.granted.connect(func(definition: Resource) -> void: status_applied.emit(self, definition))
 
 
 func get_display_name() -> String:
@@ -71,6 +78,52 @@ func apply_status(definition: Resource, starts_after: int, expires_at: int) -> b
 		return false
 	statuses.grant(definition, starts_after, expires_at)
 	return true
+
+
+func get_movement_summary() -> String:
+	var behavior := get_movement_behavior()
+	var summary: Variant = behavior.get("summary") if behavior != null else null
+	return String(summary) if summary != null else "See the marked legal destinations."
+
+
+func set_hovered(hovered: bool, capture: bool = false) -> void:
+	var ring := get_node_or_null("HoverRing") as Node3D
+	if ring == null and hovered:
+		ring = _add_corner_ring("HoverRing", 0.66)
+	if ring != null:
+		ring.visible = hovered
+		for edge in ring.get_children():
+			edge.material_override = preload("res://materials/attack_hint.tres") if capture else preload("res://materials/hover_hint.tres")
+
+
+func set_threatened(threatened: bool) -> void:
+	var ring := get_node_or_null("ThreatRing") as Node3D
+	if ring == null and threatened:
+		ring = _add_corner_ring("ThreatRing", 0.72)
+		for edge in ring.get_children():
+			edge.material_override = preload("res://materials/attack_hint.tres")
+	if ring != null:
+		ring.visible = threatened
+
+
+func refresh_status_indicators(completed_owner_turns: int) -> void:
+	var text: String = statuses.markers(completed_owner_turns)
+	var marker := get_node_or_null("StatusMarker") as Label3D
+	if marker == null and not text.is_empty():
+		marker = Label3D.new()
+		marker.name = "StatusMarker"
+		marker.position = Vector3(-0.57, 0.30, 0.65)
+		marker.no_depth_test = true
+		marker.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		marker.font_size = 32
+		marker.pixel_size = 0.009
+		marker.modulate = Color(0.81, 0.70, 0.45)
+		marker.outline_modulate = Color(0.035, 0.04, 0.04)
+		marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(marker)
+	if marker != null:
+		marker.text = text
+		marker.visible = not text.is_empty()
 
 
 func get_visual_bounds() -> AABB:
@@ -147,13 +200,50 @@ func _add_selection_ring() -> void:
 		var bar := BoxMesh.new()
 		bar.size = Vector3(1.36, 0.014, 0.035)
 		edge.mesh = bar
-		edge.material_override = preload("res://materials/move_hint.tres")
+		edge.material_override = preload("res://materials/selected_hint.tres")
 		edge.position = Vector3(0, 0, 0.68).rotated(Vector3.UP, side * PI * 0.5)
 		edge.rotation.y = side * PI * 0.5
 		edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		ring.add_child(edge)
 	ring.visible = false
 	add_child(ring)
+
+
+func _add_corner_ring(label: String, radius: float) -> Node3D:
+	var ring := Node3D.new()
+	ring.name = label
+	ring.position.y = 0.035
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.29, 0.014, 0.035)
+	for side in range(4):
+		var edge := MeshInstance3D.new()
+		edge.mesh = mesh
+		edge.position = Vector3(radius - 0.13, 0, radius).rotated(Vector3.UP, side * PI * 0.5)
+		edge.rotation.y = side * PI * 0.5
+		edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		ring.add_child(edge)
+	add_child(ring)
+	return ring
+
+
+func _add_army_mark() -> void:
+	# One versus two cuts in the pedestal: team identity does not rely on color.
+	var previous := get_node_or_null("ArmyMark")
+	if previous != null:
+		remove_child(previous)
+		previous.queue_free()
+	var marks := Node3D.new()
+	marks.name = "ArmyMark"
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.055, 0.018, 0.16)
+	for index in range(army + 1):
+		var cut := MeshInstance3D.new()
+		cut.mesh = mesh
+		cut.position = Vector3((index - army * 0.5) * 0.14, 0.205, 0.48)
+		cut.material_override = preload("res://materials/hover_hint.tres")
+		cut.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		marks.add_child(cut)
+	add_child(marks)
 
 
 func _apply_appearance() -> void:
