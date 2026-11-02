@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+shading_mode = 0
+resource_name = "Mist valley rock"
+albedo_color = Color(0.15, 0.175, 0.17, 1)
+roughness = 1.0

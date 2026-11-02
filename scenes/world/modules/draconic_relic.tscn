@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Material" path="res://materials/world/distant_stone.tres" id="1_material"]
+
+[sub_resource type="BoxMesh" id="Mesh_0"]
+size = Vector3(4.5, 0.55, 3.8)
+
+[sub_resource type="CylinderMesh" id="Mesh_1"]
+top_radius = 0.38
+bottom_radius = 0.48
+height = 3.5
+radial_segments = 16
+
+[sub_resource type="BoxMesh" id="Mesh_2"]
+size = Vector3(1.1, 0.9, 1.25)
+
+[sub_resource type="PrismMesh" id="Mesh_3"]
+size = Vector3(0.75, 1.5, 2.3)
+
+[sub_resource type="BoxMesh" id="Mesh_4"]
+size = Vector3(0.6, 0.35, 0.7)
+
+[sub_resource type="CylinderMesh" id="Mesh_5"]
+top_radius = 0.04
+bottom_radius = 0.19
+height = 0.75
+radial_segments = 16
+
+[node name="DraconicRelic" type="Node3D"]
+
+[node name="CrackedPlinth" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.275, 0)
+rotation_degrees = Vector3(0, 7, 0)
+mesh = SubResource("Mesh_0")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="SerpentineStone" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.0, 0)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("Mesh_1")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="DragonHead" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.45, -1.15)
+rotation_degrees = Vector3(-12, 0, 0)
+mesh = SubResource("Mesh_2")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="BrokenWing" type="MeshInstance3D" parent="."]
+position = Vector3(-0.85, 1.3, 0.1)
+rotation_degrees = Vector3(0, 0, -25)
+mesh = SubResource("Mesh_3")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="MissingWingStump" type="MeshInstance3D" parent="."]
+position = Vector3(0.75, 1.05, 0.1)
+rotation_degrees = Vector3(0, 0, 18)
+mesh = SubResource("Mesh_4")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="HornRemnant" type="MeshInstance3D" parent="."]
+position = Vector3(0.28, 2.0, -1.1)
+rotation_degrees = Vector3(-15, 0, 12)
+mesh = SubResource("Mesh_5")
+material_override = ExtResource("1_material")
+cast_shadow = 0

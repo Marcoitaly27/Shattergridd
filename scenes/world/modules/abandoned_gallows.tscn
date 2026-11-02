@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Material" path="res://materials/world/old_wood.tres" id="1_material"]
+
+[sub_resource type="BoxMesh" id="Mesh_0"]
+size = Vector3(3.4, 0.35, 3.0)
+
+[sub_resource type="BoxMesh" id="Mesh_1"]
+size = Vector3(0.24, 3.5, 0.28)
+
+[sub_resource type="BoxMesh" id="Mesh_2"]
+size = Vector3(0.24, 3.1, 0.28)
+
+[sub_resource type="BoxMesh" id="Mesh_3"]
+size = Vector3(3.0, 0.28, 0.28)
+
+[node name="AbandonedGallows" type="Node3D"]
+
+[node name="OldPlatform" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.175, 0)
+rotation_degrees = Vector3(0, 0, 0)
+mesh = SubResource("Mesh_0")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="LeftPost" type="MeshInstance3D" parent="."]
+position = Vector3(-1.1, 2.0, 0)
+rotation_degrees = Vector3(0, 0, 3)
+mesh = SubResource("Mesh_1")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="RightPost" type="MeshInstance3D" parent="."]
+position = Vector3(1.1, 1.8, 0)
+rotation_degrees = Vector3(0, 0, -4)
+mesh = SubResource("Mesh_2")
+material_override = ExtResource("1_material")
+cast_shadow = 0
+
+[node name="AbandonedBeam" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.6, 0)
+rotation_degrees = Vector3(0, 0, -5)
+mesh = SubResource("Mesh_3")
+material_override = ExtResource("1_material")
+cast_shadow = 0

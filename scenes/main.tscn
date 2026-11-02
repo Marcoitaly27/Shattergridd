@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
 [ext_resource type="PackedScene" path="res://scenes/pieces/placeholder_piece.tscn" id="2_piece"]
@@ -17,6 +17,8 @@
 
 [ext_resource type="Script" path="res://scripts/capture/camera_director.gd" id="7_camera_director"]
 [ext_resource type="Script" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
+
+[ext_resource type="PackedScene" path="res://scenes/world/medieval_world.tscn" id="9_world"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.025, 0.032, 0.036, 0.90)
@@ -162,19 +164,21 @@ far = 250.0
 
 [node name="Moonlight" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-48, -32, -12)
-light_color = Color(0.77, 0.84, 0.90, 1)
-light_energy = 1.35
+light_color = Color(0.80, 0.86, 0.90, 1)
+light_energy = 1.20
 shadow_enabled = true
 directional_shadow_max_distance = 65.0
 shadow_bias = 0.035
 
 [node name="DuskFill" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-22, 142, 0)
-light_color = Color(0.66, 0.53, 0.38, 1)
-light_energy = 0.35
+light_color = Color(0.55, 0.62, 0.67, 1)
+light_energy = 0.24
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("3_environment")
+
+[node name="VisualWorld" parent="." instance=ExtResource("9_world")]
 
 [node name="Effects" type="Node3D" parent="."]
 

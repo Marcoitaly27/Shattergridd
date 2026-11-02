@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+shading_mode = 0
+resource_name = "Distant weathered masonry"
+albedo_color = Color(0.20, 0.225, 0.21, 1)
+roughness = 1.0

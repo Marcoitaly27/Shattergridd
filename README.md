@@ -1,10 +1,15 @@
-# SHATTERGRID · 0.4
+# SHATTERGRID · 0.5
 
 A local two-player battlefield prototype for Godot 4. The suspended stone
 platform, 64 worn tiles, 16 primitive statues, fog, lighting and fixed camera
-from 0.1 are preserved. Version 0.4 adds six character-specific cinematic capture
-sequences, bounded stone destruction, Blood Step, Terror, delayed Core victory
-and restart. No external assets, plugins or packages are used.
+from 0.1 are preserved. Version 0.5 adds an independent medieval world: hanging
+gothic foundations, a ruined lower settlement, chapel, fog and two ritual fires.
+The six cinematic captures, Blood Step, Terror, Core victory and restart from 0.4
+remain in place. No external assets, plugins or packages are used.
+
+See [the 0.5 audit and visual report](docs/version_0_5.md) for actual feature state,
+world composition, files, performance budgets and the manual review checklist.
+Hex is not implemented; this visual pass does not invent new gameplay rules.
 
 ## Open and play
 
@@ -103,6 +108,9 @@ without blocking empty tile centers. No free-camera controls were introduced.
 - `scripts/ui/turn_display.gd`: turn and selection text, driven by game signals.
 - `scenes/main.tscn`: composition, 16 initially placed pieces, lighting, camera,
   controllers and minimal UI. Board and piece scenes remain separate.
+- `scenes/world/` and `scripts/world/`: replaceable presentation-only arena shell,
+  lower settlement, landmarks and two braziers. World objects have no gameplay
+  collision or rule dependencies; repeated distant forms use MultiMesh.
 - `materials/`, `environments/`: native procedural stone, hint colors and sky/fog.
 - `assets/`, `effects/`: reserved for future original models, audio and effects.
 
@@ -241,6 +249,7 @@ godot --headless --path . --script res://tests/battlefield_smoke.gd
 godot --headless --path . --script res://tests/interaction_smoke.gd
 godot --headless --path . --script res://tests/character_smoke.gd
 godot --headless --path . --script res://tests/capture_smoke.gd
+godot --headless --path . --script res://tests/world_smoke.gd
 godot --headless --path . --quit-after 10
 ```
 
@@ -257,13 +266,16 @@ and preservation of authored materials. `capture_smoke.gd` runs every archetype'
 actual timeline and verifies lock/event order, duration, impact-time occupancy,
 framing including corners, exact camera/pose restoration, cleanup, both abilities,
 Core victory ordering, repeated captures, fast-forward, restart during both early
-and late capture phases, and the victory restart button. All four scripts report
-executed checks and return nonzero on failure.
+and late capture phases, and the victory restart button. The new `world_smoke.gd`
+checks collision-free scenery, shared-instance budgets,
+vertical placement, cinematic clearance, native fog and picking, then removes the
+entire world and verifies gameplay still works. All five scripts report executed
+checks and return nonzero on failure.
 
-Validated in the cloud with Godot 4.6.3: all four headless suites, the capture
-suite with OpenGL Compatibility rendering, the six lab scenarios, Core-victim
-victory, and lab keyboard controls. Visual samples were inspected at framing,
-impact and fracture. Testing on the local Windows/Godot 4.7 GPU remains a manual
+Validation uses Godot 4.6.3 in the cloud, headless and with OpenGL Compatibility
+rendering. See the visual report for the 0.5 checks; the earlier capture report
+and scripts remain available for gameplay regressions. Testing on the local
+Windows/Godot 4.7 GPU remains a manual
 review of smoothness and appearance, not a claimed cloud result.
 
 Headless checks do not demonstrate rendered appearance. In a graphical Play
