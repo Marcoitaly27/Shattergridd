@@ -1,5 +1,9 @@
 # SHATTERGRID · 0.9
 
+[Master Game Vision](docs/MASTER_GAME_VISION.md) is the user’s guiding product
+and creative direction. Read it before future design or architectural work;
+planned features are implemented only when requested.
+
 A local two-player Godot 4 battlefield prototype. Version 0.9 prepares external
 GLB/PBR integration: stable visual attachment/corrections, non-destructive wrapper
 templates, simple pick proxies, named team surfaces, a native stone-map profile,
