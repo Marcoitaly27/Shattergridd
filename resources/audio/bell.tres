@@ -1,12 +1,11 @@
-[gd_resource type="Resource" load_steps=4 format=3]
+[gd_resource type="Resource" format=3 uid="uid://dw2o1vhnxwt6a"]
 
-[ext_resource type="Script" path="res://scripts/audio/ambient_group.gd" id="1_group"]
-[ext_resource type="Script" path="res://scripts/audio/ambient_event.gd" id="2_event"]
+[ext_resource type="Script" uid="uid://c7rla40a3yjao" path="res://scripts/audio/ambient_group.gd" id="1_group"]
+[ext_resource type="Script" uid="uid://0a6a04jocknh" path="res://scripts/audio/ambient_event.gd" id="2_event"]
 
 [sub_resource type="Resource" id="Event_0"]
 script = ExtResource("2_event")
 cue_id = &"distant.bell"
-weight = 1.0
 has_position = true
 position = Vector3(-32, -30, -12)
 

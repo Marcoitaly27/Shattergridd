@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://d2tejf3s3xeru"]
 
-[ext_resource type="Script" path="res://scripts/world/distant_settlement.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c6otb0mp8s7uu" path="res://scripts/world/distant_settlement.gd" id="1_script"]
 
-[node name="DistantSettlement" type="Node3D"]
+[node name="DistantSettlement" type="Node3D" unique_id=456177775]
+visible = false
 script = ExtResource("1_script")

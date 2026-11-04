@@ -1,9 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://dh47roulusfj8"]
 
 [ext_resource type="Material" path="res://materials/world/old_wood.tres" id="1_material"]
 
 [sub_resource type="BoxMesh" id="Mesh_0"]
-size = Vector3(3.4, 0.35, 3.0)
+size = Vector3(3.4, 0.35, 3)
 
 [sub_resource type="BoxMesh" id="Mesh_1"]
 size = Vector3(0.24, 3.5, 0.28)
@@ -12,34 +12,35 @@ size = Vector3(0.24, 3.5, 0.28)
 size = Vector3(0.24, 3.1, 0.28)
 
 [sub_resource type="BoxMesh" id="Mesh_3"]
-size = Vector3(3.0, 0.28, 0.28)
+size = Vector3(3, 0.28, 0.28)
 
-[node name="AbandonedGallows" type="Node3D"]
+[node name="AbandonedGallows" type="Node3D" unique_id=1789424702]
+visible = false
 
-[node name="OldPlatform" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.175, 0)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="OldPlatform" type="MeshInstance3D" parent="." unique_id=1323046365]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.175, 0)
+visible = false
+material_override = ExtResource("1_material")
+cast_shadow = 0
 mesh = SubResource("Mesh_0")
+
+[node name="LeftPost" type="MeshInstance3D" parent="." unique_id=515447057]
+transform = Transform3D(0.9986295, -0.05233596, 0, 0.05233596, 0.9986295, 0, 0, 0, 1, -1.1, 2, 0)
+visible = false
 material_override = ExtResource("1_material")
 cast_shadow = 0
-
-[node name="LeftPost" type="MeshInstance3D" parent="."]
-position = Vector3(-1.1, 2.0, 0)
-rotation_degrees = Vector3(0, 0, 3)
 mesh = SubResource("Mesh_1")
+
+[node name="RightPost" type="MeshInstance3D" parent="." unique_id=1368752996]
+transform = Transform3D(0.9975641, 0.06975647, 0, -0.06975647, 0.9975641, 0, 0, 0, 1, 1.1, 1.8, 0)
+visible = false
 material_override = ExtResource("1_material")
 cast_shadow = 0
-
-[node name="RightPost" type="MeshInstance3D" parent="."]
-position = Vector3(1.1, 1.8, 0)
-rotation_degrees = Vector3(0, 0, -4)
 mesh = SubResource("Mesh_2")
-material_override = ExtResource("1_material")
-cast_shadow = 0
 
-[node name="AbandonedBeam" type="MeshInstance3D" parent="."]
-position = Vector3(0, 3.6, 0)
-rotation_degrees = Vector3(0, 0, -5)
-mesh = SubResource("Mesh_3")
+[node name="AbandonedBeam" type="MeshInstance3D" parent="." unique_id=665921944]
+transform = Transform3D(0.9961947, 0.08715574, 0, -0.08715574, 0.9961947, 0, 0, 0, 1, 0, 3.6, 0)
+visible = false
 material_override = ExtResource("1_material")
 cast_shadow = 0
+mesh = SubResource("Mesh_3")

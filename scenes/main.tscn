@@ -1,99 +1,95 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene format=3 uid="uid://da1utyab8jrr1"]
 
 [ext_resource type="PackedScene" path="res://scenes/board/battlefield.tscn" id="1_board"]
-[ext_resource type="Script" path="res://scripts/army/army_deployment.gd" id="2_deployment"]
-[ext_resource type="Environment" path="res://environments/suspended_sanctum.tres" id="3_environment"]
-
-[ext_resource type="Script" path="res://scripts/game/game_manager.gd" id="4_game"]
-[ext_resource type="Script" path="res://scripts/interaction/board_interaction.gd" id="5_input"]
-[ext_resource type="Script" path="res://scripts/ui/turn_display.gd" id="6_ui"]
-
-
-[ext_resource type="Script" path="res://scripts/capture/camera_director.gd" id="7_camera_director"]
-[ext_resource type="Script" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
-
-[ext_resource type="PackedScene" path="res://scenes/world/medieval_world.tscn" id="9_world"]
-
-[ext_resource type="Script" path="res://scripts/debug/debug_overlay.gd" id="10_debug"]
-
-[ext_resource type="Script" path="res://scripts/audio/match_audio.gd" id="11_audio"]
-
-[ext_resource type="Script" path="res://scripts/world/day_night_presentation.gd" id="12_cycle"]
+[ext_resource type="Script" uid="uid://d22fvx54n7rk4" path="res://scripts/army/army_deployment.gd" id="2_deployment"]
+[ext_resource type="Environment" uid="uid://dgfplpt75rvsv" path="res://environments/suspended_sanctum.tres" id="3_environment"]
+[ext_resource type="Script" uid="uid://cby5pg3bwpukv" path="res://scripts/game/game_manager.gd" id="4_game"]
+[ext_resource type="Script" uid="uid://joyu1rfywxd0" path="res://scripts/interaction/board_interaction.gd" id="5_input"]
+[ext_resource type="Script" uid="uid://c0fwr4jsk6u88" path="res://scripts/ui/turn_display.gd" id="6_ui"]
+[ext_resource type="Script" uid="uid://mu2bglnf8m7k" path="res://scripts/capture/camera_director.gd" id="7_camera_director"]
+[ext_resource type="Script" uid="uid://cb2t2asgyrtd7" path="res://scripts/capture/capture_director.gd" id="8_capture_director"]
+[ext_resource type="PackedScene" uid="uid://bew3huod1bm0r" path="res://scenes/world/medieval_world.tscn" id="9_world"]
+[ext_resource type="Script" uid="uid://bk6fgych386wg" path="res://scripts/debug/debug_overlay.gd" id="10_debug"]
+[ext_resource type="Script" uid="uid://c81xl10u13mkw" path="res://scripts/audio/match_audio.gd" id="11_audio"]
+[ext_resource type="Script" uid="uid://nkn0ximvknh6" path="res://scripts/world/day_night_presentation.gd" id="12_cycle"]
+[ext_resource type="PackedScene" uid="uid://yfd1n670xwqr" path="res://assets/Characters/Warden/Warden shattergrid.blend" id="13_trceg"]
+[ext_resource type="PackedScene" uid="uid://cp3a64m33dg23" path="res://assets/World ambientation/Old Cathedral/ruined cathedral 3d model.glb" id="14_a8y0u"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
-bg_color = Color(0.025, 0.032, 0.036, 0.90)
+bg_color = Color(0.025, 0.032, 0.036, 0.9)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.26, 0.25, 0.20, 1)
+border_color = Color(0.26, 0.25, 0.2, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
-corner_radius_bottom_left = 4
 corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="LabelSettings" id="Text_turn"]
 font_size = 18
 font_color = Color(0.78, 0.73, 0.61, 1)
 
-[node name="Shattergrid" type="Node3D"]
+[sub_resource type="FogMaterial" id="FogMaterial_60yol"]
 
-[node name="Battlefield" parent="." instance=ExtResource("1_board")]
+[node name="Shattergrid" type="Node3D" unique_id=1400323471]
 
-[node name="Pieces" type="Node3D" parent="."]
+[node name="Battlefield" parent="." unique_id=201457114 instance=ExtResource("1_board")]
 
-[node name="ArmyDeployment" type="Node" parent="."]
+[node name="Pieces" type="Node3D" parent="." unique_id=680081833]
+
+[node name="ArmyDeployment" type="Node" parent="." unique_id=945486372]
 script = ExtResource("2_deployment")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-position = Vector3(14, 22, 19)
-rotation_degrees = Vector3(-43.9, 36.384, 0)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=971128668]
+transform = Transform3D(0.8050595, -0.41132188, 0.42742664, 0, 0.7205511, 0.6934019, -0.59319407, -0.55822974, 0.58008647, 14, 22, 19)
 current = true
 fov = 37.0
 near = 0.1
 far = 250.0
 
-[node name="Moonlight" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-38, -54, -12)
-light_color = Color(0.93, 0.90, 0.82, 1)
+[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=272910037]
+transform = Transform3D(0.47138402, 0.6094038, -0.6375141, -0.16383666, 0.7707909, 0.6156615, 0.8665765, -0.18576482, 0.46318117, 0, 0, 0)
+light_color = Color(0.93, 0.9, 0.82, 1)
 light_energy = 1.65
 shadow_enabled = true
-directional_shadow_max_distance = 45.0
 shadow_bias = 0.025
 shadow_normal_bias = 0.8
+directional_shadow_max_distance = 45.0
 
-[node name="DuskFill" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-24, 138, 0)
+[node name="DuskFill" type="DirectionalLight3D" parent="." unique_id=1305735485]
+transform = Transform3D(-12.623347, -4.6230145, 10.383462, 0, 15.5178385, 6.908987, -11.366113, 5.1343775, -11.5320015, 0, 0, 0)
 light_color = Color(0.55, 0.62, 0.67, 1)
 light_energy = 0.32
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=85590711]
 environment = ExtResource("3_environment")
 
-[node name="VisualWorld" parent="." instance=ExtResource("9_world")]
+[node name="VisualWorld" parent="." unique_id=1836520615 instance=ExtResource("9_world")]
 
-[node name="Effects" type="Node3D" parent="."]
+[node name="Effects" type="Node3D" parent="." unique_id=822060512]
 
-[node name="CameraDirector" type="Node" parent="."]
+[node name="CameraDirector" type="Node" parent="." unique_id=1914726715]
 script = ExtResource("7_camera_director")
 
-[node name="CaptureDirector" type="Node" parent="."]
+[node name="CaptureDirector" type="Node" parent="." unique_id=613063604]
 script = ExtResource("8_capture_director")
 
-[node name="GameManager" type="Node" parent="."]
+[node name="GameManager" type="Node" parent="." unique_id=1916987523]
 script = ExtResource("4_game")
 
-[node name="Interaction" type="Node" parent="."]
+[node name="Interaction" type="Node" parent="." unique_id=1057184749]
 script = ExtResource("5_input")
 
-[node name="DayNightPresentation" type="Node" parent="."]
+[node name="DayNightPresentation" type="Node" parent="." unique_id=1593550680]
 script = ExtResource("12_cycle")
 
-[node name="Interface" type="CanvasLayer" parent="."]
+[node name="Interface" type="CanvasLayer" parent="." unique_id=1934139507]
 script = ExtResource("6_ui")
 
-[node name="Panel" type="PanelContainer" parent="Interface"]
-anchors_preset = 10
+[node name="Panel" type="PanelContainer" parent="Interface" unique_id=493082960]
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -180.0
@@ -104,7 +100,7 @@ grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("Style_panel")
 
-[node name="Margin" type="MarginContainer" parent="Interface/Panel"]
+[node name="Margin" type="MarginContainer" parent="Interface/Panel" unique_id=1935086364]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 18
@@ -112,35 +108,31 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 10
 
-[node name="Rows" type="VBoxContainer" parent="Interface/Panel/Margin"]
+[node name="Rows" type="VBoxContainer" parent="Interface/Panel/Margin" unique_id=1255112162]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 5
 
-[node name="Turn" type="Label" parent="Interface/Panel/Margin/Rows"]
+[node name="Turn" type="Label" parent="Interface/Panel/Margin/Rows" unique_id=162157505]
 layout_mode = 2
-mouse_filter = 2
 text = "PLAYER 1 TURN"
 label_settings = SubResource("Text_turn")
 horizontal_alignment = 1
 
-[node name="Hint" type="Label" parent="Interface/Panel/Margin/Rows"]
+[node name="Hint" type="Label" parent="Interface/Panel/Margin/Rows" unique_id=1630187037]
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.58, 0.60, 0.58, 1)
+theme_override_colors/font_color = Color(0.58, 0.6, 0.58, 1)
 theme_override_font_sizes/font_size = 13
 text = "Select a statue"
 horizontal_alignment = 1
 
-[node name="Status" type="Label" parent="Interface/Panel/Margin/Rows"]
-visible = false
+[node name="Status" type="Label" parent="Interface/Panel/Margin/Rows" unique_id=1538924867]
 layout_mode = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.63, 0.52, 0.34, 1)
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 
-[node name="VictoryScreen" type="Control" parent="Interface"]
+[node name="VictoryScreen" type="Control" parent="Interface" unique_id=970156086]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -149,64 +141,82 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="Interface/VictoryScreen"]
+[node name="Dim" type="ColorRect" parent="Interface/VictoryScreen" unique_id=2020711836]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 color = Color(0.006, 0.012, 0.016, 0.52)
-mouse_filter = 2
 
-[node name="Center" type="CenterContainer" parent="Interface/VictoryScreen"]
+[node name="Center" type="CenterContainer" parent="Interface/VictoryScreen" unique_id=1209501493]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
-[node name="Result" type="PanelContainer" parent="Interface/VictoryScreen/Center"]
+[node name="Result" type="PanelContainer" parent="Interface/VictoryScreen/Center" unique_id=2110748348]
 layout_mode = 2
 theme_override_styles/panel = SubResource("Style_panel")
 
-[node name="Margin" type="MarginContainer" parent="Interface/VictoryScreen/Center/Result"]
+[node name="Margin" type="MarginContainer" parent="Interface/VictoryScreen/Center/Result" unique_id=294320432]
 layout_mode = 2
 theme_override_constants/margin_left = 36
 theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 36
 theme_override_constants/margin_bottom = 28
 
-[node name="Rows" type="VBoxContainer" parent="Interface/VictoryScreen/Center/Result/Margin"]
+[node name="Rows" type="VBoxContainer" parent="Interface/VictoryScreen/Center/Result/Margin" unique_id=1152477763]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="Winner" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+[node name="Winner" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows" unique_id=1393057802]
 layout_mode = 2
 text = "PLAYER 1 VICTORY"
 label_settings = SubResource("Text_turn")
 horizontal_alignment = 1
 
-[node name="Detail" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+[node name="Detail" type="Label" parent="Interface/VictoryScreen/Center/Result/Margin/Rows" unique_id=149563365]
 layout_mode = 2
 text = "The opposing Core has fallen."
 horizontal_alignment = 1
 
-[node name="Restart" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
+[node name="Restart" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows" unique_id=1358352072]
 layout_mode = 2
 text = "REMATCH"
 
-[node name="Loadout" type="Button" parent="Interface"]
+[node name="Loadout" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows" unique_id=1807656522]
+layout_mode = 2
+text = "RETURN TO ARMY SETUP"
+
+[node name="Loadout" type="Button" parent="Interface" unique_id=1692615846]
 offset_left = 18.0
 offset_top = 18.0
 offset_right = 190.0
 offset_bottom = 54.0
 text = "ARMY LOADOUT"
 
-[node name="Loadout" type="Button" parent="Interface/VictoryScreen/Center/Result/Margin/Rows"]
-layout_mode = 2
-text = "RETURN TO ARMY SETUP"
-
-[node name="DebugOverlay" type="CanvasLayer" parent="."]
+[node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=904834953]
 script = ExtResource("10_debug")
 
-[node name="MatchAudio" type="Node" parent="."]
+[node name="MatchAudio" type="Node" parent="." unique_id=580235980]
 script = ExtResource("11_audio")
+
+[node name="Warden shattergrid" parent="." unique_id=679103484 instance=ExtResource("13_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.35716, 0.08402941, 5606.399)
+
+[node name="Warden shattergrid2" parent="." unique_id=430685037 instance=ExtResource("13_trceg")]
+transform = Transform3D(1.9008311, -0.001842188, 0.621963, -0.27452916, 1.7921387, 0.8443186, -0.55809957, -0.887827, 1.7030232, 34.088253, -10.835539, 17.565052)
+visible = false
+
+[node name="Lowerworldfog" type="FogVolume" parent="." unique_id=1385320410]
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, -8, 0)
+material = SubResource("FogMaterial_60yol")
+
+[node name="ruined cathedral 3d model" parent="." unique_id=1386101447 instance=ExtResource("14_a8y0u")]
+transform = Transform3D(70, 0, 0, 0, 47.814, 0, 0, 0, 88.582, -50, -45.349575, 14.615)

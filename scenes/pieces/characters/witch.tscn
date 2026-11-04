@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://yhwl2r2m8e2d"]
 
-[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="Material" uid="uid://cwpt82ph8hd88" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="PackedScene" uid="uid://q0nri8mcctrc" path="res://assets/Characters/Witch/Witch 3d.glb" id="2_tqast"]
 
 [sub_resource type="BoxMesh" id="Mesh_0"]
 size = Vector3(0.7, 0.11, 0.87)
@@ -38,50 +39,53 @@ bottom_radius = 0.018
 height = 0.25
 radial_segments = 16
 
-[node name="WitchPrototype" type="Node3D"]
+[node name="WitchPrototype" type="Node3D" unique_id=149567553]
 metadata/asset_stage = "prototype"
 
-[node name="RitualSlab" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.055, 0)
-rotation_degrees = Vector3(0, -10, 0)
+[node name="RitualSlab" type="MeshInstance3D" parent="." unique_id=560394078]
+transform = Transform3D(0.9848077, 0, -0.17364818, 0, 1, 0, 0.17364818, 0, 0.9848077, 0, 0.055, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_0")
-material_override = ExtResource("1_stone")
 
-[node name="LongRobe" type="MeshInstance3D" parent="."]
-position = Vector3(-0.035, 0.66, 0.015)
-rotation_degrees = Vector3(0, 0, 7)
+[node name="LongRobe" type="MeshInstance3D" parent="." unique_id=681717919]
+transform = Transform3D(0.99254614, -0.12186935, 0, 0.12186935, 0.99254614, 0, 0, 0, 1, -0.035, 0.66, 0.015)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_1")
-material_override = ExtResource("1_stone")
 
-[node name="BlindfoldedHead" type="MeshInstance3D" parent="."]
-position = Vector3(-0.1, 1.37, 0.01)
-rotation_degrees = Vector3(0, 0, 8)
+[node name="BlindfoldedHead" type="MeshInstance3D" parent="." unique_id=1964495694]
+transform = Transform3D(0.99026805, -0.1391731, 0, 0.1391731, 0.99026805, 0, 0, 0, 1, -0.1, 1.37, 0.01)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_2")
-material_override = ExtResource("1_stone")
 
-[node name="BoundArms" type="MeshInstance3D" parent="."]
-position = Vector3(-0.015, 0.91, -0.13)
-rotation_degrees = Vector3(0, 0, -13)
+[node name="BoundArms" type="MeshInstance3D" parent="." unique_id=1388770577]
+transform = Transform3D(0.97437006, 0.22495104, 0, -0.22495104, 0.97437006, 0, 0, 0, 1, -0.015, 0.91, -0.13)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_3")
-material_override = ExtResource("1_stone")
 
-[node name="CrookedBranch" type="MeshInstance3D" parent="."]
-position = Vector3(0.26, 0.81, 0.08)
-rotation_degrees = Vector3(0, 0, -7)
+[node name="CrookedBranch" type="MeshInstance3D" parent="." unique_id=2063614193]
+transform = Transform3D(0.99254614, 0.12186935, 0, -0.12186935, 0.99254614, 0, 0, 0, 1, 0.26, 0.81, 0.08)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_4")
-material_override = ExtResource("1_stone")
 
-[node name="BrokenBranch" type="MeshInstance3D" parent="."]
-position = Vector3(0.25, 1.55, 0.08)
-rotation_degrees = Vector3(0, 0, 25)
+[node name="BrokenBranch" type="MeshInstance3D" parent="." unique_id=692527225]
+transform = Transform3D(0.90630776, -0.42261827, 0, 0.42261827, 0.90630776, 0, 0, 0, 1, 0.25, 1.55, 0.08)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_5")
-material_override = ExtResource("1_stone")
 
-[node name="BranchFork" type="MeshInstance3D" parent="."]
-position = Vector3(0.32, 1.45, 0.08)
-rotation_degrees = Vector3(0, 0, -35)
+[node name="BranchFork" type="MeshInstance3D" parent="." unique_id=589506991]
+transform = Transform3D(0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 0, 0, 1, 0.32, 1.45, 0.08)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_6")
-material_override = ExtResource("1_stone")
 
-[node name="PickAnchor" type="Marker3D" parent="."]
-position = Vector3(-0.06, 0.85, 0)
+[node name="PickAnchor" type="Marker3D" parent="." unique_id=655760775]
+transform = Transform3D(0.9781476, 0, 0.2079117, 0, 1, 0, -0.2079117, 0, 0.9781476, -0.06, 0, 0)
+
+[node name="Witch 3d" parent="." unique_id=958559949 instance=ExtResource("2_tqast")]
+transform = Transform3D(-2, 0, -1.7484555e-07, 0, 2, 0, 1.7484555e-07, 0, -2, 0, 0, 0)

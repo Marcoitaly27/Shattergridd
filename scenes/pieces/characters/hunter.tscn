@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://bo02t1sq0tj0s"]
 
-[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="Material" uid="uid://cwpt82ph8hd88" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="PackedScene" uid="uid://t6h5icycxwdv" path="res://assets/Characters/Hunter/3d hunter.glb" id="2_i7cku"]
 
 [sub_resource type="BoxMesh" id="Mesh_0"]
 size = Vector3(0.72, 0.12, 1.05)
@@ -26,44 +27,47 @@ size = Vector3(0.085, 0.1, 0.62)
 [sub_resource type="BoxMesh" id="Mesh_5"]
 size = Vector3(0.15, 0.26, 0.23)
 
-[node name="HunterPrototype" type="Node3D"]
+[node name="HunterPrototype" type="Node3D" unique_id=1249592366]
 metadata/asset_stage = "prototype"
 
-[node name="PathStone" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.06, 0)
-rotation_degrees = Vector3(0, 9, 0)
+[node name="PathStone" type="MeshInstance3D" parent="." unique_id=1034258272]
+transform = Transform3D(0.98768836, 0, 0.15643448, 0, 1, 0, -0.15643448, 0, 0.98768836, 0, 0.06, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_0")
-material_override = ExtResource("1_stone")
 
-[node name="LeaningBody" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.5, 0.02)
-rotation_degrees = Vector3(-16, 0, 0)
+[node name="LeaningBody" type="MeshInstance3D" parent="." unique_id=364352574]
+transform = Transform3D(1, 0, 0, 0, 0.9612617, 0.27563736, 0, -0.27563736, 0.9612617, 0, 0.5, 0.02)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_1")
-material_override = ExtResource("1_stone")
 
-[node name="Hood" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.97, -0.14)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="Hood" type="MeshInstance3D" parent="." unique_id=1646572876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97, -0.14)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_2")
-material_override = ExtResource("1_stone")
 
-[node name="CrossbowBow" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.72, -0.28)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="CrossbowBow" type="MeshInstance3D" parent="." unique_id=971712475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.28)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_3")
-material_override = ExtResource("1_stone")
 
-[node name="CrossbowStock" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.72, -0.33)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="CrossbowStock" type="MeshInstance3D" parent="." unique_id=581338076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.33)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_4")
-material_override = ExtResource("1_stone")
 
-[node name="ForwardLeg" type="MeshInstance3D" parent="."]
-position = Vector3(0.13, 0.2, -0.17)
-rotation_degrees = Vector3(-15, 0, 0)
+[node name="ForwardLeg" type="MeshInstance3D" parent="." unique_id=403722899]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0.13, 0.2, -0.17)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_5")
-material_override = ExtResource("1_stone")
 
-[node name="PickAnchor" type="Marker3D" parent="."]
-position = Vector3(0, 0.7, -0.15)
+[node name="PickAnchor" type="Marker3D" parent="." unique_id=1479513023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.15)
+
+[node name="3d hunter" parent="." unique_id=77683448 instance=ExtResource("2_i7cku")]
+transform = Transform3D(-1.9964796, 0, -0.118612915, 0, 2, 0, 0.118612915, 0, -1.9964796, 0, 0, 0)

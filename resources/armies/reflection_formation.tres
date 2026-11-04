@@ -1,7 +1,7 @@
-[gd_resource type="Resource" load_steps=8 format=3]
+[gd_resource type="Resource" format=3 uid="uid://bu7egq0xt0n18"]
 
-[ext_resource type="Script" path="res://scripts/army/formation_definition.gd" id="1_formation"]
-[ext_resource type="Script" path="res://scripts/army/deployment_slot.gd" id="2_slot"]
+[ext_resource type="Script" uid="uid://ldll5i8aasi4" path="res://scripts/army/formation_definition.gd" id="1_formation"]
+[ext_resource type="Script" uid="uid://bac8il8e7lujw" path="res://scripts/army/deployment_slot.gd" id="2_slot"]
 
 [sub_resource type="Resource" id="Slot_guard"]
 script = ExtResource("2_slot")
@@ -31,20 +31,17 @@ mirrored_coordinate = Vector2i(4, 7)
 script = ExtResource("2_slot")
 slot_id = &"core"
 category = &"core"
-paired = false
 left_coordinate = Vector2i(3, 7)
 
 [sub_resource type="Resource" id="Slot_special"]
 script = ExtResource("2_slot")
 slot_id = &"special"
 category = &"special"
-alternative_categories = Array[StringName]([&"random"])
-paired = false
 left_coordinate = Vector2i(7, 7)
+alternative_categories = Array[StringName]([&"random"])
 
 [resource]
 script = ExtResource("1_formation")
 formation_id = &"reflection_8"
 display_name = "The First Reflection"
-board_dimensions = Vector2i(8, 8)
 slots = Array[ExtResource("2_slot")]([SubResource("Slot_guard"), SubResource("Slot_hunt"), SubResource("Slot_power"), SubResource("Slot_core"), SubResource("Slot_special")])

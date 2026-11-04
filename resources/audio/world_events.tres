@@ -1,7 +1,7 @@
-[gd_resource type="Resource" load_steps=7 format=3]
+[gd_resource type="Resource" format=3 uid="uid://cmwcuihlqsqxj"]
 
-[ext_resource type="Script" path="res://scripts/audio/ambient_group.gd" id="1_group"]
-[ext_resource type="Script" path="res://scripts/audio/ambient_event.gd" id="2_event"]
+[ext_resource type="Script" uid="uid://c7rla40a3yjao" path="res://scripts/audio/ambient_group.gd" id="1_group"]
+[ext_resource type="Script" uid="uid://0a6a04jocknh" path="res://scripts/audio/ambient_event.gd" id="2_event"]
 
 [sub_resource type="Resource" id="Event_0"]
 script = ExtResource("2_event")
@@ -27,13 +27,10 @@ position = Vector3(31, -37, 20)
 [sub_resource type="Resource" id="Event_3"]
 script = ExtResource("2_event")
 cue_id = &"distant.thunder"
-weight = 1.0
 has_position = true
 position = Vector3(0, -30, -70)
 
 [resource]
 script = ExtResource("1_group")
 category = &"world_events"
-min_interval = 90.0
-max_interval = 240.0
 events = Array[ExtResource("2_event")]([SubResource("Event_0"), SubResource("Event_1"), SubResource("Event_2"), SubResource("Event_3")])

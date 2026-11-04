@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene format=3 uid="uid://cb57lskrsmgn"]
 
-[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="Material" uid="uid://cwpt82ph8hd88" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="PackedScene" uid="uid://dhpvkikeggm6l" path="res://assets/Characters/The core/3d Core.glb" id="2_b1lb3"]
 
 [sub_resource type="BoxMesh" id="Mesh_0"]
 size = Vector3(1.05, 0.16, 0.94)
@@ -32,56 +33,59 @@ size = Vector3(0.13, 0.58, 0.19)
 [sub_resource type="BoxMesh" id="Mesh_7"]
 size = Vector3(0.13, 0.58, 0.19)
 
-[node name="CorePrototype" type="Node3D"]
+[node name="CorePrototype" type="Node3D" unique_id=840959293]
 metadata/asset_stage = "prototype"
 
-[node name="Pedestal" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.08, 0)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="Pedestal" type="MeshInstance3D" parent="." unique_id=85713001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_0")
-material_override = ExtResource("1_stone")
 
-[node name="Step" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.22, 0)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="Step" type="MeshInstance3D" parent="." unique_id=319081549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_1")
-material_override = ExtResource("1_stone")
 
-[node name="BoundFigure" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.66, 0)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="BoundFigure" type="MeshInstance3D" parent="." unique_id=563658443]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_2")
-material_override = ExtResource("1_stone")
 
-[node name="Face" type="MeshInstance3D" parent="."]
-position = Vector3(0, 1.16, 0)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="Face" type="MeshInstance3D" parent="." unique_id=728179981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_3")
-material_override = ExtResource("1_stone")
 
-[node name="LeftPillar" type="MeshInstance3D" parent="."]
-position = Vector3(-0.39, 0.84, 0.04)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="LeftPillar" type="MeshInstance3D" parent="." unique_id=64120112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.39, 0.84, 0.04)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_4")
-material_override = ExtResource("1_stone")
 
-[node name="RightPillar" type="MeshInstance3D" parent="."]
-position = Vector3(0.39, 0.84, 0.04)
-rotation_degrees = Vector3(0, 0, 0)
+[node name="RightPillar" type="MeshInstance3D" parent="." unique_id=1672582759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39, 0.84, 0.04)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_5")
-material_override = ExtResource("1_stone")
 
-[node name="LeftArch" type="MeshInstance3D" parent="."]
-position = Vector3(-0.2, 1.54, 0.04)
-rotation_degrees = Vector3(0, 0, -43)
+[node name="LeftArch" type="MeshInstance3D" parent="." unique_id=2104463908]
+transform = Transform3D(0.7313537, 0.6819984, 0, -0.6819984, 0.7313537, 0, 0, 0, 1, -0.2, 1.54, 0.04)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_6")
-material_override = ExtResource("1_stone")
 
-[node name="RightArch" type="MeshInstance3D" parent="."]
-position = Vector3(0.2, 1.54, 0.04)
-rotation_degrees = Vector3(0, 0, 43)
+[node name="RightArch" type="MeshInstance3D" parent="." unique_id=584657974]
+transform = Transform3D(0.7313537, -0.6819984, 0, 0.6819984, 0.7313537, 0, 0, 0, 1, 0.2, 1.54, 0.04)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_7")
-material_override = ExtResource("1_stone")
 
-[node name="PickAnchor" type="Marker3D" parent="."]
-position = Vector3(0, 0.75, 0)
+[node name="PickAnchor" type="Marker3D" parent="." unique_id=2127423918]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="3d Core" parent="." unique_id=486193333 instance=ExtResource("2_b1lb3")]
+transform = Transform3D(1.4997716, 0, -0.02617861, 0, 1.5, 0, 0.02617861, 0, 1.4997716, 0, 0, 0)

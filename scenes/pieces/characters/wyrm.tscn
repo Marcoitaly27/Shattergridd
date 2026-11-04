@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://bwffdmf4xqj0x"]
 
-[ext_resource type="Material" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="Material" uid="uid://cwpt82ph8hd88" path="res://materials/ash_statue.tres" id="1_stone"]
+[ext_resource type="PackedScene" uid="uid://pciio3olwwr5" path="res://assets/Characters/Wyrm/Dragon Shattergrid.glb" id="2_31xe0"]
 
 [sub_resource type="BoxMesh" id="Mesh_0"]
 size = Vector3(0.88, 0.1, 1.22)
@@ -12,7 +13,6 @@ size = Vector3(0.35, 0.08, 0.4)
 radius = 0.19
 height = 0.87
 radial_segments = 16
-rings = 8
 
 [sub_resource type="BoxMesh" id="Mesh_3"]
 size = Vector3(0.36, 0.26, 0.42)
@@ -38,68 +38,71 @@ bottom_radius = 0.045
 height = 0.14
 radial_segments = 12
 
-[node name="WyrmPrototype" type="Node3D"]
+[node name="WyrmPrototype" type="Node3D" unique_id=820286596]
 metadata/asset_stage = "prototype"
 
-[node name="RelicStone" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.05, 0)
-rotation_degrees = Vector3(0, -5, 0)
+[node name="RelicStone" type="MeshInstance3D" parent="." unique_id=1189133924]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0, 0.05, 0)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_0")
-material_override = ExtResource("1_stone")
 
-[node name="BrokenStone" type="MeshInstance3D" parent="."]
-position = Vector3(0.22, 0.13, 0.3)
-rotation_degrees = Vector3(0, 18, 0)
+[node name="BrokenStone" type="MeshInstance3D" parent="." unique_id=1488248368]
+transform = Transform3D(0.95105654, 0, 0.309017, 0, 1, 0, -0.309017, 0, 0.95105654, 0.22, 0.13, 0.3)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_1")
-material_override = ExtResource("1_stone")
 
-[node name="CoiledBody" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.32, 0.05)
-rotation_degrees = Vector3(90, 0, 0)
+[node name="CoiledBody" type="MeshInstance3D" parent="." unique_id=1082503725]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.32, 0.05)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_2")
-material_override = ExtResource("1_stone")
 
-[node name="ReptileHead" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.54, -0.36)
-rotation_degrees = Vector3(-10, 0, 0)
+[node name="ReptileHead" type="MeshInstance3D" parent="." unique_id=955809877]
+transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 0.54, -0.36)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_3")
-material_override = ExtResource("1_stone")
 
-[node name="Snout" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.50, -0.53)
-rotation_degrees = Vector3(0, 180, 0)
+[node name="Snout" type="MeshInstance3D" parent="." unique_id=1164829486]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.5, -0.53)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_4")
-material_override = ExtResource("1_stone")
 
-[node name="LeftFoldedWing" type="MeshInstance3D" parent="."]
-position = Vector3(-0.25, 0.44, 0.07)
-rotation_degrees = Vector3(0, 0, -20)
+[node name="LeftFoldedWing" type="MeshInstance3D" parent="." unique_id=1115326190]
+transform = Transform3D(0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 0, 0, 1, -0.25, 0.44, 0.07)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_5")
-material_override = ExtResource("1_stone")
 
-[node name="RightFoldedWing" type="MeshInstance3D" parent="."]
-position = Vector3(0.25, 0.44, 0.07)
-rotation_degrees = Vector3(0, 0, 20)
+[node name="RightFoldedWing" type="MeshInstance3D" parent="." unique_id=1472256147]
+transform = Transform3D(0.9396926, -0.34202012, 0, 0.34202012, 0.9396926, 0, 0, 0, 1, 0.25, 0.44, 0.07)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_6")
-material_override = ExtResource("1_stone")
 
-[node name="Tail" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.25, 0.44)
-rotation_degrees = Vector3(72, 0, 0)
+[node name="Tail" type="MeshInstance3D" parent="." unique_id=798877739]
+transform = Transform3D(1, 0, 0, 0, 0.30901697, -0.95105654, 0, 0.95105654, 0.30901697, 0, 0.25, 0.44)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_7")
-material_override = ExtResource("1_stone")
 
-[node name="LeftHorn" type="MeshInstance3D" parent="."]
-position = Vector3(-0.12, 0.70, -0.40)
-rotation_degrees = Vector3(-15, 0, 0)
+[node name="LeftHorn" type="MeshInstance3D" parent="." unique_id=330423624]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, -0.12, 0.7, -0.4)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_horn")
-material_override = ExtResource("1_stone")
 
-[node name="RightHorn" type="MeshInstance3D" parent="."]
-position = Vector3(0.12, 0.70, -0.40)
-rotation_degrees = Vector3(-15, 0, 0)
+[node name="RightHorn" type="MeshInstance3D" parent="." unique_id=1639127392]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0.12, 0.7, -0.4)
+visible = false
+material_override = ExtResource("1_stone")
 mesh = SubResource("Mesh_horn")
-material_override = ExtResource("1_stone")
 
-[node name="PickAnchor" type="Marker3D" parent="."]
-position = Vector3(0, 0.4, -0.3)
+[node name="PickAnchor" type="Marker3D" parent="." unique_id=37021511]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.3)
+
+[node name="Dragon Shattergrid" parent="." unique_id=80583151 instance=ExtResource("2_31xe0")]
+transform = Transform3D(-1.9995613, 0, -0.041884873, 0, 2, 0, 0.041884873, 0, -1.9995613, 0, 0, 0)
