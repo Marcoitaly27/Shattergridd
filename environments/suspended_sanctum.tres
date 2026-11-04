@@ -24,4 +24,5 @@ fog_light_energy = 0.72
 fog_sun_scatter = 0.05
 fog_sky_affect = 0.85
 fog_height = -14.0
-fog_height_density = 0.2
+fog_height_density = 0.025
+fog_density = 0.0027
