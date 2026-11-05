@@ -59,7 +59,7 @@ The current battlefield uses an 8x8 grid.
 
 This may be rebalanced in the future, so avoid unnecessary assumptions that make 8x8 impossible to change.
 
-The board is an enormous ancient stone structure suspended impossibly high above a ruined medieval world.
+The board is an ancient ceremonial stone pavement grounded in the courtyard of a ruined medieval cathedral. It is physically supported by continuous earth and masonry, not suspended above a void.
 
 It should feel like part of:
 
@@ -73,7 +73,7 @@ It is NOT supposed to look like a normal chessboard floating in space.
 
 The grid itself is built into ancient architecture.
 
-Below and around it exists a ruined world partially hidden by fog.
+Around it exists a continuous ruined world partially hidden by fog. Cathedral foundations, courtyard paving and earth must meet believably.
 
 ---
 
@@ -696,7 +696,7 @@ dust;
 major fractures;
 weight;
 gravity;
-pieces falling from the floating battlefield.
+pieces falling onto the stone battlefield and surrounding courtyard.
 
 Bad:
 

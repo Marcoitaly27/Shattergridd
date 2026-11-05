@@ -54,6 +54,7 @@ transform = Transform3D(0.47138402, 0.6094038, -0.6375141, -0.16383666, 0.770790
 light_color = Color(0.93, 0.9, 0.82, 1)
 light_energy = 1.65
 shadow_enabled = true
+shadow_opacity = 0.55
 shadow_bias = 0.025
 shadow_normal_bias = 0.8
 directional_shadow_max_distance = 45.0
@@ -215,6 +216,6 @@ transform = Transform3D(1.9008311, -0.001842188, 0.621963, -0.27452916, 1.792138
 visible = false
 
 [node name="ruined cathedral 3d model" parent="." unique_id=1386101447 instance=ExtResource("14_a8y0u")]
-transform = Transform3D(70, 0, 0, 0, 47.814, 0, 0, 0, 88.582, -50, -45.349575, 14.615)
+transform = Transform3D(70, 0, 0, 0, 47.814, 0, 0, 0, 88.582, -39, -0.15, -8)
 
 script = ExtResource("15_cathedral")
