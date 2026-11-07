@@ -19,12 +19,19 @@ void fragment() {
  float variation=hash(floor(blocks));
  vec3 stone=mix(vec3(0.23,0.235,0.205),vec3(0.37,0.36,0.31),variation);
  stone *= 0.82 + weather*0.26 + grain*0.12;
- vec3 dirt=mix(vec3(0.085,0.075,0.055),vec3(0.12,0.14,0.085),weather);
+ vec3 dirt=mix(vec3(0.09,0.075,0.055),vec3(0.20,0.19,0.13),weather);
  // Broad paving joins soil beyond the court, rather than ending at a visible plane edge.
- float soil=smoothstep(38.0,65.0,length(p-vec2(-22,8))) * smoothstep(0.25,0.7,weather);
+ float court_edge=max(abs(p.x),abs(p.y));
+ float perimeter=smoothstep(8.8,15.5,court_edge + noise(p*0.35)*2.0);
+ float missing=step(0.69,variation)*smoothstep(8.5,10.5,court_edge);
+ float soil=max(perimeter*smoothstep(0.15,0.7,weather),missing);
+ soil=max(soil,smoothstep(18.0,27.0,court_edge));
+ float cemetery=1.0-smoothstep(1.8,4.0,abs(p.x+12.5));
+ soil=max(soil,cemetery*smoothstep(8.8,10.0,court_edge)*0.85);
  ALBEDO=mix(mix(stone,dirt,joint*0.65),dirt,soil);
  float stain=smoothstep(0.48,0.75,noise(p*0.5)) * 0.24;
  ALBEDO *= 1.0-stain;
+ ALBEDO=mix(ALBEDO,vec3(0.11,0.135,0.065),joint*perimeter*weather*0.35);
  float relief=(1.0-joint)*0.018 + grain*0.004;
  vec3 dx=dFdx(VERTEX), dy=dFdy(VERTEX);
  vec3 r1=cross(dy,NORMAL), r2=cross(NORMAL,dx);

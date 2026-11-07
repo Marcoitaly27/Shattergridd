@@ -29,6 +29,15 @@ func run() -> void:
 			var cell := Vector2i(x,y)
 			check(interaction.cell_at_screen(camera.unproject_position(board.position_for_cell(cell))) == cell, 'Pick tile %s' % cell)
 			check(board.position_for_cell(cell).y > 0.1, 'Tile and hints above courtyard')
+	var cells: Array[Vector2i] = []
+	for y in range(8):
+		for x in range(8):
+			cells.append(Vector2i(x,y))
+	board.show_destinations(cells, scene.get_node('GameManager').board_state)
+	for cell in cells:
+		var hint: Node3D = board.get_node('Tiles/Tile_%d_%d/MoveHint' % [cell.x,cell.y])
+		check(hint.visible and hint.get_child(0).global_position.y > 0.12, 'Destination border visible above court')
+	board.clear_highlights()
 	print('Grounded courtyard: %d checks, %d failures' % [checks, failures])
 	scene.queue_free()
 	await process_frame
