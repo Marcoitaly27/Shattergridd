@@ -1,11 +1,14 @@
 @tool
 extends Node3D
-## Two restrained local flames; no random global lighting or expensive fire shader.
+## Imported iron fire basket and restrained crossed flame surfaces.
 
 var _age: float = 0.0
 
 
 func _ready() -> void:
+	for part in $Basket.find_children("*", "MeshInstance3D", true, false):
+		if part.name == "Iron":
+			part.material_override = preload("res://materials/world/aged_iron.tres")
 	set_process(not Engine.is_editor_hint())
 	if not Engine.is_editor_hint():
 		add_to_group("audio_fire")

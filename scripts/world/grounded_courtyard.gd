@@ -2,6 +2,8 @@
 extends Node3D
 ## Visual-only courtyard. Tile coordinates, picking and match rules stay on Battlefield.
 const Stone = preload("res://materials/foundation_stone.tres")
+const Bell = preload("res://assets/world/relics/fallen_bell.glb")
+const Mosaic = preload("res://assets/world/relics/ceremonial_mosaic.glb")
 const Details = preload("res://assets/world/cloister/courtyard_details.glb")
 const Ground = preload("res://materials/world/courtyard_ground.tres")
 
@@ -24,6 +26,31 @@ func _ready() -> void:
 		elif part.name == "Dead_wood":
 			part.material_override = preload("res://materials/world/dead_wood.tres")
 	add_child(details)
+	var mosaic := Mosaic.instantiate() as Node3D
+	mosaic.name = "CeremonialMosaic"
+	var tessera_tints := {
+		"Tessera_limestone": Vector3(0.52, 0.50, 0.40),
+		"Tessera_slate": Vector3(0.13, 0.17, 0.16),
+		"Tessera_ochre": Vector3(0.35, 0.27, 0.13),
+		"Tessera_oxide": Vector3(0.27, 0.14, 0.09),
+	}
+	for part in mosaic.find_children("*", "MeshInstance3D", true, false):
+		var material := ShaderMaterial.new()
+		material.shader = preload("res://materials/world/worn_tesserae.gdshader")
+		material.set_shader_parameter("tint", tessera_tints.get(String(part.name).replace(" ", "_"), Vector3(0.25, 0.24, 0.19)))
+		part.material_override = material
+	add_child(mosaic)
+	var bell := Bell.instantiate() as Node3D
+	bell.name = "FallenBell"
+	bell.position = Vector3(-9.8, -0.15, 9.1)
+	for part in bell.find_children("*", "MeshInstance3D", true, false):
+		if part.name == "Bronze":
+			part.material_override = preload("res://materials/world/aged_bronze.tres")
+		elif part.name == "Iron":
+			part.material_override = preload("res://materials/world/aged_iron.tres")
+		elif part.name == "Wood":
+			part.material_override = preload("res://materials/world/dead_wood.tres")
+	add_child(bell)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 51834
 	# Two courses of paving meet the existing board rim; no geometry covers tiles.
