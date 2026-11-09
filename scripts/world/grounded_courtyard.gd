@@ -2,6 +2,7 @@
 extends Node3D
 ## Visual-only courtyard. Tile coordinates, picking and match rules stay on Battlefield.
 const Stone = preload("res://materials/foundation_stone.tres")
+const Aqueduct = preload("res://assets/world/aqueduct/ruins.glb")
 const Bell = preload("res://assets/world/relics/fallen_bell.glb")
 const Mosaic = preload("res://assets/world/relics/ceremonial_mosaic.glb")
 const Details = preload("res://assets/world/cloister/courtyard_details.glb")
@@ -51,6 +52,11 @@ func _ready() -> void:
 		elif part.name == "Wood":
 			part.material_override = preload("res://materials/world/dead_wood.tres")
 	add_child(bell)
+	var ruins := Aqueduct.instantiate() as Node3D
+	ruins.name = "AqueductAndFossil"
+	for part in ruins.find_children("*", "MeshInstance3D", true, false):
+		part.material_override = preload("res://materials/world/ancient_bone.tres") if part.name == "Ancient_bone" else preload("res://materials/world/cloister_stone.tres")
+	add_child(ruins)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 51834
 	# Two courses of paving meet the existing board rim; no geometry covers tiles.
